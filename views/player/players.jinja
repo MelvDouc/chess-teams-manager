@@ -1,0 +1,34 @@
+{% extends "_base.jinja" %}
+
+{% block title %}Joueurs{% endblock %}
+
+{% block main %}
+  <table>
+    <thead>
+      <tr>
+        <th>N° FFE</th>
+        <th>N° FIDE</th>
+        <th>NOM</th>
+        <th>Prénom</th>
+        <th>Email</th>
+        <th>Tél</th>
+        <th>Elo</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for player in players %}
+        <tr>
+          <td>
+            <a href="/joueurs/{{ player.ffeId }}">{{ player.ffeId }}</a>
+          </td>
+          <td>{{ player.fideId }}</td>
+          <td>{{ player.lastName }}</td>
+          <td>{{ player.firstName }}</td>
+          <td>{{ player.email }}</td>
+          <td>{{ player.phone }}</td>
+          <td>{{ player.rating }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "_base.jinja" %}
+
+{% block title %}Connexion{% endblock %}
+
+{% block main %}
+  <form action="/connexion" method="post" class="form">
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" required />
+    </div>
+    <div class="form-group">
+      <label for="password">Mot de passe</label>
+      <input type="password" id="password" name="password" required />
+    </div>
+    <section class="form-submit">
+      <button type="submit">Se connecter</button>
+    </section>
+  </form>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% macro player_form(player, action) %}
+  <form
+      class="form"
+      action="{{ action }}"
+      method="post"
+    >
+    <section class="form-row">
+      <div class="form-group">
+        <label for="ffeId">N° FFE</label>
+        <input type="text" minlength="4" maxlength="10" id="ffeId" name="ffeId" value="{{ player.ffeId }}" required />
+      </div>
+      <div class="form-group">
+        <label for="fideId">N° FIDE</label>
+        <input type="number" id="fideId" name="fideId" value="{{ player.fideId }}" required />
+      </div>
+    </section>
+    <section class="form-row">
+      <div class="form-group">
+        <label for="firstName">Prénom</label>
+        <input type="text" id="firstName" name="firstName" value="{{ player.firstName }}" maxlength="20" required />
+      </div>
+    </section>
+    <section class="form-submit">
+      <button type="submit">Valider</button>
+    </section>
+  </form>
+{% endmacro %}
