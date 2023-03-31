@@ -6,22 +6,43 @@
     >
     <section class="form-row">
       <div class="form-group">
-        <label for="ffeId">N° FFE</label>
-        <input type="text" minlength="4" maxlength="10" id="ffeId" name="ffeId" value="{{ player.ffeId }}" required />
+        <label for="ffeId" class="form-required">N° FFE</label>
+        <input type="text" minlength="4" maxlength="10" id="ffeId" name="ffeId" value="{{ player.ffeId }}" pattern="[A-Z][0-9]+" required />
       </div>
       <div class="form-group">
         <label for="fideId">N° FIDE</label>
-        <input type="number" id="fideId" name="fideId" value="{{ player.fideId }}" required />
+        <input type="number" id="fideId" name="fideId" value="{{ player.fideId }}" />
       </div>
     </section>
     <section class="form-row">
       <div class="form-group">
-        <label for="firstName">Prénom</label>
+        <label for="firstName" class="form-required">Prénom</label>
         <input type="text" id="firstName" name="firstName" value="{{ player.firstName }}" maxlength="20" required />
+      </div>
+      <div class="form-group">
+        <label for="lastName" class="form-required">NOM</label>
+        <input type="text" id="lastName" name="lastName" value="{{ player.lastName }}" maxlength="20" required />
+      </div>
+    </section>
+    <section class="form-row">
+      <div class="form-group">
+        <label for="email" class="form-required">Email</label>
+        <input type="email" name="email" id="email" value="{{ player.email }}" required />
+      </div>
+    </section>
+    <section class="form-row">
+      <div class="form-group">
+        <label for="phone">Tél.</label>
+        <input type="text" name="phone" id="phone" value="{{ player.phone }}" maxlength="20" />
+      </div>
+      <div class="form-group">
+        <label for="rating">Elo</label>
+        <input type="number" name="rating" id="rating" value="{{ player.rating }}" min="0" />
       </div>
     </section>
     <section class="form-submit">
       <button type="submit">Valider</button>
+      <a href="/joueurs">Annuler</a>
     </section>
   </form>
 {% endmacro %}

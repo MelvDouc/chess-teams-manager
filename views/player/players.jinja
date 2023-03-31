@@ -13,6 +13,7 @@
         <th>Email</th>
         <th>Tél</th>
         <th>Elo</th>
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody>
@@ -27,8 +28,14 @@
           <td>{{ player.email }}</td>
           <td>{{ player.phone }}</td>
           <td>{{ player.rating }}</td>
+          <td>
+            <a href="/joueurs/{{ player.ffeId }}/modifier">Modifier</a>
+            <form action="/joueur/{{ player.ffeId }}/supprimer"><input type="submit" value="Supprimer" /></form>
+          </td>
         </tr>
       {% endfor %}
     </tbody>
   </table>
+
+  <p><a href="/joueurs/nouveau">Créer un joueur</a></p>
 {% endblock %}

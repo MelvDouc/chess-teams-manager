@@ -4,5 +4,5 @@
 
 {% block main %}
   {% import ".inc/player-form.jinja" as form %}
-  {{ form.player_form({}, "/joueurs/nouveau") }}
+  {{ form.player_form(player or {}, "/joueurs/nouveau") }}
 {% endblock %}

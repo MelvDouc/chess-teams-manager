@@ -33,3 +33,9 @@ export namespace DbEntities {
 export type AppState = {
   session: Session;
 };
+
+export interface FormValidator<T extends {}> {
+  key: keyof T;
+  validate: (value: unknown) => boolean | Promise<boolean>;
+  error: string;
+}
