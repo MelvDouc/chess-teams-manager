@@ -3,7 +3,7 @@ import { Session } from "oak_sessions";
 export namespace DbEntities {
   export interface Player {
     ffeId: string;
-    fideId: number;
+    fideId: number | null;
     email: string;
     firstName: string;
     lastName: string;

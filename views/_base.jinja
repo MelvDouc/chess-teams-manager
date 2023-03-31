@@ -19,13 +19,19 @@
           <li>
             <a href="/accueil">Accueil</a>
           </li>
+          <li>
+            <a href="/matchs">Matchs</a>
+          </li>
+          <li>
+            <a href="/joueurs">Joueurs</a>
+          </li>
         </ul>
       </nav>
     </section>
   </header>
   <main>
     {% if flashSuccess %}
-      <div class="flash-success">{{ flashSucess }}</div>
+      <div class="flash-success">{{ flashSuccess }}</div>
     {% endif %}
     {% if flashErrors %}
       <ul class="flash-errors">
@@ -36,5 +42,7 @@
     {% endif %}
     {% block main %}{% endblock %}
   </main>
+
+  {% block javascripts %}{% endblock %}
 </body>
 </html>

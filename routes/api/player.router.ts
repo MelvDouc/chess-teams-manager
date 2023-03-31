@@ -1,78 +1,113 @@
 import { Router } from "oak";
-import { default as nunjucks } from "nunjucks";
+import { render } from "/services/template.service.ts";
 import playerModel from "/models/player.model.ts";
 import { AppState, DbEntities } from "/types.ts";
+import flashService from "/services/flash.service.ts";
 
 const playerRouter = new Router<AppState>({ prefix: "/joueurs" });
 
-playerRouter
-  .get("/nouveau", ({ response, state }) => {
-    response.body = nunjucks.render("player/create-player.jinja", {
-      player: state.session.get("player"),
-      flashErrors: state.session.get("flashErrors")
-    });
-  })
-  .post("/nouveau", playerModel.createValidationMiddleware, async ({ response, state }) => {
-    const errors = state.session.get("formErrors");
-    const playerData = state.session.get("formData") as DbEntities.Player;
-
-    if (errors) {
-      state.session.flash("player", playerData);
-      state.session.flash("flashErrors", errors);
-      return response.redirect("/joueurs/nouveau");
-    }
-
-    const insertedId = await playerModel.createPlayer(playerData);
-    response.redirect("/joueurs");
-  });
-
-playerRouter.get("/:ffeId", async ({ response, params }) => {
-  const player = await playerModel.getPlayer(params.ffeId);
-
-  response.body = nunjucks.render("player/player.jinja", {
-    title: (player) ? `${player.firstName} ${player.lastName}` : "Joueur non trouvé",
-    player
-  });
-});
-
 playerRouter.get("/", async ({ response }) => {
-  response.body = nunjucks.render("player/players.jinja", {
+
+  response.body = render("player/players.jinja", {
     players: await playerModel.getPlayers()
   });
 });
 
 playerRouter
-  .get("/:ffeId/modifier", async ({ request, response, params, state }) => {
-    const player = state.session.get("player") as DbEntities.Player | undefined ?? await playerModel.getPlayer(params.ffeId);
-
-    response.body = nunjucks.render("player/update-player.jinja", {
-      title: (player) ? `Modifier ${player.firstName} ${player.lastName}` : "Joueur non trouvé",
-      action: request.url.pathname,
-      flashErrors: state.session.get("flashErrors"),
-      player
+  .get("/nouveau", ({ response }) => {
+    response.body = render("player/create-player.jinja", {
+      player: flashService.temp?.player
     });
   })
-  .post("/:ffeId/modifier", playerModel.updateValidationMiddleware, async ({ request, response, params, state }) => {
-    const errors = state.session.get("formErrors");
-    const playerData = state.session.get("formData") as DbEntities.Player;
+  .post("/nouveau", async ({ request, response }) => {
+    const formData = await request.body().value as URLSearchParams;
+    const player = playerModel.extractData(formData);
+    const errors: string[] = [];
 
-    if (errors) {
-      state.session.flash("player", playerData);
-      state.session.flash("flashErrors", errors);
-      return response.redirect(request.url);
+    if (player.ffeId === null)
+      errors.push("N° FFE requis.");
+    else if (!/^[A-Z]\d+$/.test(player.ffeId))
+      errors.push("N° FFE invalide.");
+    else if (await playerModel.getPlayer({ ffeId: player.ffeId }))
+      errors.push("Il existe déjà un joueur avec ce n° FFE.");
+    if (typeof player.fideId === "number" && isNaN(player.fideId)) {
+      console.log({ fideId: player.ffeId });
+      errors.push("N° FIDE invalide.");
+    }
+    if (player.fideId !== null && (await playerModel.getPlayer({ fideId: player.fideId })))
+      errors.push("Il existe déjà un joueur avec ce n° FIDE.");
+    if (!player.firstName)
+      errors.push("Prénom requis.");
+    if (!player.lastName)
+      errors.push("Nom de famille requis.");
+    if (!player.email)
+      errors.push("Adresse email requise.");
+    else if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(player.email))
+      errors.push("Email invalide.");
+    if (isNaN(player.rating as number) || (player.rating as number) < 0)
+      errors.push("Le classement Elo doit être supérieur ou égal à 0.");
+
+    if (errors.length) {
+      flashService.errors = errors;
+      flashService.temp = { player };
+      return response.redirect("/joueurs/nouveau");
     }
 
-    const updates = await playerModel.updatePlayer(params.ffeId, playerData);
+    await playerModel.createPlayer(player as DbEntities.Player);
+    flashService.success = "Le joueur a bien été créé.";
     response.redirect("/joueurs");
   });
 
-playerRouter.post("/:ffeId/supprimer", async ({ params, state, response }) => {
+playerRouter
+  .get("/:ffeId/modifier", async ({ request, response, params }) => {
+    const player = flashService.temp?.player ?? await playerModel.getPlayer({ ffeId: params.ffeId });
+
+    response.body = render("player/update-player.jinja", {
+      title: (player) ? `Modifier ${player.firstName} ${player.lastName}` : "Joueur non trouvé",
+      action: request.url.pathname,
+      player
+    });
+  })
+  .post("/:ffeId/modifier", async ({ request, response, params }) => {
+    const formData = await request.body().value as URLSearchParams;
+    const player = playerModel.extractData(formData);
+    const errors: string[] = [];
+
+    if (player.ffeId === null)
+      errors.push("N° FFE requis.");
+    else if (!/^[A-Z]\d+$/.test(player.ffeId))
+      errors.push("N° FFE invalide.");
+    if (typeof player.fideId === "number" && isNaN(player.fideId))
+      errors.push("N° FIDE invalide.");
+    if (!player.firstName)
+      errors.push("Prénom requis.");
+    if (!player.lastName)
+      errors.push("Nom de famille requis.");
+    if (!player.email)
+      errors.push("Adresse email requise.");
+    else if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(player.email))
+      errors.push("Email invalide.");
+    if (isNaN(player.rating as number) || (player.rating as number) < 0)
+      errors.push("Le classement Elo doit être supérieur ou égal à 0.");
+
+    if (errors.length) {
+      flashService.errors = errors;
+      flashService.temp = { player: { ...player, ffeId: params.ffeId } };
+      return response.redirect(request.url);
+    }
+
+    await playerModel.updatePlayer(params.ffeId, player as DbEntities.Player);
+    flashService.success = "Le joueur a bien été modifié.";
+    response.redirect("/joueurs");
+  });
+
+playerRouter.post("/:ffeId/supprimer", async ({ params, response }) => {
   const deleteResult = await playerModel.deletePlayer(params.ffeId);
 
   if (!deleteResult)
-    state.session.flash("flashErrors", ["Le joueur n'a pas pu être supprimé."]);
+    flashService.errors = ["Le joueur n'a pas pu être supprimé."];
   else
-    state.session.flash("flashSuccess", "Le joueur a bien été supprimé.");
+    flashService.success = "Le joueur a bien été supprimé.";
 
   return response.redirect("/joueurs");
 });

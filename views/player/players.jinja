@@ -19,9 +19,7 @@
     <tbody>
       {% for player in players %}
         <tr>
-          <td>
-            <a href="/joueurs/{{ player.ffeId }}">{{ player.ffeId }}</a>
-          </td>
+          <td>{{ player.ffeId }}</td>
           <td>{{ player.fideId }}</td>
           <td>{{ player.lastName }}</td>
           <td>{{ player.firstName }}</td>
@@ -30,7 +28,9 @@
           <td>{{ player.rating }}</td>
           <td>
             <a href="/joueurs/{{ player.ffeId }}/modifier">Modifier</a>
-            <form action="/joueur/{{ player.ffeId }}/supprimer"><input type="submit" value="Supprimer" /></form>
+            <form class="delete-player-form" action="/joueurs/{{ player.ffeId }}/supprimer" method="post">
+              <button type="submit">Supprimer</button>
+            </form>
           </td>
         </tr>
       {% endfor %}
@@ -38,4 +38,16 @@
   </table>
 
   <p><a href="/joueurs/nouveau">Créer un joueur</a></p>
+{% endblock %}
+
+{% block javascripts %}
+  <script>
+    document.querySelectorAll(".delete-player-form").forEach((form) => {
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        if (confirm("Êtes-vous sûr(e) de vouloir supprimer ce joueur ?"))
+          form.submit();
+      });
+    });
+  </script>
 {% endblock %}
