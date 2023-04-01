@@ -1,0 +1,23 @@
+.table {
+  width: min(100%, var(--page-width));
+
+  &-row {
+    display: grid;
+    grid-template-columns: var(--rows);
+  }
+
+  &-head {
+    background-color: #222;
+    color: white;
+    font-weight: bold;
+  }
+
+  &-cell {
+    padding: 0.5em;
+  }
+
+  address {
+    font-style: normal;
+    white-space: pre-line;
+  }
+}

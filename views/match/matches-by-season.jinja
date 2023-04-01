@@ -1,0 +1,33 @@
+{% extends "_base.jinja" %}
+
+{% block title %}Matchs {{ season - 1 }}-{{ season }}{% endblock %}
+
+{% block main %}
+  {% for item in matches %}
+    <h2>{{ item.teamName }}</h2>
+    <div class="table" style="--rows: 1fr 3fr 3fr 2fr 2fr">
+      <section class="table-head">
+        <article class="table-row">
+          <div class="table-cell">Rd.</div>
+          <div class="table-cell">Adversaire</div>
+          <div class="table-cell">Adresse</div>
+          <div class="table-cell">Date</div>
+          <div class="table-cell">Composition</div>
+        </article>
+      </section>
+      <section class="table-body">
+        {% for match in item.matches %}
+          <article class="table-row">
+            <div class="table-cell">{{ match.round }}</div>
+            <div class="table-cell">{{ match.opponent }}</div>
+            <div class="table-cell">
+              <address>{{ match.address }}</address>
+            </div>
+            <div class="table-cell">{{ match.date }}</div>
+            <div class="table-cell"></div>
+          </article>
+        {% endfor %}
+      </section>
+    </div>
+  {% endfor %}
+{% endblock %}
