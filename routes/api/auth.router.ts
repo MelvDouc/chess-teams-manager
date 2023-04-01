@@ -1,7 +1,9 @@
 import { compare as comparePassword } from "bcrypt";
+import { randomBytes } from "crypto";
 import { Router } from "oak";
 import db from "/database/db.ts";
 import { preventDoubleLogin } from "/middleware/auth.middleware.ts";
+import emailService from "/services/email.service.ts";
 import flashService from "/services/flash.service.ts";
 import { render } from "/services/template.service.ts";
 import { AppState, DbEntities } from "/types.ts";
@@ -39,7 +41,7 @@ authRouter
 
 authRouter
   .get("/oubli-mot-de-passe", ({ response }) => {
-    response.body = render("password-forgotten.jinja");
+    response.body = render("auth/password-forgotten.jinja");
   })
   .post("/oubli-mot-de-passe", async ({ request, response }) => {
     const formData = await request.body().value as URLSearchParams;
@@ -51,8 +53,58 @@ authRouter
       return response.redirect(request.url);
     }
 
-    // TODO: set password reset id
-    // TODO: send email
+    const passwordResetId = randomBytes(32).toString("hex");
+    await db.users().updateOne({ email: user.email }, {
+      $set: { passwordResetId }
+    });
+    await emailService.sendEmail("password-reset", {
+      to: email,
+      subject: "Réinitialisation du mot de passe"
+    }, { link: `${Deno.env.get("BASE_URL")}/${passwordResetId}` });
+    flashService.success = `Un lien de réinitialisation de votre mot de passe vous a été envoyé à ${email}.`;
+    response.redirect("/");
+  });
+
+authRouter.param("passwordResetId", async (param, { response }, next) => {
+  const user = await db.users().findOne({ passwordResetId: param });
+
+  if (!user) {
+    flashService.errors = ["Utilisateur non trouvé."];
+    response.redirect("/");
+  }
+
+  flashService.temp = { user };
+  await next();
+});
+authRouter
+  .get("/nouveau-mot-de-passe/:passwordResetId", ({ response }) => {
+    response.body = render("auth/password-reset.jinja");
+  })
+  .post("/nouveau-mot-de-passe/:passwordResetId", async ({ request, response }) => {
+    const user = flashService.temp.user as DbEntities.User;
+    const formData = await request.body().value as URLSearchParams;
+    const password = formData.get("password"),
+      confirmPassword = formData.get("confirmPassword");
+    const errors: string[] = [];
+
+    if (!password)
+      errors.push("Nouveau mot de passe requis.");
+    if (!confirmPassword)
+      errors.push("Confirmation du nouveau mot de passe requise.");
+    if (password && confirmPassword && password !== confirmPassword)
+      errors.push("Les mots de passe ne se correspondent pas.");
+
+    if (errors.length) {
+      flashService.errors = errors;
+      return response.redirect(request.url);
+    }
+
+    await db.users().updateOne({ email: user.email }, {
+      $set: { password: password! },
+      $unset: { passwordResetId: "" }
+    });
+    flashService.success = "Votre mot de passe a bien été mis à jour. Vous pouvez vous connecter.";
+    response.redirect("/connexion");
   });
 
 export default authRouter;

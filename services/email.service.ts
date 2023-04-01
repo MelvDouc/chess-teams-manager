@@ -1,14 +1,38 @@
-import { SmtpClient } from "smtp";
+import { SMTPClient } from "denomailer";
+import { render } from "/services/template.service.ts";
 
-const smtpClient = new SmtpClient();
-
-await smtpClient.connect({
-  hostname: "smtp.gmail.com",
-  port: 465,
-  username: Deno.env.get("ADMIN_EMAIL"),
-  password: Deno.env.get("MAILER_PASSWORD"),
+const { ADMIN_EMAIL_ADDRESS, GOOGLE_APP_PASSWORD } = Deno.env.toObject();
+const smtpClient = new SMTPClient({
+  connection: {
+    hostname: "smtp.gmail.com",
+    port: 465,
+    tls: true,
+    auth: {
+      username: ADMIN_EMAIL_ADDRESS,
+      password: GOOGLE_APP_PASSWORD
+    }
+  }
 });
 
-const sendEmail = smtpClient.send.bind(smtpClient);
+const sendEmail = (
+  template: string,
+  { to, subject }: {
+    to: string;
+    subject: string;
+  },
+  ctx: Exclude<Parameters<typeof render>[1], undefined>
+) => {
+  const content = render(`emails/${template}.jinja`, ctx);
 
-export { sendEmail };
+  return smtpClient.send({
+    from: ADMIN_EMAIL_ADDRESS,
+    to,
+    subject,
+    content,
+    html: content
+  });
+};
+
+export default {
+  sendEmail
+};

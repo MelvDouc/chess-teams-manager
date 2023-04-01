@@ -7,12 +7,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="/public/css/style.css" />
   <script src="/public/js/main.js" type="module"></script>
-  <title>{% block title %}{% endblock %} | &Eacute;quipes</title>
+  <title>{% block title %}{% endblock %} | Équipes</title>
 </head>
 
 <body>
   <header>
-    <section class="header-left"></section>
+    <section class="header-left">
+      <h1>Thonville Échecs — Équipes</h1>
+    </section>
     <section class="header-right">
       <nav>
         <ul>
@@ -32,6 +34,9 @@
   <main>
     {% if flashSuccess %}
       <div class="flash-success">{{ flashSuccess }}</div>
+    {% endif %}
+    {% if flashInfo %}
+      <div class="flash-info">{{ flashInfo }}</div>
     {% endif %}
     {% if flashErrors %}
       <ul class="flash-errors">

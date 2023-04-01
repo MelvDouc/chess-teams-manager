@@ -30,4 +30,4 @@ app.addEventListener("listen", ({ hostname, secure, port }) => {
   );
 });
 
-await app.listen({ port: 8080 });
+await app.listen({ port: Number(Deno.env.get("PORT")) });

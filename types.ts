@@ -1,5 +1,9 @@
 import { Session } from "oak_sessions";
 
+export type Nullable<T> = {
+  [K in keyof T]: T[K] | null;
+};
+
 export namespace DbEntities {
   export interface Player {
     ffeId: string;
