@@ -1,11 +1,13 @@
 import { compare as comparePassword } from "bcrypt";
 import { randomBytes } from "crypto";
 import { Router } from "oak";
+import config from "/config/config.ts";
 import db from "/database/db.ts";
 import { preventDoubleLogin } from "/middleware/auth.middleware.ts";
+import { genSalt, hash } from "bcrypt";
 import emailService from "/services/email.service.ts";
 import flashService from "/services/flash.service.ts";
-import { render } from "/services/template.service.ts";
+import { render, addGlobal } from "/services/template.service.ts";
 import { AppState, DbEntities } from "/types.ts";
 
 const authRouter = new Router<AppState>();
@@ -14,7 +16,7 @@ authRouter
   .get("/connexion", preventDoubleLogin, ({ response }) => {
     response.body = render("auth/login.jinja");
   })
-  .post("/connexion", async ({ state, request, response }) => {
+  .post("/connexion", preventDoubleLogin, async ({ state, request, response }) => {
     const formData = await request.body().value as URLSearchParams;
     const email = formData.get("email");
     const password = formData.get("password");
@@ -24,7 +26,7 @@ authRouter
       return response.redirect("/connexion");
     }
 
-    const user = await db.users().findOne({ email, password });
+    const user = await db.users().findOne({ email });
 
     if (!user || !(await comparePassword(password, user.password))) {
       flashService.errors = ["Identifiants invalides."];
@@ -35,15 +37,16 @@ authRouter
       email,
       role: user.role
     });
+    addGlobal("user", state.session.get("user"));
     flashService.success = "Vous êtes désormais connecté(e).";
     response.redirect("/");
   });
 
 authRouter
-  .get("/oubli-mot-de-passe", ({ response }) => {
+  .get("/oubli-mot-de-passe", preventDoubleLogin, ({ response }) => {
     response.body = render("auth/password-forgotten.jinja");
   })
-  .post("/oubli-mot-de-passe", async ({ request, response }) => {
+  .post("/oubli-mot-de-passe", preventDoubleLogin, async ({ request, response }) => {
     const formData = await request.body().value as URLSearchParams;
     const email = formData.get("email");
     let user: DbEntities.User | null | undefined;
@@ -60,7 +63,7 @@ authRouter
     await emailService.sendEmail("password-reset", {
       to: email,
       subject: "Réinitialisation du mot de passe"
-    }, { link: `${Deno.env.get("BASE_URL")}/${passwordResetId}` });
+    }, { link: `${config.CLIENT_URL}/nouveau-mot-de-passe/${passwordResetId}` });
     flashService.success = `Un lien de réinitialisation de votre mot de passe vous a été envoyé à ${email}.`;
     response.redirect("/");
   });
@@ -77,10 +80,12 @@ authRouter.param("passwordResetId", async (param, { response }, next) => {
   await next();
 });
 authRouter
-  .get("/nouveau-mot-de-passe/:passwordResetId", ({ response }) => {
-    response.body = render("auth/password-reset.jinja");
+  .get("/nouveau-mot-de-passe/:passwordResetId", preventDoubleLogin, ({ response, params }) => {
+    response.body = render("auth/password-reset.jinja", {
+      passwordResetId: params.passwordResetId
+    });
   })
-  .post("/nouveau-mot-de-passe/:passwordResetId", async ({ request, response }) => {
+  .post("/nouveau-mot-de-passe/:passwordResetId", preventDoubleLogin, async ({ request, response }) => {
     const user = flashService.temp.user as DbEntities.User;
     const formData = await request.body().value as URLSearchParams;
     const password = formData.get("password"),
@@ -99,12 +104,21 @@ authRouter
       return response.redirect(request.url);
     }
 
+    const salt = await genSalt(10);
+    const hashedPassword = await hash(password!, salt);
     await db.users().updateOne({ email: user.email }, {
-      $set: { password: password! },
+      $set: { password: hashedPassword },
       $unset: { passwordResetId: "" }
     });
     flashService.success = "Votre mot de passe a bien été mis à jour. Vous pouvez vous connecter.";
     response.redirect("/connexion");
   });
+
+authRouter.post("/deconnexion", async ({ response, state }) => {
+  state.session.set("user", null);
+  addGlobal("user", null);
+  flashService.success = "Vous avez bien été déconnecté(e).";
+  response.redirect("/connexion");
+});
 
 export default authRouter;

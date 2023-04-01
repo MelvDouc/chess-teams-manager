@@ -1,7 +1,7 @@
 import { default as nunjucks } from "nunjucks";
 import flashService from "/services/flash.service.ts";
 
-nunjucks.configure(`${Deno.cwd()}/views`, {
+const nunjucksEnv = nunjucks.configure(`${Deno.cwd()}/views`, {
   autoescape: true,
   noCache: false,
   trimBlocks: true
@@ -15,3 +15,8 @@ export function render(template: string, ctx: Record<string, unknown> = {}) {
     flashErrors: flashService.errors,
   });
 }
+
+/**
+ * Set value to `null` to unset.
+ */
+export const addGlobal = nunjucksEnv.addGlobal.bind(nunjucksEnv);

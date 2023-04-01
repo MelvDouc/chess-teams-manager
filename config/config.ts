@@ -1,4 +1,4 @@
-import "dotenv";
+import "https://deno.land/std@0.181.0/dotenv/load.ts";
 
 const config = Deno.env.toObject() as Readonly<{
   ADMIN_EMAIL_ADDRESS: string;

@@ -3,14 +3,15 @@ import { render } from "/services/template.service.ts";
 import playerModel from "/models/player.model.ts";
 import { AppState, DbEntities } from "/types.ts";
 import flashService from "/services/flash.service.ts";
+import { redirectToLogin } from "/middleware/auth.middleware.ts";
 
 const playerRouter = new Router<AppState>({ prefix: "/joueurs" });
 
-playerRouter.get("/", async ({ response }) => {
+playerRouter.use(redirectToLogin);
 
-  response.body = render("player/players.jinja", {
-    players: await playerModel.getPlayers()
-  });
+playerRouter.get("/", async ({ response }) => {
+  const players = await playerModel.getPlayers();
+  response.body = render("player/players.jinja", { players });
 });
 
 playerRouter

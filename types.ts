@@ -28,7 +28,7 @@ export namespace DbEntities {
 
   export interface User {
     email: string;
-    role: number;
+    role: "ADMIN" | "CAPTAIN" | "USER";
     password: string;
     passwordResetId?: string;
   }

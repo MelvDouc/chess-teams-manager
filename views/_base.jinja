@@ -5,6 +5,7 @@
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="shortcut icon" href="http://thionville-echecs.fr/wp-content/uploads/2022/05/cropped-logo-blanc2x-192x192.png" />
   <link rel="stylesheet" href="/public/css/style.css" />
   <script src="/public/js/main.js" type="module"></script>
   <title>{% block title %}{% endblock %} | Équipes</title>
@@ -12,34 +13,17 @@
 
 <body>
   <header>
-    <section class="header-left">
-      <h1>Thonville Échecs — Équipes</h1>
-    </section>
-    <section class="header-right">
-      <nav>
-        <ul>
-          <li>
-            <a href="/accueil">Accueil</a>
-          </li>
-          <li>
-            <a href="/matchs">Matchs</a>
-          </li>
-          <li>
-            <a href="/joueurs">Joueurs</a>
-          </li>
-        </ul>
-      </nav>
-    </section>
+    {% include ".inc/header.inc.jinja" %}
   </header>
   <main>
     {% if flashSuccess %}
-      <div class="flash-success">{{ flashSuccess }}</div>
+      <div class="flash flash-success">{{ flashSuccess }}</div>
     {% endif %}
     {% if flashInfo %}
-      <div class="flash-info">{{ flashInfo }}</div>
+      <div class="flash flash-info">{{ flashInfo }}</div>
     {% endif %}
     {% if flashErrors %}
-      <ul class="flash-errors">
+      <ul class="flash flash-errors">
         {% for error in flashErrors %}
           <li>{{ error }}</li>
         {% endfor %}
