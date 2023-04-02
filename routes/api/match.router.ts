@@ -13,17 +13,24 @@ matchRouter.get("/", async ({ response }) => {
 
 matchRouter.get("/:season", async ({ params, response }) => {
   const season = +params.season;
-  const dateFormatter = new Intl.DateTimeFormat("fr-FR", {
-    dateStyle: "short",
-    timeStyle: "short"
-  });
   const matches = await matchModel.getMatchesOfSeason(season);
-  matches.forEach(({ matches }) => {
-    matches.forEach((match) => (match.date as any) = dateFormatter.format(new Date(match.date)));
-  });
   response.body = render("match/matches-by-season.jinja", {
     season,
     matches
+  });
+});
+
+matchRouter.get("/:season/:teamName/composition", async ({ request, response, params }) => {
+  const season = +params.season;
+  const { teamName } = params;
+  const round = Number(request.url.searchParams.get("ronde"));
+  const match = (await matchModel.getMatch({ season, round, teamName }))!;
+  const lineUp = await matchModel.getLineUp(match);
+  response.body = render("match/line-up.jinja", {
+    season,
+    teamName,
+    round,
+    lineUp
   });
 });
 

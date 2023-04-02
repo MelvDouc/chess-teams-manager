@@ -24,7 +24,9 @@
               <address>{{ match.address }}</address>
             </div>
             <div class="table-cell">{{ match.date }}</div>
-            <div class="table-cell"></div>
+            <div class="table-cell">
+              <a href="/matchs/{{ season }}/{{ item.teamName }}/composition?ronde={{ match.round }}">Voir</a>
+            </div>
           </article>
         {% endfor %}
       </section>

@@ -1,0 +1,26 @@
+{% extends "_base.jinja" %}
+
+{% block title %}{{ season }} — ronde {{ round }} — {{ teamName }} — Composition{% endblock %}
+
+{% block main %}
+  <div class="table" style="--rows: 1fr 4fr 3fr 2fr">
+    <section class="table-head">
+      <article class="table-row">
+        <div class="table-cell">Éch.</div>
+        <div class="table-cell">NOM Prénom</div>
+        <div class="table-cell">N° FFE</div>
+        <div class="table-cell">Elo</div>
+      </article>
+    </section>
+    <section class="table-body">
+      {% for item in lineUp %}
+        <article class="table-row">
+          <div class="table-cell">{{ item.board }}{{ item.color }}</div>
+          <div class="table-cell">{{ item.player.lastName }} {{ item.player.firstName }}</div>
+          <div class="table-cell">{{ item.player.ffeId }}</div>
+          <div class="table-cell">{{ item.player.rating }}</div>
+        </article>
+      {% endfor %}
+    </section>
+  </div>
+{% endblock %}
