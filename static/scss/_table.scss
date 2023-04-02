@@ -1,5 +1,6 @@
 .table {
-  width: min(100%, var(--page-width));
+  width: max-content;
+  min-width: var(--page-width);
 
   &-row {
     display: grid;
@@ -10,6 +11,10 @@
     background-color: #222;
     color: white;
     font-weight: bold;
+
+    .table-cell {
+      text-align: center;
+    }
   }
 
   &-body {
@@ -23,6 +28,15 @@
 
   &-cell {
     padding: 0.5em;
+    overflow-y: auto;
+
+    &.table-cell-actions {
+      display: flex;
+      flex-flow: row wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5em;
+    }
   }
 
   address {

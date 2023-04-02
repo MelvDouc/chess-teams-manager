@@ -8,6 +8,7 @@
   <link rel="shortcut icon" href="http://thionville-echecs.fr/wp-content/uploads/2022/05/cropped-logo-blanc2x-192x192.png" />
   <link rel="stylesheet" href="/public/css/style.css" />
   <script src="/public/js/main.js" type="module"></script>
+  {% block javascripts %}{% endblock %}
   <title>{% block title %}{% endblock %} | Équipes</title>
 </head>
 
@@ -31,7 +32,5 @@
     {% endif %}
     {% block main %}{% endblock %}
   </main>
-
-  {% block javascripts %}{% endblock %}
 </body>
 </html>

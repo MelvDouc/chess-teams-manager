@@ -1,9 +1,12 @@
 import { Router } from "oak";
-import { render } from "/services/template.service.ts";
 import matchModel from "/models/match.model.ts";
+import { render } from "/services/template.service.ts";
+import { redirectToLogin } from "/middleware/auth.middleware.ts";
 import { AppState, DbEntities } from "/types.ts";
 
 const matchRouter = new Router<AppState>({ prefix: "/matchs" });
+
+matchRouter.use(redirectToLogin);
 
 matchRouter.get("/", async ({ response }) => {
   response.body = render("match/seasons.jinja", {

@@ -3,51 +3,43 @@
 {% block title %}Joueurs{% endblock %}
 
 {% block main %}
-  <table>
-    <thead>
-      <tr>
-        <th>N° FFE</th>
-        <th>N° FIDE</th>
-        <th>NOM</th>
-        <th>Prénom</th>
-        <th>Email</th>
-        <th>Tél</th>
-        <th>Elo</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
+  <div class="table" style="--rows: 3fr 4fr 4fr 4fr 7fr 4fr 2fr 5fr">
+    <section class="table-head">
+      <article class="table-row">
+        <div class="table-cell">N° FFE</div>
+        <div class="table-cell">N° FIDE</div>
+        <div class="table-cell">NOM</div>
+        <div class="table-cell">Prénom</div>
+        <div class="table-cell">Email</div>
+        <div class="table-cell">Tél</div>
+        <div class="table-cell">Elo</div>
+        <div class="table-cell">Actions</div>
+      </article>
+    </section>
+    <section class="table-body">
       {% for player in players %}
-        <tr>
-          <td>{{ player.ffeId }}</td>
-          <td>{{ player.fideId }}</td>
-          <td>{{ player.lastName }}</td>
-          <td>{{ player.firstName }}</td>
-          <td>{{ player.email }}</td>
-          <td>{{ player.phone }}</td>
-          <td>{{ player.rating }}</td>
-          <td>
+        <article class="table-row">
+          <div class="table-cell">{{ player.ffeId }}</div>
+          <div class="table-cell">{{ player.fideId }}</div>
+          <div class="table-cell">{{ player.lastName }}</div>
+          <div class="table-cell">{{ player.firstName }}</div>
+          <div class="table-cell">{{ player.email }}</div>
+          <div class="table-cell">{{ player.phone }}</div>
+          <div class="table-cell">{{ player.rating }}</div>
+          <div class="table-cell table-cell-actions">
             <a href="/joueurs/{{ player.ffeId }}/modifier">Modifier</a>
             <form class="delete-player-form" action="/joueurs/{{ player.ffeId }}/supprimer" method="post">
               <button type="submit">Supprimer</button>
             </form>
-          </td>
-        </tr>
+          </div>
+        </article>
       {% endfor %}
-    </tbody>
-  </table>
+    </section>
+  </div>
 
   <p><a href="/joueurs/nouveau">Créer un joueur</a></p>
 {% endblock %}
 
 {% block javascripts %}
-  <script>
-    document.querySelectorAll(".delete-player-form").forEach((form) => {
-      form.addEventListener("submit", (e) => {
-        e.preventDefault();
-        if (confirm("Êtes-vous sûr(e) de vouloir supprimer ce joueur ?"))
-          form.submit();
-      });
-    });
-  </script>
+  <script src="/public/js/delete-player-form.js" defer></script>
 {% endblock %}

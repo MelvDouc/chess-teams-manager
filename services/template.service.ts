@@ -1,9 +1,10 @@
 import { default as nunjucks } from "nunjucks";
 import flashService from "/services/flash.service.ts";
+import config from "/config/config.ts";
 
 const nunjucksEnv = nunjucks.configure(`${Deno.cwd()}/views`, {
   autoescape: true,
-  noCache: false,
+  noCache: config.DENO_ENV === "development",
   trimBlocks: true
 });
 

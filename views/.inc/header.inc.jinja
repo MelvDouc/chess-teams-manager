@@ -2,17 +2,21 @@
   <h1>Thonville Échecs — Équipes</h1>
 </section>
 <section class="header-right">
-  <nav>
-    <ul>
-      <li>
-        <a href="/accueil">Accueil</a>
-      </li>
-      <li>
-        <a href="/matchs">Matchs</a>
-      </li>
-      <li>
-        <a href="/joueurs">Joueurs</a>
-      </li>
-    </ul>
-  </nav>
+    <nav>
+      {% if user %}
+        <ul>
+          <li>
+            <a href="/accueil">Accueil</a>
+          </li>
+          <li>
+            <a href="/matchs">Matchs</a>
+          </li>
+          {% if user.role == "ADMIN" %}
+            <li>
+              <a href="/joueurs">Joueurs</a>
+            </li>
+          {% endif %}
+        </ul>
+      {% endif %}
+    </nav>
 </section>
