@@ -3,9 +3,9 @@ import Router from "@routing/Router.js";
 import RouterOutlet from "@routing/RouterOutlet.jsx";
 
 export default function App() {
-  window.onpopstate = () => Router.updateUrl(location.pathname + location.search);
+  window.onpopstate = () => Router.updateUrl(location.pathname);
   Router.onUrlChange(({ getParams, getTitle }) => {
-    const title = getTitle(getParams ? getParams(location.pathname + location.search) : undefined);
+    const title = getTitle(getParams ? getParams(location.pathname) : undefined);
     document.title = `${title} | Thionville Échecs — Équipes`;
   });
 
@@ -19,7 +19,7 @@ export default function App() {
           </main>
         </>
       );
-      Router.updateUrl(location.pathname + location.search);
+      Router.updateUrl(location.pathname);
     }
   };
 }

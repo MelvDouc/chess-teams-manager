@@ -6,7 +6,6 @@ const config = Deno.env.toObject() as Readonly<{
   ADMIN_EMAIL_APP_PASSWORD: string;
   ADMIN_EMAIL_HOST: string;
   ADMIN_EMAIL_PORT: string;
-  CLIENT_URL: string;
   MONGODB_URI: string;
   PORT: string;
 }>;

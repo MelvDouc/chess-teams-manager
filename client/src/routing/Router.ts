@@ -1,4 +1,5 @@
 import HomePage from "@pages/HomePage.js";
+import PlayersPage from "@pages/PlayersPage.js";
 import { Route } from "@types";
 
 class Router {
@@ -15,9 +16,9 @@ class Router {
   }
 
   public updateUrl(url: string): void {
-    for (const [key, value] of this.routes) {
+    for (const [key, route] of this.routes) {
       if (typeof key === "string" && key === url || key instanceof RegExp && key.test(url)) {
-        this.notify(value);
+        this.notify(route);
         return;
       }
     }
@@ -35,12 +36,19 @@ class Router {
 }
 
 const router = new Router();
+const homeRoute = {
+  preCheck: () => Promise.resolve(true),
+  getTitle: () => "Accueil",
+  component: HomePage
+};
 
 router
-  .addRoute(/^\/(accueil)?/, {
+  .addRoute("/", homeRoute)
+  .addRoute("/accueil", homeRoute)
+  .addRoute("/joueurs", {
     preCheck: () => Promise.resolve(true),
-    getTitle: () => "Accueil",
-    component: HomePage
+    getTitle: () => "Joueurs",
+    component: PlayersPage
   });
 
 export default router;

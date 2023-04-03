@@ -1,3 +1,4 @@
+import { oakCors } from "cors";
 import { Application } from "oak";
 import { Session } from "oak_sessions";
 import config from "/config/config.ts";
@@ -9,6 +10,9 @@ const app = new Application<AppState>();
 
 app.use(Session.initMiddleware());
 app.use(staticMiddleware);
+app.use(oakCors({
+  origin: (config.DENO_ENV === "development") ? /^http:\/{2}localhost:5173*$/ : "?"
+}));
 app.use(router.routes(), router.allowedMethods());
 
 app.addEventListener("listen", ({ hostname, secure, port }) => {
