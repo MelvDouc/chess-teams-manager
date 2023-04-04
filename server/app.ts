@@ -11,7 +11,7 @@ const app = new Application<AppState>();
 app.use(Session.initMiddleware());
 app.use(staticMiddleware);
 app.use(oakCors({
-  origin: (config.DENO_ENV === "development") ? /^http:\/{2}localhost:5173*$/ : "?"
+  origin: config.CLIENT_URL
 }));
 app.use(router.routes(), router.allowedMethods());
 

@@ -1,5 +1,5 @@
 import db from "/database/db.ts";
-import { DbEntities } from "/types.ts";
+import { DbEntities, LineUp } from "/types.ts";
 
 const dateFormatter = new Intl.DateTimeFormat("fr-FR", {
   dateStyle: "short",
@@ -45,7 +45,7 @@ const getLineUp = async ({ playerFfeIds, whiteOnOdds }: DbEntities.Match) => {
       color: ((boardNo % 2 === 1) === whiteOnOdds) ? "B" : "N",
       player: (boardNo in playerFfeIds) ? players.find(p => p.ffeId === playerFfeIds[boardNo])! : null
     };
-  });
+  }) as LineUp;
 };
 
 export default {

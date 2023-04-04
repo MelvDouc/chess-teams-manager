@@ -34,6 +34,12 @@ export namespace DbEntities {
   }
 }
 
+export type LineUp = {
+  board: number;
+  color: "B" | "N";
+  player: DbEntities.Player | null | undefined;
+}[];
+
 export type AppState = {
   session: Session;
 };

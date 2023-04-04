@@ -1,4 +1,7 @@
 import HomePage from "@pages/HomePage.js";
+import MatchesPage from "@pages/MatchesPage.jsx";
+import MatchLineUp from "@pages/MatchLineUp.jsx";
+import MatchSeasonsPage from "@pages/MatchSeasonsPage.js";
 import PlayersPage from "@pages/PlayersPage.js";
 import { Route } from "@types";
 
@@ -49,6 +52,37 @@ router
     preCheck: () => Promise.resolve(true),
     getTitle: () => "Joueurs",
     component: PlayersPage
+  })
+  .addRoute("/matchs", {
+    preCheck: () => Promise.resolve(true),
+    getTitle: () => "Matchs",
+    component: MatchSeasonsPage
+  })
+  .addRoute(/^\/matchs\/\d+$/, {
+    preCheck: () => Promise.resolve(true),
+    getParams: (pathname) => {
+      const season = pathname.split("/").at(-1);
+      return { season: Number(season) };
+    },
+    getTitle: ({ season }: { season: number; }) => `Match ${season - 1}-${season}`,
+    component: MatchesPage
+  })
+  .addRoute(/^\/matchs\/\d+\/[^\/]+\/composition/, {
+    preCheck: () => Promise.resolve(true),
+    getParams: (pathname) => {
+      const { season, teamName } = pathname.match(/^\/matchs\/(?<season>\d+)\/(?<teamName>[^\/]+)\/composition/)?.groups ?? {};
+      return {
+        season: Number(season),
+        teamName: teamName ?? "",
+        round: Number(new URLSearchParams(location.search).get("ronde"))
+      };
+    },
+    getTitle: ({ season, teamName, round }: {
+      season: number;
+      teamName: string;
+      round: number;
+    }) => `${teamName} - Ronde ${round} - ${season}`,
+    component: MatchLineUp
   });
 
 export default router;

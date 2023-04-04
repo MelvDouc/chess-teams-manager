@@ -31,10 +31,8 @@ playerRouter.post("/nouveau", async ({ request, response }) => {
     errors.push("N° FFE invalide.");
   else if (await playerModel.getPlayer({ ffeId: player.ffeId }))
     errors.push("Il existe déjà un joueur avec ce n° FFE.");
-  if (typeof player.fideId === "number" && isNaN(player.fideId)) {
-    console.log({ fideId: player.ffeId });
+  if (typeof player.fideId === "number" && isNaN(player.fideId))
     errors.push("N° FIDE invalide.");
-  }
   if (player.fideId !== null && (await playerModel.getPlayer({ fideId: player.fideId })))
     errors.push("Il existe déjà un joueur avec ce n° FIDE.");
   if (!player.firstName)
