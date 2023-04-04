@@ -12,4 +12,5 @@ const collections = {
   users: () => mainDb.collection<DbEntities.User>("users")
 };
 
+
 export default collections;

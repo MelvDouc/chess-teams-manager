@@ -1,5 +1,5 @@
 import db from "/database/db.ts";
-import { DbEntities, LineUp } from "/types.ts";
+import { DbEntities } from "/types.ts";
 
 const dateFormatter = new Intl.DateTimeFormat("fr-FR", {
   dateStyle: "short",
@@ -36,16 +36,29 @@ const getMatchesOfSeason = (season: number) => db.matches()
     matches: matches.map(({ date, ...others }) => ({ ...others, date: dateFormatter.format(date) }))
   }));
 
-const getLineUp = async ({ playerFfeIds, whiteOnOdds }: DbEntities.Match) => {
-  const players = await db.players().find({ ffeId: { $in: Object.values(playerFfeIds) } }).toArray();
+const getLineUp = async ({ season, round, teamName }: { season: number; round: number; teamName: string; }) => {
+  const match = await getMatch({ season, round, teamName });
+
+  if (!match) {
+    return Array.from({ length: 8 }, (_, i) => {
+      const board = i + 1;
+      return { board, color: "", player: null };
+    });
+  }
+
+  const ffeIds = match.lineUp.map(element => element.ffeId);
+  const players = await db.players().find({ ffeId: { $in: ffeIds } }).toArray();
+
   return Array.from({ length: 8 }, (_, i) => {
-    const boardNo = i + 1;
+    const board = i + 1;
+    const ffeIdIndex = match.lineUp.findIndex(element => element.board === board);
+
     return {
-      board: boardNo,
-      color: ((boardNo % 2 === 1) === whiteOnOdds) ? "B" : "N",
-      player: (boardNo in playerFfeIds) ? players.find(p => p.ffeId === playerFfeIds[boardNo])! : null
+      board,
+      color: ((board % 2 === 1) === match.whiteOnOdds) ? "B" : "N",
+      player: (ffeIdIndex === -1) ? null : players.find(p => p.ffeId === ffeIds[ffeIdIndex])!
     };
-  }) as LineUp;
+  });
 };
 
 export default {

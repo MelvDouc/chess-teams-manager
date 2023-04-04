@@ -4,10 +4,10 @@ import { matches } from "@utils/api.js";
 export default async function MatchesPage({ season }: {
   season: number;
 }) {
-  const matchesByTeamName = (await matches.byTeamName(season)) ?? [];
+  const matchesByTeamName = await matches.byTeamName(season);
 
   return <>
-    {matchesByTeamName.map(({ teamName, matches }) => (
+    {(matchesByTeamName ?? []).map(({ teamName, matches }) => (
       <div>
         <h2>{teamName}</h2>
         <table>

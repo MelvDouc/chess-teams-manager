@@ -22,7 +22,10 @@ export namespace DbEntities {
     address: string;
     opponent: string;
     whiteOnOdds: boolean;
-    playerFfeIds: Record<number, Player["ffeId"]>;
+    lineUp: {
+      board: number;
+      ffeId: Player["ffeId"];
+    }[];
     date: Date;
   }
 
@@ -33,12 +36,6 @@ export namespace DbEntities {
     passwordResetId?: string;
   }
 }
-
-export type LineUp = {
-  board: number;
-  color: "B" | "N";
-  player: DbEntities.Player | null | undefined;
-}[];
 
 export type AppState = {
   session: Session;

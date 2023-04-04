@@ -2,7 +2,11 @@ import { matches } from "@utils/api.js";
 
 export default async function MatchLineUp(lineUpDetail: Parameters<typeof matches["lineUp"]>[0]) {
   const lineUp = await matches.lineUp(lineUpDetail);
-  console.log({ lineUp });
+
+  if (!lineUp)
+    return (
+      <p></p>
+    );
 
   return (
     <table>
@@ -15,15 +19,23 @@ export default async function MatchLineUp(lineUpDetail: Parameters<typeof matche
         </tr>
       </thead>
       <tbody>
-        {(lineUp!).map(({ board, color, player }) => (
-          <tr>
-            <td>{board + color}</td>
-            <td>{player ? `${player.lastName.toUpperCase() + " " + player.firstName}` : ""}</td>
-            <td>{player?.ffeId}</td>
-            <td>{player ? (player.rating ?? 1199) : ""}</td>
-          </tr>
-        ))}
+        {lineUp!.map(({ board, color, player }) => {
+          return (
+            <tr>
+              <td>{board + color}</td>
+              <td>{player ? (player.lastName + " " + player.firstName) : ""}</td>
+              <td>{player?.ffeId ?? ""}</td>
+              <td>{player?.rating ?? ""}</td>
+            </tr>
+          );
+        })}
       </tbody>
     </table>
   );
 }
+
+/*
+{(lineUp!.players).map(({ player }) => {
+          const color = (lineUp!.whiteOnOdds);
+        })}
+        */

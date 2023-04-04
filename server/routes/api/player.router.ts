@@ -1,5 +1,6 @@
 import { Router } from "oak";
 import playerModel from "/models/player.model.ts";
+import { isNonEmptyString, isValidEmail, isValidFfeId } from "/models/validators.ts";
 import { AppState, DbEntities } from "/types.ts";
 
 const playerRouter = new Router<AppState>({ prefix: "/api/v1/joueurs" });
@@ -21,85 +22,98 @@ playerRouter.get("/", async ({ response }) => {
 });
 
 playerRouter.post("/nouveau", async ({ request, response }) => {
-  const formData = await request.body().value as URLSearchParams;
-  const player = playerModel.extractData(formData);
+  const player = await request.body().value as DbEntities.Player;
+  player.fideId ??= null;
+  player.rating = Math.floor(Number(player.rating)) || 1199;
   const errors: string[] = [];
 
-  if (player.ffeId === null)
-    errors.push("N° FFE requis.");
-  else if (!/^[A-Z]\d+$/.test(player.ffeId))
+  if (!isNonEmptyString(player.ffeId) || !isValidFfeId(player.ffeId))
     errors.push("N° FFE invalide.");
   else if (await playerModel.getPlayer({ ffeId: player.ffeId }))
     errors.push("Il existe déjà un joueur avec ce n° FFE.");
-  if (typeof player.fideId === "number" && isNaN(player.fideId))
-    errors.push("N° FIDE invalide.");
-  if (player.fideId !== null && (await playerModel.getPlayer({ fideId: player.fideId })))
-    errors.push("Il existe déjà un joueur avec ce n° FIDE.");
-  if (!player.firstName)
+
+  if (typeof player.fideId === "number") {
+    if (isNaN(player.fideId))
+      errors.push("N° FIDE invalide.");
+    else if (await playerModel.getPlayer({ fideId: player.fideId }))
+      errors.push("Il existe déjà un joueur avec ce n° FIDE.");
+  }
+
+  if (!isNonEmptyString(player.firstName))
     errors.push("Prénom requis.");
-  if (!player.lastName)
+
+  if (!isNonEmptyString(player.lastName))
     errors.push("Nom de famille requis.");
-  if (!player.email)
-    errors.push("Adresse email requise.");
-  else if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(player.email))
+
+  if (!isNonEmptyString(player.email) || !isValidEmail(player.email))
     errors.push("Email invalide.");
-  if (isNaN(player.rating as number) || (player.rating as number) < 0)
+
+  if (isNaN(player.rating) || player.rating < 0)
     errors.push("Le classement Elo doit être supérieur ou égal à 0.");
 
   if (errors.length) {
     response.status = 503;
-    response.body = { errors };
+    response.body = { success: false, errors };
     return;
   }
 
-  const objectId = await playerModel.createPlayer(player as DbEntities.Player);
-  response.body = { objectId };
+  await playerModel.createPlayer(player as DbEntities.Player);
+  response.body = { success: true };
 });
 
 playerRouter.patch("/:ffeId/modifier", async ({ request, response, params }) => {
-  const formData = await request.body().value as URLSearchParams;
-  const player = playerModel.extractData(formData);
-  const errors: string[] = [];
+  const playerInDb = await playerModel.getPlayer({ ffeId: params.ffeId });
 
-  if (player.ffeId === null)
-    errors.push("N° FFE requis.");
-  else if (!/^[A-Z]\d+$/.test(player.ffeId))
-    errors.push("N° FFE invalide.");
-  if (typeof player.fideId === "number" && isNaN(player.fideId))
-    errors.push("N° FIDE invalide.");
-  if (!player.firstName)
-    errors.push("Prénom requis.");
-  if (!player.lastName)
-    errors.push("Nom de famille requis.");
-  if (!player.email)
-    errors.push("Adresse email requise.");
-  else if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(player.email))
-    errors.push("Email invalide.");
-  if (isNaN(player.rating as number) || (player.rating as number) < 0)
-    errors.push("Le classement Elo doit être supérieur ou égal à 0.");
-
-  if (errors.length) {
-    response.status = 503;
-    response.body = { errors };
+  if (!playerInDb) {
+    response.status = 404;
+    response.body = { errors: ["Joueur non trouvé."] };
     return;
   }
 
-  const updateResult = await playerModel.updatePlayer(params.ffeId, player as DbEntities.Player);
-  response.body = updateResult;
+  const updates = await request.body().value as DbEntities.Player;
+  updates.fideId ??= null;
+  updates.rating = Math.floor(Number(updates.rating)) || 1199;
+  const errors: string[] = [];
+
+  if (updates.ffeId !== playerInDb.ffeId) {
+    if (!isNonEmptyString(updates.ffeId) || !isValidFfeId(updates.ffeId))
+      errors.push("N° FFE invalide.");
+    else if (await playerModel.getPlayer({ ffeId: updates.ffeId })) {
+      errors.push("Il existe un autre joueur avec ce n° FFE.");
+    }
+  }
+
+  if (updates.fideId !== playerInDb.fideId && typeof updates.fideId === "number") {
+    if (isNaN(updates.fideId))
+      errors.push("N° FIDE invalide.");
+    else if (await playerModel.getPlayer({ fideId: updates.fideId }))
+      errors.push("Il existe un autre joueur avec ce n° FIDE.");
+  }
+
+  if (updates.email !== playerInDb.email && (!isNonEmptyString(updates.email) || !isValidEmail(updates.email)))
+    errors.push("Email invalide.");
+
+  if (!isNonEmptyString(updates.firstName))
+    errors.push("Prénom requis.");
+
+  if (!isNonEmptyString(updates.lastName))
+    errors.push("Nom de famille requis.");
+
+  if (updates.rating < 0)
+    errors.push("Le classement Elo doit être supérieur ou égal à 0.");
+
+  if (errors.length) {
+    response.body = { success: false, errors };
+    return;
+  }
+
+  const updateResult = await playerModel.updatePlayer(params.ffeId, updates as DbEntities.Player);
+  response.body = { success: true, updateResult };
 });
 
 playerRouter.delete("/:ffeId/supprimer", async ({ params, response }) => {
   const deleteResult = await playerModel.deletePlayer(params.ffeId);
-
-  if (deleteResult!) {
-    response.status = 503;
-    response.body = {
-      errors: ["Le joueur n'a pas pu être supprimé."]
-    };
-    return;
-  }
-
-  response.body = { message: "Le joueur a bien été supprimé." };
+  response.body = { success: !!deleteResult };
 });
 
 

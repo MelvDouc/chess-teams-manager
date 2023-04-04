@@ -1,4 +1,4 @@
-import { Match, LineUp, Player } from "@types";
+import { Match, Player } from "@types";
 
 async function fetchFromApi<T>(path: `/${string}`, init?: RequestInit): Promise<T | null> {
   try {
@@ -12,7 +12,25 @@ async function fetchFromApi<T>(path: `/${string}`, init?: RequestInit): Promise<
 }
 
 export const players = {
-  all: () => fetchFromApi<Player[]>("/joueurs")
+  all: () => fetchFromApi<Player[]>("/joueurs"),
+  one: (ffeId: string) => fetchFromApi<Player>(`/joueurs/${ffeId}`),
+  create: (player: Player) => fetchFromApi<{ success: boolean; errors?: string[]; }>("/joueurs/nouveau", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(player)
+  }),
+  update: (ffeId: string, updates: any) => fetchFromApi<{ success: boolean; errors?: string[]; }>(`/joueurs/${ffeId}/modifier`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(updates)
+  }),
+  delete: (ffeId: string) => fetchFromApi<{ success: boolean; errors?: string[]; }>(`/joueurs/${ffeId}/supprimer`, {
+    method: "DELETE"
+  })
 };
 
 export const matches = {
@@ -22,5 +40,9 @@ export const matches = {
     season: number;
     teamName: string;
     round: number;
-  }) => fetchFromApi<LineUp>(`/matchs/saisons/${season}/${teamName}/composition?ronde=${round}`)
+  }) => fetchFromApi<{
+    board: number;
+    color: string;
+    player: Player | null;
+  }[]>(`/matchs/saisons/${season}/${teamName}/composition?ronde=${round}`)
 };

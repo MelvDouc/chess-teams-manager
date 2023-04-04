@@ -3,6 +3,8 @@ import MatchesPage from "@pages/MatchesPage.jsx";
 import MatchLineUp from "@pages/MatchLineUp.jsx";
 import MatchSeasonsPage from "@pages/MatchSeasonsPage.js";
 import PlayersPage from "@pages/PlayersPage.js";
+import PlayerCreatePage from "@pages/PlayerCreatePage.js";
+import PlayerUpdatePage from "@pages/PlayerUpdatePage.js";
 import { Route } from "@types";
 
 class Router {
@@ -52,6 +54,20 @@ router
     preCheck: () => Promise.resolve(true),
     getTitle: () => "Joueurs",
     component: PlayersPage
+  })
+  .addRoute("/joueurs/nouveau", {
+    preCheck: () => Promise.resolve(true),
+    getTitle: () => "Ajouter un joueur",
+    component: PlayerCreatePage,
+  })
+  .addRoute(/^\/joueurs\/\w+\/modifier/, {
+    preCheck: () => Promise.resolve(true),
+    getParams: (pathname) => {
+      const ffeId = pathname.split("/")[2];
+      return { ffeId };
+    },
+    getTitle: ({ ffeId }: { ffeId: string; }) => `Modifier ${ffeId}`,
+    component: PlayerUpdatePage
   })
   .addRoute("/matchs", {
     preCheck: () => Promise.resolve(true),

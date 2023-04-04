@@ -14,21 +14,11 @@ matchRouter.get("/saisons/:season", async ({ params, response }) => {
 });
 
 matchRouter.get("/saisons/:season/:teamName/composition", async ({ request, response, params }) => {
-  const round = Number(request.url.searchParams.get("ronde"));
-  const match = await matchModel.getMatch({
+  response.body = await matchModel.getLineUp({
     season: +params.season,
-    round,
+    round: Number(request.url.searchParams.get("ronde")),
     teamName: params.teamName
   });
-  let lineUp: any;
-
-  if (!match || !(lineUp = await matchModel.getLineUp(match))) {
-    response.status = 404;
-    response.body = null;
-    return;
-  }
-
-  response.body = lineUp;
 });
 
 export default matchRouter;

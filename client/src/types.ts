@@ -22,12 +22,9 @@ export interface Match {
   address: string;
   opponent: string;
   whiteOnOdds: boolean;
-  playerFfeIds: Record<number, Player["ffeId"]>;
+  lineUp: {
+    board: number;
+    ffeId: string;
+  }[];
   date: Date;
 }
-
-export type LineUp = {
-  board: number;
-  color: string;
-  player: Player | null;
-}[];
