@@ -6,63 +6,45 @@ const dateFormatter = new Intl.DateTimeFormat("fr-FR", {
   timeStyle: "short"
 });
 
-const getMatch = (filter: Pick<DbEntities.Match, "season" | "round" | "teamName">) => {
-  return db.matches.findOne(filter);
+const getSeasons = () => db.execute(`SELECT DISTINCT season FROM league_match`);
+
+const getMatchesOfSeason = (season: number) => {
+  return db.execute(`
+    SELECT
+      t.name teamName,
+      round,
+      hc.address,
+      IF(wc.id = 1, 1, 0) whiteOnOdds,
+      opp.name opponent,
+      date
+    FROM league_match lm
+      JOIN team t ON t.id = lm.teamId
+      JOIN club hc ON hc.id = lm.homeClubId
+      JOIN club wc ON wc.id = lm.whiteClubId
+      JOIN club opp ON opp.id = lm.opponentId
+    WHERE season = ?
+      ORDER BY teamName
+  `, [season]);
 };
-const getSeasons = () => db.matches.distinct("season") as Promise<number[]>;
-const getMatchesOfSeason = (season: number) => db.matches
-  .aggregate<{ teamName: string; matches: DbEntities.Match[]; }>([
-    {
-      $match: { season }
-    },
-    {
-      $group: {
-        _id: "$teamName",
-        matches: { $push: "$$ROOT" }
-      }
-    },
-    {
-      $addFields: { teamName: "$_id" }
-    },
-    {
-      $project: { _id: 0 }
-    },
-    {
-      $sort: { teamName: 1 }
-    }
-  ])
-  .map(({ teamName, matches }) => ({
-    teamName,
-    matches: matches.map(({ date, ...others }) => ({ ...others, date: dateFormatter.format(date) }))
-  }));
 
-const getLineUp = async ({ season, round, teamName }: { season: number; round: number; teamName: string; }) => {
-  const match = await getMatch({ season, round, teamName });
-
-  if (!match) {
-    return Array.from({ length: 8 }, (_, i) => {
-      const board = i + 1;
-      return { board, color: "", player: null };
-    });
-  }
-
-  const ffeIds = match.lineUp.map(element => element.ffeId);
-  const players = await db.players.find({ ffeId: { $in: ffeIds } }).toArray();
-
-  return Array.from({ length: 8 }, (_, i) => {
-    const board = i + 1;
-    const ffeIdIndex = match.lineUp.findIndex(element => element.board === board);
-
-    return {
-      board,
-      color: ((board % 2 === 1) === match.whiteOnOdds) ? "B" : "N",
-      player: (ffeIdIndex === -1) ? null : players.find(p => p.ffeId === ffeIds[ffeIdIndex])!
-    };
-  });
+const getLineUp = async (season: number, round: number, teamId: number) => {
+  return db.execute(`
+  SELECT
+    CONCAT(board, IF(board % 2 = (lm.homeClubId = 1), "B", "N")),
+    ffeId,
+    firstName,
+    lastName
+  FROM player line_up l
+    JOIN player p ON p.ffeId = l.playerFfeId
+    JOIN league_match lm ON lm.id = l.matchId
+  WHERE season = ?
+    AND round = ?
+    AND teamId = ?
+  ORDER BY l.board
+  `, [season, round, teamId]);
 };
 
 export default {
-  getMatch,
   getSeasons,
   getMatchesOfSeason,
   getLineUp,

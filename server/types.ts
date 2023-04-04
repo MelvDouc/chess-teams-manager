@@ -12,7 +12,6 @@ export namespace DbEntities {
     firstName: string;
     lastName: string;
     phone?: string;
-    rating?: number;
   }
 
   export interface Match {

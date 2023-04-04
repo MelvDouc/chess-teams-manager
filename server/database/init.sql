@@ -1,0 +1,48 @@
+CREATE TABLE IF NOT EXISTS player (
+  ffeId VARCHAR(10) NOT NULL PRIMARY KEY,
+  fideId INT NULL,
+  email VARCHAR(50) NOT NULL,
+  firstName VARCHAR(20) NOT NULL,
+  lastName VARCHAR(20) NOT NULL,
+  phone VARCHAR(20) NULL,
+  UNIQUE (fideId)
+);
+
+CREATE TABLE IF NOT EXISTS club (
+  id INT NOT NULL PRIMARY KEY,
+  name VARCHAR(20) NOT NULL,
+  address VARCHAR(255) NOT NULL,
+  email VARCHAR(50),
+  phone VARCHAR(20)
+);
+
+CREATE TABLE IF NOT EXISTS team (
+  id INT NOT NULL PRIMARY KEY,
+  name VARCHAR(20) NOT NULL UNIQUE,
+  captainFfeId VARCHAR(10) NOT NULL,
+  playersPerMatch INT DEFAULT 8,
+  FOREIGN KEY (captainFfeId) REFERENCES player(ffeId)
+);
+
+CREATE TABLE IF NOT EXISTS leagueMatch (
+  id INT NOT NULL PRIMARY KEY,
+  season INT NOT NULL,
+  round INT NOT NULL,
+  teamId INT NOT NULL,
+  opponentId INT NOT NULL,
+  homeClubId INT NOT NULL,
+  whiteClubId INT NOT NULL,
+  date DATETIME NOT NULL,
+  FOREIGN KEY (teamId) REFERENCES team(id),
+  FOREIGN KEY (opponentId) REFERENCES club(id),
+  FOREIGN KEY (homeClubId) REFERENCES club(id),
+  FOREIGN KEY (whiteClubId) REFERENCES club(id)
+);
+
+CREATE TABLE IF NOT EXISTS lineUp (
+  playerFfeId VARCHAR(10) NOT NULL,
+  matchId INT NOT NULL,
+  board INT NOT NULL,
+  FOREIGN KEY (playerFfeId) REFERENCES player(ffeId),
+  FOREIGN KEY (matchId) REFERENCES leagueMatch(id)
+)
