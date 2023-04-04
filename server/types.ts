@@ -1,3 +1,4 @@
+import { ObjectId } from "mongo";
 import { Session } from "oak_sessions";
 
 export type Nullable<T> = {
@@ -16,6 +17,7 @@ export namespace DbEntities {
   }
 
   export interface Match {
+    _id: ObjectId;
     season: number;
     round: number;
     teamName: string;

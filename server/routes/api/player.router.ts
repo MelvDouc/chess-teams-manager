@@ -66,7 +66,7 @@ playerRouter.patch("/:ffeId/modifier", async ({ request, response, params }) => 
 
   if (!playerInDb) {
     response.status = 404;
-    response.body = { errors: ["Joueur non trouvé."] };
+    response.body = null;
     return;
   }
 
@@ -111,9 +111,11 @@ playerRouter.patch("/:ffeId/modifier", async ({ request, response, params }) => 
   response.body = { success: true, updateResult };
 });
 
-playerRouter.delete("/:ffeId/supprimer", async ({ params, response }) => {
-  const deleteResult = await playerModel.deletePlayer(params.ffeId);
-  response.body = { success: !!deleteResult };
+playerRouter.delete("/supprimer", async ({ request, response }) => {
+  const ffeId = request.headers.get("ffe_id");
+  response.body = {
+    success: !!ffeId && !!(await playerModel.deletePlayer(ffeId))
+  };
 });
 
 
