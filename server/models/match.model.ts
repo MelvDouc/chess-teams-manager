@@ -30,7 +30,7 @@ const getMatchesOfSeason = (season: number) => {
 const getLineUp = async (season: number, round: number, teamId: number) => {
   return db.execute(`
   SELECT
-    CONCAT(board, IF(board % 2 = (lm.homeClubId = 1), "B", "N")),
+    CONCAT(board, IF(board % 2 = (lm.homeClubId = 0), "B", "N")),
     ffeId,
     firstName,
     lastName
@@ -43,6 +43,7 @@ const getLineUp = async (season: number, round: number, teamId: number) => {
   ORDER BY l.board
   `, [season, round, teamId]);
 };
+
 
 export default {
   getSeasons,

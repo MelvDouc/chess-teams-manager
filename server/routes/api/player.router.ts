@@ -24,7 +24,6 @@ playerRouter.get("/", async ({ response }) => {
 playerRouter.post("/nouveau", async ({ request, response }) => {
   const player = await request.body().value as DbEntities.Player;
   player.fideId ??= null;
-  player.rating = Math.floor(Number(player.rating)) || 1199;
   const errors: string[] = [];
 
   if (!isNonEmptyString(player.ffeId) || !isValidFfeId(player.ffeId))
@@ -48,9 +47,6 @@ playerRouter.post("/nouveau", async ({ request, response }) => {
   if (!isNonEmptyString(player.email) || !isValidEmail(player.email))
     errors.push("Email invalide.");
 
-  if (isNaN(player.rating) || player.rating < 0)
-    errors.push("Le classement Elo doit être supérieur ou égal à 0.");
-
   if (errors.length) {
     response.status = 503;
     response.body = { success: false, errors };
@@ -72,7 +68,6 @@ playerRouter.patch("/:ffeId/modifier", async ({ request, response, params }) => 
 
   const updates = await request.body().value as DbEntities.Player;
   updates.fideId ??= null;
-  updates.rating = Math.floor(Number(updates.rating)) || 1199;
   const errors: string[] = [];
 
   if (updates.ffeId !== playerInDb.ffeId) {
@@ -98,9 +93,6 @@ playerRouter.patch("/:ffeId/modifier", async ({ request, response, params }) => 
 
   if (!isNonEmptyString(updates.lastName))
     errors.push("Nom de famille requis.");
-
-  if (updates.rating < 0)
-    errors.push("Le classement Elo doit être supérieur ou égal à 0.");
 
   if (errors.length) {
     response.body = { success: false, errors };

@@ -6,9 +6,9 @@ import { AppState } from "/types.ts";
 
 const router = new Router<AppState>();
 
-// router.use(authRouter.routes(), authRouter.allowedMethods());
-// router.use(matchRouter.routes(), matchRouter.allowedMethods());
-// router.use(playerRouter.routes(), playerRouter.allowedMethods());
+router.use(authRouter.routes(), authRouter.allowedMethods());
+router.use(matchRouter.routes(), matchRouter.allowedMethods());
+router.use(playerRouter.routes(), playerRouter.allowedMethods());
 
 // TODO: client
 
