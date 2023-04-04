@@ -6,11 +6,10 @@ const client = new MongoClient();
 const mainDb = await client.connect(config.MONGODB_URI);
 console.log("%cConnected to database.", "color: yellow");
 
-const collections = {
-  players: () => mainDb.collection<DbEntities.Player>("players"),
-  matches: () => mainDb.collection<DbEntities.Match>("matches"),
-  users: () => mainDb.collection<DbEntities.User>("users")
+const db = {
+  players: mainDb.collection<DbEntities.Player>("players"),
+  matches: mainDb.collection<DbEntities.Match>("matches"),
+  users: mainDb.collection<DbEntities.User>("users")
 };
 
-
-export default collections;
+export default db;

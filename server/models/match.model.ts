@@ -7,10 +7,10 @@ const dateFormatter = new Intl.DateTimeFormat("fr-FR", {
 });
 
 const getMatch = (filter: Pick<DbEntities.Match, "season" | "round" | "teamName">) => {
-  return db.matches().findOne(filter);
+  return db.matches.findOne(filter);
 };
-const getSeasons = () => db.matches().distinct("season") as Promise<number[]>;
-const getMatchesOfSeason = (season: number) => db.matches()
+const getSeasons = () => db.matches.distinct("season") as Promise<number[]>;
+const getMatchesOfSeason = (season: number) => db.matches
   .aggregate<{ teamName: string; matches: DbEntities.Match[]; }>([
     {
       $match: { season }
@@ -47,7 +47,7 @@ const getLineUp = async ({ season, round, teamName }: { season: number; round: n
   }
 
   const ffeIds = match.lineUp.map(element => element.ffeId);
-  const players = await db.players().find({ ffeId: { $in: ffeIds } }).toArray();
+  const players = await db.players.find({ ffeId: { $in: ffeIds } }).toArray();
 
   return Array.from({ length: 8 }, (_, i) => {
     const board = i + 1;

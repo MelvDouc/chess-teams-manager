@@ -26,7 +26,7 @@ authRouter
       return response.redirect("/connexion");
     }
 
-    const user = await db.users().findOne({ email });
+    const user = await db.users.findOne({ email });
 
     if (!user || !(await comparePassword(password, user.password))) {
       flashService.errors = ["Identifiants invalides."];
@@ -51,13 +51,13 @@ authRouter
     const email = formData.get("email");
     let user: DbEntities.User | null | undefined;
 
-    if (!email || !(user = await db.users().findOne({ email }))) {
+    if (!email || !(user = await db.users.findOne({ email }))) {
       flashService.errors = ["Adresse email invalide."];
       return response.redirect(request.url);
     }
 
     const passwordResetId = randomBytes(32).toString("hex");
-    await db.users().updateOne({ email: user.email }, {
+    await db.users.updateOne({ email: user.email }, {
       $set: { passwordResetId }
     });
     await emailService.sendEmail("password-reset", {
@@ -69,7 +69,7 @@ authRouter
   });
 
 authRouter.param("passwordResetId", async (param, { response }, next) => {
-  const user = await db.users().findOne({ passwordResetId: param });
+  const user = await db.users.findOne({ passwordResetId: param });
 
   if (!user) {
     flashService.errors = ["Utilisateur non trouvé."];
@@ -106,7 +106,7 @@ authRouter
 
     const salt = await genSalt(10);
     const hashedPassword = await hash(password!, salt);
-    await db.users().updateOne({ email: user.email }, {
+    await db.users.updateOne({ email: user.email }, {
       $set: { password: hashedPassword },
       $unset: { passwordResetId: "" }
     });
