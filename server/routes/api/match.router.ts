@@ -13,12 +13,12 @@ matchRouter.get("/saisons/:season", async ({ params, response }) => {
   response.body = await matchModel.getMatchesOfSeason(season);
 });
 
-matchRouter.get("/saisons/:season/:teamName/composition", async ({ request, response, params }) => {
-  response.body = await matchModel.getLineUp({
-    season: +params.season,
-    round: Number(request.url.searchParams.get("ronde")),
-    teamName: params.teamName
-  });
+matchRouter.get("/saisons/:season/composition", async ({ request, response, params }) => {
+  response.body = await matchModel.getLineUp(
+    +params.season,
+    Number(request.url.searchParams.get("ronde")),
+    Number(request.url.searchParams.get("id_equipe")),
+  );
 });
 
 export default matchRouter;
