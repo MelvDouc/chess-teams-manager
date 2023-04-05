@@ -19,12 +19,8 @@ const getSeasons: RouterMiddleware<"/saisons"> = async ({ response }) => {
   response.body = await matchModel.getSeasons();
 };
 
-const getLineUp: RouterMiddleware<"/saisons/:season/:teamName/composition"> = async ({ request, response, params }) => {
-  response.body = await matchModel.getLineUp({
-    season: +params.season,
-    round: Number(request.url.searchParams.get("ronde")),
-    teamName: params.teamName
-  });
+const getLineUp: RouterMiddleware<"/:id/composition"> = async ({ response, params }) => {
+  response.body = await matchModel.getLineUp({ _id: new ObjectId(params.id) });
 };
 
 const createMatch: RouterMiddleware<"/nouveau"> = async ({ request, response }) => {
@@ -71,7 +67,7 @@ const deleteMatch: RouterMiddleware<"/supprimer"> = async ({ request, response }
 const matchRouter = (new Router({ prefix: "/api/v1/matchs" }))
   .get("/", getMatchesOfSeason)
   .get("/saisons", getSeasons)
-  .get("/saisons/:season/:teamName/composition", getLineUp)
+  .get("/:id/composition", getLineUp)
   .post("/nouveau", createMatch)
   .patch("/:id/modifier", updateMatch)
   .delete("/supprimer", deleteMatch);

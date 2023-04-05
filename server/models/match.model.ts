@@ -44,8 +44,8 @@ function getMatchesOfSeason(season: number) {
     }));
 }
 
-async function getLineUp({ season, round, teamName }: { season: number; round: number; teamName: string; }) {
-  const match = await getMatch({ season, round, teamName });
+async function getLineUp(matchDetail: Partial<DbEntities.Match>) {
+  const match = await getMatch(matchDetail);
 
   if (!match) {
     return Array.from({ length: 8 }, (_, i) => {
