@@ -1,6 +1,5 @@
 import { Router } from "oak";
 import playerModel from "/models/player.model.ts";
-import { isNonEmptyString, isValidEmail, isValidFfeId } from "/models/validators.ts";
 import { AppState, DbEntities } from "/types.ts";
 
 const playerRouter = new Router<AppState>({ prefix: "/api/v1/joueurs" });
@@ -22,37 +21,10 @@ playerRouter.get("/", async ({ response }) => {
 });
 
 playerRouter.post("/nouveau", async ({ request, response }) => {
-  const player = await request.body().value as DbEntities.Player;
-  player.fideId ??= null;
-  player.rating = Math.floor(Number(player.rating)) || 1199;
-  const errors: string[] = [];
-
-  if (!isNonEmptyString(player.ffeId) || !isValidFfeId(player.ffeId))
-    errors.push("N° FFE invalide.");
-  else if (await playerModel.getPlayer({ ffeId: player.ffeId }))
-    errors.push("Il existe déjà un joueur avec ce n° FFE.");
-
-  if (typeof player.fideId === "number") {
-    if (isNaN(player.fideId))
-      errors.push("N° FIDE invalide.");
-    else if (await playerModel.getPlayer({ fideId: player.fideId }))
-      errors.push("Il existe déjà un joueur avec ce n° FIDE.");
-  }
-
-  if (!isNonEmptyString(player.firstName))
-    errors.push("Prénom requis.");
-
-  if (!isNonEmptyString(player.lastName))
-    errors.push("Nom de famille requis.");
-
-  if (!isNonEmptyString(player.email) || !isValidEmail(player.email))
-    errors.push("Email invalide.");
-
-  if (isNaN(player.rating) || player.rating < 0)
-    errors.push("Le classement Elo doit être supérieur ou égal à 0.");
+  const player = playerModel.ensurePlayer(await request.body().value as DbEntities.Player);
+  const errors = await playerModel.getCreateErrors(player);
 
   if (errors.length) {
-    response.status = 503;
     response.body = { success: false, errors };
     return;
   }
@@ -70,44 +42,15 @@ playerRouter.patch("/:ffeId/modifier", async ({ request, response, params }) => 
     return;
   }
 
-  const updates = await request.body().value as DbEntities.Player;
-  updates.fideId ??= null;
-  updates.rating = Math.floor(Number(updates.rating)) || 1199;
-  const errors: string[] = [];
-
-  if (updates.ffeId !== playerInDb.ffeId) {
-    if (!isNonEmptyString(updates.ffeId) || !isValidFfeId(updates.ffeId))
-      errors.push("N° FFE invalide.");
-    else if (await playerModel.getPlayer({ ffeId: updates.ffeId })) {
-      errors.push("Il existe un autre joueur avec ce n° FFE.");
-    }
-  }
-
-  if (updates.fideId !== playerInDb.fideId && typeof updates.fideId === "number") {
-    if (isNaN(updates.fideId))
-      errors.push("N° FIDE invalide.");
-    else if (await playerModel.getPlayer({ fideId: updates.fideId }))
-      errors.push("Il existe un autre joueur avec ce n° FIDE.");
-  }
-
-  if (updates.email !== playerInDb.email && (!isNonEmptyString(updates.email) || !isValidEmail(updates.email)))
-    errors.push("Email invalide.");
-
-  if (!isNonEmptyString(updates.firstName))
-    errors.push("Prénom requis.");
-
-  if (!isNonEmptyString(updates.lastName))
-    errors.push("Nom de famille requis.");
-
-  if (updates.rating < 0)
-    errors.push("Le classement Elo doit être supérieur ou égal à 0.");
+  const updates = playerModel.ensurePlayer(await request.body().value as DbEntities.Player);
+  const errors = await playerModel.getUpdateErrors(updates, playerInDb);
 
   if (errors.length) {
     response.body = { success: false, errors };
     return;
   }
 
-  const updateResult = await playerModel.updatePlayer(params.ffeId, updates as DbEntities.Player);
+  const updateResult = await playerModel.updatePlayer(params.ffeId, updates);
   response.body = { success: true, updateResult };
 });
 
