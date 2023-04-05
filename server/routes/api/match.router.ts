@@ -1,28 +1,33 @@
 import { ObjectId } from "mongo";
-import { Router } from "oak";
+import { Router, RouterMiddleware } from "oak";
 import matchModel from "/models/match.model.ts";
-import { AppState, DbEntities } from "/types.ts";
+import { DbEntities } from "/types.ts";
 
-const matchRouter = new Router<AppState>({ prefix: "/api/v1/matchs" });
+const getMatchesOfSeason: RouterMiddleware<"/"> = async ({ request, response }) => {
+  const season = request.url.searchParams.get("saison");
 
-matchRouter.get("/saisons", async ({ response }) => {
+  if (!season) {
+    response.status = 404;
+    response.body = null;
+    return;
+  }
+
+  response.body = await matchModel.getMatchesOfSeason(+season);
+};
+
+const getSeasons: RouterMiddleware<"/saisons"> = async ({ response }) => {
   response.body = await matchModel.getSeasons();
-});
+};
 
-matchRouter.get("/saisons/:season", async ({ params, response }) => {
-  const season = +params.season;
-  response.body = await matchModel.getMatchesOfSeason(season);
-});
-
-matchRouter.get("/saisons/:season/:teamName/composition", async ({ request, response, params }) => {
+const getLineUp: RouterMiddleware<"/saisons/:season/:teamName/composition"> = async ({ request, response, params }) => {
   response.body = await matchModel.getLineUp({
     season: +params.season,
     round: Number(request.url.searchParams.get("ronde")),
     teamName: params.teamName
   });
-});
+};
 
-matchRouter.post("/nouveau", async ({ request, response }) => {
+const createMatch: RouterMiddleware<"/nouveau"> = async ({ request, response }) => {
   const match = await request.body().value as DbEntities.Match;
   const errors = matchModel.getMatchErrors(match);
 
@@ -33,9 +38,9 @@ matchRouter.post("/nouveau", async ({ request, response }) => {
 
   await matchModel.createMatch(match);
   response.body = { success: true };
-});
+};
 
-matchRouter.patch("/:id/modifier", async ({ request, response, params }) => {
+const updateMatch: RouterMiddleware<"/:id/modifier"> = async ({ request, response, params }) => {
   const matchInDb = await matchModel.getMatch({ _id: new ObjectId(params.id) });
 
   if (!matchInDb) {
@@ -54,13 +59,21 @@ matchRouter.patch("/:id/modifier", async ({ request, response, params }) => {
 
   await matchModel.updateMatch((matchInDb as DbEntities.Match)._id, match);
   response.body = { success: true };
-});
+};
 
-matchRouter.delete("/supprimer", async ({ request, response }) => {
+const deleteMatch: RouterMiddleware<"/supprimer"> = async ({ request, response }) => {
   const id = request.headers.get("match_id");
   response.body = {
     success: !!id && !!(await matchModel.deleteMatch(id))
   };
-});
+};
+
+const matchRouter = (new Router({ prefix: "/api/v1/matchs" }))
+  .get("/", getMatchesOfSeason)
+  .get("/saisons", getSeasons)
+  .get("/saisons/:season/:teamName/composition", getLineUp)
+  .post("/nouveau", createMatch)
+  .patch("/:id/modifier", updateMatch)
+  .delete("/supprimer", deleteMatch);
 
 export default matchRouter;
