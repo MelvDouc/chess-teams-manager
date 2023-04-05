@@ -1,8 +1,9 @@
 import RouterLink from "@routing/RouterLink.jsx";
+import cssClasses from "./Header.module.scss";
 
 export default function Header() {
   return (
-    <header>
+    <header className={cssClasses.header}>
       <section className="header-left">
         <h1>Thionville Échecs — Équipes</h1>
       </section>

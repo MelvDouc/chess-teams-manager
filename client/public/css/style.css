@@ -28,7 +28,7 @@ a {
   color: inherit;
 }
 
-@import "header";
-@import "main";
-@import "flash";
-@import "table";
+main {
+  padding: 1em;
+  overflow-y: auto;
+}
