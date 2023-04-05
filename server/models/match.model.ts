@@ -1,5 +1,5 @@
 import { ObjectId } from "mongo";
-import { isNonEmptyString } from "/models/validators.ts";
+import { isNonEmptyString, isValidNumber } from "/models/validators.ts";
 import db from "/database/db.ts";
 import { DbEntities } from "/types.ts";
 
@@ -69,11 +69,11 @@ async function getLineUp(matchDetail: Partial<DbEntities.Match>) {
   });
 }
 
-function createMatch(data: DbEntities.Match) {
-  return db.matches.insertOne(data);
+function createMatch(data: FormMatch) {
+  return db.matches.insertOne({ ...data, lineUp: [] });
 }
 
-function updateMatch(objectId: ObjectId, updates: DbEntities.Match) {
+function updateMatch(objectId: ObjectId, updates: FormMatch) {
   return db.matches.updateOne({ _id: objectId }, {
     $set: updates
   });
@@ -83,13 +83,29 @@ function deleteMatch(id: string) {
   return db.matches.deleteOne({ _id: new ObjectId(id) });
 }
 
-function getMatchErrors(match: DbEntities.Match) {
+// ===== ===== ===== ===== =====
+// ERRORS
+// ===== ===== ===== ===== =====
+
+function ensureMatch(data: FormMatch): FormMatch {
+  return {
+    season: parseInt(data.season as unknown as string),
+    round: parseInt(data.round as unknown as string),
+    address: (data.address) ? String(data.address) : "",
+    date: new Date(data.date),
+    opponent: (data.opponent) ? String(data.opponent) : "",
+    teamName: (data.teamName) ? String(data.teamName) : "",
+    whiteOnOdds: !!data.whiteOnOdds
+  };
+}
+
+function getMatchErrors(match: FormMatch) {
   const errors: string[] = [];
 
-  if (isNaN(match.season))
+  if (isValidNumber(match.season))
     errors.push("Saison invalide.");
 
-  if (isNaN(match.round))
+  if (isValidNumber(match.round))
     errors.push("Ronde invalide.");
 
   if (!isNonEmptyString(match.teamName))
@@ -101,7 +117,7 @@ function getMatchErrors(match: DbEntities.Match) {
   if (!isNonEmptyString(match.opponent))
     errors.push("Adversaire requis.");
 
-  if (isNaN(new Date(match.date).getTime()))
+  if (isNaN(match.date.getTime()))
     errors.push("Date invalide.");
 
   return errors;
@@ -115,5 +131,8 @@ export default {
   createMatch,
   updateMatch,
   deleteMatch,
+  ensureMatch,
   getMatchErrors,
 };
+
+type FormMatch = Omit<DbEntities.Match, "_id" | "lineUp">;

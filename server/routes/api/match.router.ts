@@ -24,7 +24,7 @@ const getLineUp: RouterMiddleware<"/:id/composition"> = async ({ response, param
 };
 
 const createMatch: RouterMiddleware<"/nouveau"> = async ({ request, response }) => {
-  const match = await request.body().value as DbEntities.Match;
+  const match = matchModel.ensureMatch(await request.body().value as DbEntities.Match);
   const errors = matchModel.getMatchErrors(match);
 
   if (errors.length) {
@@ -45,7 +45,7 @@ const updateMatch: RouterMiddleware<"/:id/modifier"> = async ({ request, respons
     return;
   }
 
-  const match = await request.body().value as DbEntities.Match;
+  const match = matchModel.ensureMatch(await request.body().value as DbEntities.Match);
   const errors = matchModel.getMatchErrors(match);
 
   if (errors.length) {
@@ -53,7 +53,7 @@ const updateMatch: RouterMiddleware<"/:id/modifier"> = async ({ request, respons
     return;
   }
 
-  await matchModel.updateMatch((matchInDb as DbEntities.Match)._id, match);
+  await matchModel.updateMatch(matchInDb._id, match);
   response.body = { success: true };
 };
 

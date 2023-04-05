@@ -12,8 +12,7 @@ export namespace DbEntities {
     email: string;
     firstName: string;
     lastName: string;
-    phone?: string;
-    rating?: number | null;
+    phone: string | null;
   }
 
   export interface Match {

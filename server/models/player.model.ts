@@ -1,7 +1,7 @@
 import type { ObjectId } from "mongo";
 import db from "/database/db.ts";
-import { isNonEmptyString, isValidEmail, isValidFfeId, isValidNumber } from "/models/validators.ts";
-import { DbEntities, Nullable } from "/types.ts";
+import { isNonEmptyString, isValidEmail, isValidFfeId } from "/models/validators.ts";
+import { DbEntities } from "/types.ts";
 
 const getPlayer = (filter: Partial<DbEntities.Player>) => db.players.findOne(filter);
 
@@ -26,7 +26,7 @@ function ensurePlayer(data: DbEntities.Player): DbEntities.Player {
     email: (data.email) ? String(data.email) : "",
     firstName: (data.firstName) ? String(data.firstName) : "",
     lastName: (data.lastName) ? String(data.lastName) : "",
-    rating: (data.rating) ? parseInt(data.rating as unknown as string) : null
+    phone: (data.phone) ? String(data.phone) : null
   };
 }
 
