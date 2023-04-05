@@ -4,8 +4,7 @@ import RouterOutlet from "@routing/RouterOutlet.jsx";
 
 export default function App() {
   window.onpopstate = () => Router.updateUrl(location.pathname);
-  Router.onUrlChange(({ getParams, getTitle }) => {
-    const title = getTitle(getParams ? getParams(location.pathname) : undefined);
+  Router.onUrlChange(({ title }) => {
     document.title = `${title} | Thionville Échecs — Équipes`;
   });
 

@@ -15,20 +15,25 @@ Form.Row = ({ children }: { children?: ComponentChildren; }) => {
   );
 };
 
-Form.Group = ({ nameAndId, labelText, required, type, value }: {
-  type: "text" | "textarea" | "number" | "email" | "password";
+Form.Group = ({ nameAndId, labelText, required, type, placeholder, value }: {
+  type: "text" | "textarea" | "number" | "email" | "password" | "checkbox";
   nameAndId: string;
   labelText: string;
   required?: boolean;
+  placeholder?: string;
   value?: any;
 }) => {
   const control: HTMLInputElement | HTMLTextAreaElement = (type === "textarea")
     ? <textarea>{value ?? ""}</textarea>
-    : <input value={value ?? ""} />;
+    : <input type={type} value={value ?? ""} />;
 
   control.id = nameAndId;
   control.name = nameAndId;
   control.required = !!required;
+  if (placeholder)
+    control.placeholder = placeholder;
+  if (type === "checkbox")
+    (control as HTMLInputElement).checked = !!value;
 
   return (
     <div className="form-group">

@@ -73,7 +73,7 @@ function createMatch(data: FormMatch) {
   return db.matches.insertOne({ ...data, lineUp: [] });
 }
 
-function updateMatch(objectId: ObjectId, updates: FormMatch) {
+function updateMatch(objectId: ObjectId, updates: Partial<DbEntities.Match>) {
   return db.matches.updateOne({ _id: objectId }, {
     $set: updates
   });
@@ -95,7 +95,7 @@ function ensureMatch(data: FormMatch): FormMatch {
     date: new Date(data.date),
     opponent: (data.opponent) ? String(data.opponent) : "",
     teamName: (data.teamName) ? String(data.teamName) : "",
-    whiteOnOdds: !!data.whiteOnOdds
+    whiteOnOdds: "whiteOnOdds" in data
   };
 }
 

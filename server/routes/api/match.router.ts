@@ -3,7 +3,7 @@ import { Router, RouterMiddleware } from "oak";
 import matchModel from "/models/match.model.ts";
 import { DbEntities } from "/types.ts";
 
-const getMatchesOfSeason: RouterMiddleware<"/"> = async ({ request, response }) => {
+const getMatchesOfSeason: RouterMiddleware<"/par-saison"> = async ({ request, response }) => {
   const season = request.url.searchParams.get("saison");
 
   if (!season) {
@@ -19,8 +19,24 @@ const getSeasons: RouterMiddleware<"/saisons"> = async ({ response }) => {
   response.body = await matchModel.getSeasons();
 };
 
-const getLineUp: RouterMiddleware<"/:id/composition"> = async ({ response, params }) => {
+const getLineUp: RouterMiddleware<"/composition/:id"> = async ({ response, params }) => {
   response.body = await matchModel.getLineUp({ _id: new ObjectId(params.id) });
+};
+
+const updateLineUp: RouterMiddleware<"/composition/:id"> = async ({ request, response, params }) => {
+  const lineUp = await request.body().value as any;
+
+  if (Array.isArray(lineUp) || !lineUp.every((element: { board: number; ffeId: string; }) => {
+    return !!element
+      && typeof element.board === "number"
+      && typeof element.ffeId === "string";
+  })) {
+    response.body = { success: false };
+    return;
+  }
+
+  await matchModel.updateMatch(new ObjectId(params.id), { lineUp });
+  response.body = { success: true };
 };
 
 const createMatch: RouterMiddleware<"/nouveau"> = async ({ request, response }) => {
@@ -65,11 +81,12 @@ const deleteMatch: RouterMiddleware<"/supprimer"> = async ({ request, response }
 };
 
 const matchRouter = (new Router({ prefix: "/api/v1/matchs" }))
-  .get("/", getMatchesOfSeason)
-  .get("/saisons", getSeasons)
-  .get("/:id/composition", getLineUp)
   .post("/nouveau", createMatch)
   .patch("/:id/modifier", updateMatch)
-  .delete("/supprimer", deleteMatch);
+  .delete("/supprimer", deleteMatch)
+  .get("/par-saison", getMatchesOfSeason)
+  .get("/saisons", getSeasons)
+  .get("/composition/:id", getLineUp)
+  .patch("/composition/:id", updateLineUp);
 
 export default matchRouter;

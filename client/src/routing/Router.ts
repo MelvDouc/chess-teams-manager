@@ -1,42 +1,73 @@
 import HomePage from "@pages/HomePage.js";
 import MatchesPage from "@pages/MatchesPage.jsx";
+import MatchCreatePage from "@pages/MatchCreatePage.jsx";
 import MatchLineUp from "@pages/MatchLineUp.jsx";
 import MatchSeasonsPage from "@pages/MatchSeasonsPage.js";
 import PlayersPage from "@pages/PlayersPage.js";
 import PlayerCreatePage from "@pages/PlayerCreatePage.js";
 import PlayerUpdatePage from "@pages/PlayerUpdatePage.js";
-import { Route } from "@types";
+import { Route, RouteInfo } from "@types";
 
 class Router {
-  private routes: Map<string | RegExp, Route>;
-  private subscriptions: ((route: Route) => any)[] = [];
+  private routes: Map<string[], Route>;
+  private subscriptions: ((routeInfo: RouteInfo) => any)[] = [];
 
   constructor() {
     this.routes = new Map();
   }
 
-  public addRoute(url: string | RegExp, route: Route): this {
-    this.routes.set(url, route);
+  public addRoute(url: string, route: Route<any>): this {
+    this.routes.set(url.split("/"), route);
     return this;
   }
 
+  private getParams(urlSegments: string[], dynamicSegments: string[]) {
+    if (urlSegments.length !== dynamicSegments.length)
+      return null;
+
+    const params = {} as Record<string, any>;
+
+    for (const [i, segment] of urlSegments.entries()) {
+      if (dynamicSegments[i].startsWith(":")) {
+        params[dynamicSegments[i].slice(1)] = segment;
+        continue;
+      }
+
+      if (segment !== dynamicSegments[i])
+        return null;
+    }
+
+    return params;
+  }
+
   public updateUrl(url: string): void {
+    const segments = url.split("/");
+
     for (const [key, route] of this.routes) {
-      if (typeof key === "string" && key === url || key instanceof RegExp && key.test(url)) {
-        this.notify(route);
+      const params = this.getParams(segments, key);
+
+      if (params) {
+        this.notify({
+          params,
+          title: route.getTitle(params),
+          component: route.component
+        });
         return;
       }
     }
 
-    this.notify(this.routes.get("404")!);
+    this.notify({
+      title: "Page non trouvée",
+      component: () => "page non trouvée"
+    });
   }
 
-  public onUrlChange(listener: (route: Route) => any): void {
+  public onUrlChange(listener: (routeInfo: RouteInfo) => any): void {
     this.subscriptions.push(listener);
   }
 
-  private notify(route: Route): void {
-    this.subscriptions.forEach((subscription) => subscription(route));
+  private notify(routeInfo: RouteInfo): void {
+    this.subscriptions.forEach((subscription) => subscription(routeInfo));
   }
 }
 
@@ -60,12 +91,8 @@ router
     getTitle: () => "Ajouter un joueur",
     component: PlayerCreatePage,
   })
-  .addRoute(/^\/joueurs\/\w+\/modifier/, {
+  .addRoute("/joueurs/:ffeId/modifier", {
     preCheck: () => Promise.resolve(true),
-    getParams: (pathname) => {
-      const ffeId = pathname.split("/")[2];
-      return { ffeId };
-    },
     getTitle: ({ ffeId }: { ffeId: string; }) => `Modifier ${ffeId}`,
     component: PlayerUpdatePage
   })
@@ -74,30 +101,19 @@ router
     getTitle: () => "Matchs",
     component: MatchSeasonsPage
   })
-  .addRoute(/^\/matchs\/\d+$/, {
+  .addRoute("/matchs/nouveau", {
     preCheck: () => Promise.resolve(true),
-    getParams: (pathname) => {
-      const season = pathname.split("/").at(-1);
-      return { season: Number(season) };
-    },
+    getTitle: () => "Créer un match",
+    component: MatchCreatePage
+  })
+  .addRoute("/matchs/:season", {
+    preCheck: () => Promise.resolve(true),
     getTitle: ({ season }: { season: number; }) => `Match ${season - 1}-${season}`,
     component: MatchesPage
   })
-  .addRoute(/^\/matchs\/\d+\/[^\/]+\/composition/, {
+  .addRoute("/matchs/composition/:matchId", {
     preCheck: () => Promise.resolve(true),
-    getParams: (pathname) => {
-      const { season, teamName } = pathname.match(/^\/matchs\/(?<season>\d+)\/(?<teamName>[^\/]+)\/composition/)?.groups ?? {};
-      return {
-        season: Number(season),
-        teamName: teamName ?? "",
-        round: Number(new URLSearchParams(location.search).get("ronde"))
-      };
-    },
-    getTitle: ({ season, teamName, round }: {
-      season: number;
-      teamName: string;
-      round: number;
-    }) => `${teamName} - Ronde ${round} - ${season}`,
+    getTitle: () => "Composition",
     component: MatchLineUp
   });
 

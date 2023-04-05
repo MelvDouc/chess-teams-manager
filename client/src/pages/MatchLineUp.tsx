@@ -1,11 +1,11 @@
 import { matches } from "@utils/api.js";
 
-export default async function MatchLineUp(lineUpDetail: Parameters<typeof matches["lineUp"]>[0]) {
-  const lineUp = await matches.lineUp(lineUpDetail);
+export default async function MatchLineUp({ matchId }: { matchId: string; }) {
+  const lineUp = await matches.getLineUp(matchId);
 
   if (!lineUp)
     return (
-      <p></p>
+      <p>Composition indisponible.</p>
     );
 
   return (
@@ -19,11 +19,11 @@ export default async function MatchLineUp(lineUpDetail: Parameters<typeof matche
         </tr>
       </thead>
       <tbody>
-        {lineUp!.map(({ board, color, player }) => {
+        {lineUp.map(({ board, color, player }) => {
           return (
             <tr>
               <td>{board + color}</td>
-              <td>{player ? (player.lastName + " " + player.firstName) : ""}</td>
+              <td>{player ? `${player.lastName} ${player.firstName}` : ""}</td>
               <td>{player?.ffeId ?? ""}</td>
               <td>{player?.rating ?? ""}</td>
             </tr>
@@ -33,9 +33,3 @@ export default async function MatchLineUp(lineUpDetail: Parameters<typeof matche
     </table>
   );
 }
-
-/*
-{(lineUp!.players).map(({ player }) => {
-          const color = (lineUp!.whiteOnOdds);
-        })}
-        */

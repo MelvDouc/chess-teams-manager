@@ -11,21 +11,21 @@ async function fetchFromApi<T>(path: `/${string}`, init?: RequestInit): Promise<
   }
 }
 
+const jsonHeaders = {
+  "Content-Type": "application/json"
+};
+
 export const players = {
   all: () => fetchFromApi<Player[]>("/joueurs"),
   one: (ffeId: string) => fetchFromApi<Player>(`/joueurs/${ffeId}`),
   create: (player: Player) => fetchFromApi<{ success: boolean; errors?: string[]; }>("/joueurs/nouveau", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
+    headers: jsonHeaders,
     body: JSON.stringify(player)
   }),
   update: (ffeId: string, updates: any) => fetchFromApi<{ success: boolean; errors?: string[]; }>(`/joueurs/${ffeId}/modifier`, {
     method: "PATCH",
-    headers: {
-      "Content-Type": "application/json"
-    },
+    headers: jsonHeaders,
     body: JSON.stringify(updates)
   }),
   delete: (ffeId: string) => fetchFromApi<{ success: boolean; errors?: string[]; }>(`/joueurs/${ffeId}/supprimer`, {
@@ -34,15 +34,33 @@ export const players = {
 };
 
 export const matches = {
+  create: (match: Match) => fetchFromApi(`/matchs/nouveau`, {
+    method: "POST",
+    headers: jsonHeaders,
+    body: JSON.stringify(match)
+  }),
+  update: (id: string, match: Match) => fetchFromApi(`/matchs/${id}/modifier`, {
+    method: "PATCH",
+    headers: jsonHeaders,
+    body: JSON.stringify(match)
+  }),
+  delete: (id: string) => fetchFromApi(`/matchs/supprimer`, {
+    method: "DELETE",
+    headers: {
+      ...jsonHeaders,
+      id
+    }
+  }),
   seasons: () => fetchFromApi<number[]>("/matchs/saisons"),
-  byTeamName: (season: number) => fetchFromApi<{ teamName: string; matches: Match[]; }[]>(`/matchs/saisons/${season}`),
-  lineUp: ({ season, teamName, round }: {
-    season: number;
-    teamName: string;
-    round: number;
-  }) => fetchFromApi<{
+  bySeason: (season: number) => fetchFromApi<{ teamName: string; matches: Match[]; }[]>(`/matchs/par-saison?saison=${season}`),
+  getLineUp: (id: string) => fetchFromApi<{
     board: number;
     color: string;
     player: Player | null;
-  }[]>(`/matchs/saisons/${season}/${teamName}/composition?ronde=${round}`)
+  }[]>(`/matchs/composition/${id}`),
+  updateLineUp: (id: string, lineUp: { board: number; ffeId: string; }[]) => fetchFromApi(`/matchs/composition/${id}`, {
+    method: "PATCH",
+    headers: jsonHeaders,
+    body: JSON.stringify(lineUp)
+  })
 };

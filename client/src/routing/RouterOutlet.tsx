@@ -5,8 +5,7 @@ export default function RouterOutlet() {
     <div
       className="router-outlet"
       $init={(element) => {
-        Router.onUrlChange(async ({ component, getParams }) => {
-          const params = getParams ? getParams(location.pathname + location.search) : undefined;
+        Router.onUrlChange(async ({ component, params }) => {
           element.replaceChildren(await component(params));
         });
       }}

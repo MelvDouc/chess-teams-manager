@@ -1,9 +1,14 @@
-export interface Route {
+export interface Route<Params = Record<string, string>> {
   preCheck: () => Promise<boolean>;
-  getParams?: (pathname: string) => Record<string, any>;
-  getTitle: (params?: any) => string;
-  component: (params?: any) => string | Node | Promise<string | Node>;
+  getTitle: (params?: Params) => string;
+  component: (params?: Params) => string | Node | Promise<string | Node>;
 }
+
+export type RouteInfo<Params = Record<string, string>> = {
+  title: string;
+  params?: Params;
+  component: Route<Params>["component"];
+};
 
 export interface Player {
   ffeId: string;
@@ -16,6 +21,7 @@ export interface Player {
 }
 
 export interface Match {
+  _id: string;
   season: number;
   round: number;
   teamName: string;
