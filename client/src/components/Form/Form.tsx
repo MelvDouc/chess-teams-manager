@@ -1,17 +1,19 @@
 import RouterLink from "@routing/RouterLink.jsx";
+import cssClasses from "@components/Form/Form.module.scss";
+import btnClasses from "@styles/btn.module.scss";
 
 export default function Form({ handleSubmit, children }: {
   handleSubmit: (e: SubmitEvent) => any;
   children?: ComponentChildren;
 }) {
   return (
-    <form onsubmit={handleSubmit}>{children}</form>
+    <form className={cssClasses.form} onsubmit={handleSubmit}>{children}</form>
   );
 }
 
 Form.Row = ({ children }: { children?: ComponentChildren; }) => {
   return (
-    <section className="form-row">{children}</section>
+    <section className={cssClasses.formRow}>{children}</section>
   );
 };
 
@@ -35,8 +37,16 @@ Form.Group = ({ nameAndId, labelText, required, type, placeholder, value }: {
   if (type === "checkbox")
     (control as HTMLInputElement).checked = !!value;
 
+  if (type === "checkbox")
+    return (
+      <div classNames={[cssClasses.formGroup, cssClasses.checkbox]}>
+        {control}
+        <label htmlFor={nameAndId}>{labelText}</label>
+      </div>
+    );
+
   return (
-    <div className="form-group">
+    <div className={cssClasses.formGroup}>
       <label htmlFor={nameAndId}>{labelText}</label>
       {control}
     </div>
@@ -49,8 +59,10 @@ Form.Submit = ({ text, backLink }: {
 }) => {
   return (
     <Form.Row>
-      <button>{text}</button>
-      <RouterLink href={backLink}>Annuler</RouterLink>
+      <div className={cssClasses.formSubmit}>
+        <button classNames={[btnClasses.btn, btnClasses.btnGreen]}>{text}</button>
+        <RouterLink href={backLink}>Annuler</RouterLink>
+      </div>
     </Form.Row>
   );
 };

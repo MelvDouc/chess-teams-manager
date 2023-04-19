@@ -1,6 +1,8 @@
 import { defineConfig } from "vite";
 import { resolve } from "path";
 
+const srcDir = resolve(".", "src");
+
 export default defineConfig({
   esbuild: {
     jsxFactory: "h",
@@ -9,11 +11,12 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      "@components": resolve(".", "src", "components"),
-      "@pages": resolve(".", "src", "pages"),
-      "@routing": resolve(".", "src", "routing"),
-      "@types": resolve(".", "src", "types.ts"),
-      "@utils": resolve(".", "src", "utils")
+      "@components": resolve(srcDir, "components"),
+      "@pages": resolve(srcDir, "pages"),
+      "@routing": resolve(srcDir, "routing"),
+      "@types": resolve(srcDir, "types.ts"),
+      "@styles": resolve(srcDir, "styles"),
+      "@utils": resolve(srcDir, "utils")
     }
   }
 });

@@ -1,4 +1,5 @@
 import { matches } from "@utils/api.js";
+import Table from "@components/Table/Table.jsx";
 
 export default async function MatchLineUp({ matchId }: { matchId: string; }) {
   const lineUp = await matches.getLineUp(matchId);
@@ -9,7 +10,7 @@ export default async function MatchLineUp({ matchId }: { matchId: string; }) {
     );
 
   return (
-    <table>
+    <Table large={false}>
       <thead>
         <tr>
           <th>Éch.</th>
@@ -30,6 +31,6 @@ export default async function MatchLineUp({ matchId }: { matchId: string; }) {
           );
         })}
       </tbody>
-    </table>
+    </Table>
   );
 }

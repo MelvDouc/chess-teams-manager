@@ -1,0 +1,56 @@
+.form {
+  display: flex;
+  flex-flow: column nowrap;
+  padding: 1em;
+  gap: 0.5em;
+  background-color: blue;
+  color: white;
+  border-radius: 10px;
+  width: var(--page-width);
+
+  .formRow {
+    display: flex;
+    gap: 0.5em;
+
+    .formGroup {
+      width: 50%;
+    }
+  }
+
+  .formGroup {
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 0.25em;
+
+    &.checkbox {
+      flex-flow: row nowrap;
+      align-items: center;
+    }
+  }
+
+  .formSubmit {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5em;
+  }
+
+  input {
+    &:not(input[type="checkbox"]) {
+      height: 2em;
+      padding: 0.1em 0.2em;
+    }
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    &[type="number"] {
+      appearance: textfield;
+      -moz-appearance: textfield;
+    }
+  }
+}
