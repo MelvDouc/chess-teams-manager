@@ -23,13 +23,21 @@ export default function MatchForm({ match, handleSubmit }: {
           value={match?.round}
         />
       </Form.Row>
-      <Form.Group
-        type="text"
-        labelText="Adversaire"
-        nameAndId="opponent"
-        required={true}
-        value={match?.opponent}
-      />
+      <Form.Row>
+        <Form.Group
+          type="text"
+          labelText="Adversaire"
+          nameAndId="opponent"
+          required={true}
+          value={match?.opponent}
+        />
+        <Form.Checkbox
+          nameAndId="whiteOnOdds"
+          labelText="Blancs aux premiers"
+          checked={match?.whiteOnOdds}
+          required
+        />
+      </Form.Row>
       <Form.Row>
         <Form.Group
           type="text"
@@ -43,17 +51,10 @@ export default function MatchForm({ match, handleSubmit }: {
           labelText="Date"
           nameAndId="date"
           required={true}
-          placeholder="YYYY/MM/JJ HH:mm"
+          placeholder="AAAA/MM/JJ HH:mm"
           value={match?.date}
         />
       </Form.Row>
-      <Form.Group
-        type="checkbox"
-        labelText="Blancs au premier"
-        nameAndId="whiteOnOdds"
-        required={true}
-        value={match?.whiteOnOdds}
-      />
       <Form.Submit backLink="/matchs" text="Créer" />
     </Form>
   );

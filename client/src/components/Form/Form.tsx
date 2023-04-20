@@ -1,24 +1,34 @@
 import RouterLink from "@routing/RouterLink.jsx";
-import cssClasses from "@components/Form/Form.module.scss";
-import btnClasses from "@styles/btn.module.scss";
 
 export default function Form({ handleSubmit, children }: {
   handleSubmit: (e: SubmitEvent) => any;
   children?: ComponentChildren;
 }) {
   return (
-    <form className={cssClasses.form} onsubmit={handleSubmit}>{children}</form>
+    <form
+      className="d-flex flex-column text-light bg-primary bg-gradient p-3 gap-3 rounded"
+      onsubmit={handleSubmit}
+    >{children}</form>
   );
 }
 
 Form.Row = ({ children }: { children?: ComponentChildren; }) => {
-  return (
-    <section className={cssClasses.formRow}>{children}</section>
+  const row = (
+    <section className="row"></section>
   );
+
+  if (Array.isArray(children))
+    children.forEach((child) => {
+      row.append(
+        <div className="col">{child}</div>
+      );
+    });
+
+  return row;
 };
 
 Form.Group = ({ nameAndId, labelText, required, type, placeholder, value }: {
-  type: "text" | "textarea" | "number" | "email" | "password" | "checkbox";
+  type: "text" | "textarea" | "number" | "email" | "password";
   nameAndId: string;
   labelText: string;
   required?: boolean;
@@ -30,25 +40,30 @@ Form.Group = ({ nameAndId, labelText, required, type, placeholder, value }: {
     : <input type={type} value={value ?? ""} />;
 
   control.id = nameAndId;
+  control.classList.add("form-control");
   control.name = nameAndId;
   control.required = !!required;
   if (placeholder)
     control.placeholder = placeholder;
-  if (type === "checkbox")
-    (control as HTMLInputElement).checked = !!value;
-
-  if (type === "checkbox")
-    return (
-      <div classNames={[cssClasses.formGroup, cssClasses.checkbox]}>
-        {control}
-        <label htmlFor={nameAndId}>{labelText}</label>
-      </div>
-    );
 
   return (
-    <div className={cssClasses.formGroup}>
-      <label htmlFor={nameAndId}>{labelText}</label>
+    <div>
+      <label htmlFor={nameAndId} className="form-label">{labelText}</label>
       {control}
+    </div>
+  );
+};
+
+Form.Checkbox = ({ nameAndId, labelText, required, checked }: {
+  nameAndId: string;
+  labelText: string;
+  required?: boolean;
+  checked?: boolean;
+}) => {
+  return (
+    <div className="h-100 d-flex align-items-center gap-2">
+      <input type="checkbox" name={nameAndId} id={nameAndId} checked={checked === true} required={required === true} />
+      <label htmlFor={nameAndId}>{labelText}</label>
     </div>
   );
 };
@@ -59,9 +74,9 @@ Form.Submit = ({ text, backLink }: {
 }) => {
   return (
     <Form.Row>
-      <div className={cssClasses.formSubmit}>
-        <button classNames={[btnClasses.btn, btnClasses.btnGreen]}>{text}</button>
-        <RouterLink href={backLink}>Annuler</RouterLink>
+      <div className="d-flex justify-content-center align-items-center gap-3 mt-4">
+        <button classNames={["btn", "btn-success"]}>{text}</button>
+        <RouterLink href={backLink} className="link-danger">Annuler</RouterLink>
       </div>
     </Form.Row>
   );

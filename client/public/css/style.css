@@ -4,31 +4,44 @@
   --page-width: 900px;
 }
 
-*,
-*::before,
-*::after {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 html,
 body {
   height: 100vh;
 }
 
 body {
-  margin: 0;
   display: grid;
   grid-template-rows: auto 1fr;
-  font-family: Montserrat, "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
+  font-family: Montserrat, "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif !important;
+}
+
+main {
+  padding: 1em;
+  overflow-y: auto;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin-bottom: 1em;
+}
+
+h2 {
+  padding: 0.2em;
+  background-color: rgb(8, 8, 223);
+  background-image: linear-gradient(to right, rgb(8, 8, 223), rgb(2, 2, 255));
+  color: white;
 }
 
 a {
   color: inherit;
 }
 
-main {
-  padding: 1em;
-  overflow-y: auto;
+ul {
+  list-style-position: inside;
+}
+
+.list-style-none {
+  list-style: none;
 }

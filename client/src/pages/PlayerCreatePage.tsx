@@ -4,25 +4,30 @@ import { Player } from "@types";
 
 export default async function PlayerCreatePage() {
   return (
-    <PlayerForm
-      player={{
-        ffeId: "",
-        fideId: null,
-        email: "",
-        lastName: "",
-        firstName: ""
-      }}
-      handleSubmit={async (e) => {
-        e.preventDefault();
-        const formData = Object.fromEntries([...new FormData(e.target as HTMLFormElement)]) as unknown as Player;
-        const createResult = await players.create(formData);
+    <>
+      <h2>Créer un joueur</h2>
+      <div className="container-sm">
+        <PlayerForm
+          player={{
+            ffeId: "",
+            fideId: null,
+            email: "",
+            lastName: "",
+            firstName: ""
+          }}
+          handleSubmit={async (e) => {
+            e.preventDefault();
+            const formData = Object.fromEntries([...new FormData(e.target as HTMLFormElement)]) as unknown as Player;
+            const createResult = await players.create(formData);
 
-        if (createResult?.errors) {
-          return alert(createResult.errors.join("\n"));
-        }
+            if (createResult?.errors) {
+              return alert(createResult.errors.join("\n"));
+            }
 
-        location.assign("/joueurs");
-      }}
-    />
+            location.assign("/joueurs");
+          }}
+        />
+      </div>
+    </>
   );
 }

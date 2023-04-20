@@ -1,12 +1,12 @@
 import RouterLink from "@routing/RouterLink.jsx";
 import { players } from "@utils/api.js";
 import Table from "@components/Table/Table.jsx";
-import btnClasses from "@styles/btn.module.scss";
 
 export default async function PlayersPage() {
   const allPlayers = await players.all();
   return (
     <>
+      <h2>Joueurs</h2>
       <Table large={true}>
         <thead>
           <tr>
@@ -32,10 +32,10 @@ export default async function PlayersPage() {
               <td>{rating ?? 1199}</td>
               <td>
                 <Table.Actions>
-                  <RouterLink href={`/joueurs/${ffeId}/modifier`} className={`${btnClasses.btn} ${btnClasses.btnBlue}`}>
+                  <RouterLink href={`/joueurs/${ffeId}/modifier`} className="btn btn-primary">
                     <i className="bi bi-pencil-fill"></i>
                   </RouterLink>
-                  <button classNames={[btnClasses.btn, btnClasses.btnRed]} onclick={async (e) => deletePlayer(e, ffeId)}>
+                  <button className="btn btn-danger" onclick={async (e) => deletePlayer(e, ffeId)}>
                     <i className="bi bi-trash-fill"></i>
                   </button>
                 </Table.Actions>
@@ -45,9 +45,9 @@ export default async function PlayersPage() {
         </tbody>
       </Table>
 
-      <p>
-        <RouterLink href="/joueurs/nouveau">Ajouter un joueur</RouterLink>
-      </p>
+      <div>
+        <RouterLink href="/joueurs/nouveau" className="btn btn-success">Ajouter un joueur</RouterLink>
+      </div>
     </>
   );
 }

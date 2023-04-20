@@ -6,16 +6,19 @@ export default async function MatchSeasonsPage() {
 
   return (
     <>
-      <ul>
-        {(seasons ?? []).map((season) => (
-          <li>
-            <RouterLink href={`/matchs/${season}`}>{season - 1}&mdash;{season}</RouterLink>
-          </li>
-        ))}
-      </ul>
-      <p>
-        <RouterLink href="/matchs/nouveau">Créer un match</RouterLink>
-      </p>
+      <section>
+        <h2>Par saison</h2>
+        <ul>
+          {(seasons ?? []).map((season) => (
+            <li>
+              <RouterLink href={`/matchs/${season}`}>{season - 1}&mdash;{season}</RouterLink>
+            </li>
+          ))}
+        </ul>
+      </section>
+      <section>
+        <RouterLink href="/matchs/nouveau" className="btn btn-success">Créer un match</RouterLink>
+      </section>
     </>
   );
 }

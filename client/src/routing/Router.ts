@@ -108,7 +108,7 @@ router
   })
   .addRoute("/matchs/:season", {
     preCheck: () => Promise.resolve(true),
-    getTitle: ({ season }: { season: number; }) => `Match ${season - 1}-${season}`,
+    getTitle: ({ season }: { season: number; }) => `Matchs ${season - 1}-${season}`,
     component: MatchesPage
   })
   .addRoute("/matchs/composition/:matchId", {

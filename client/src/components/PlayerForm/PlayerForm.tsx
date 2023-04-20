@@ -31,7 +31,7 @@ export default function PlayerForm({ player, handleSubmit }: {
           required={true}
         />
         <Form.Group
-          type="number"
+          type="text"
           labelText="NOM"
           nameAndId="lastName"
           value={player.lastName}

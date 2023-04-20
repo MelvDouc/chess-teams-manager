@@ -1,14 +1,9 @@
 .header {
-  display: flex;
-  justify-content: space-between;
-  background-color: #222;
-  color: white;
-
-  section {
-    padding: 0.8em;
+  h1 {
+    margin: 0;
   }
 
-  nav {
+  .nav {
     height: 100%;
 
     ul {

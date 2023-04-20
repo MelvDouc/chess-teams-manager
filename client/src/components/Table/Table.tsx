@@ -7,7 +7,8 @@ export default function Table({ large, children }: {
   return (
     <table classes={{
       [cssClasses.table]: true,
-      [cssClasses.tableLarge]: large
+      [cssClasses.tableLarge]: large,
+      "mb-3": true
     }}>
       {children}
     </table>
