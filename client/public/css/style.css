@@ -15,11 +15,6 @@ body {
   font-family: Montserrat, "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif !important;
 }
 
-main {
-  padding: 1em;
-  overflow-y: auto;
-}
-
 h1,
 h2,
 h3,
@@ -44,4 +39,8 @@ ul {
 
 .list-style-none {
   list-style: none;
+}
+
+.overflow-y-auto {
+  overflow-y: auto;
 }

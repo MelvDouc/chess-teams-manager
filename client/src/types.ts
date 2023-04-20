@@ -4,10 +4,9 @@ export interface Route<Params = Record<string, string>> {
   component: (params?: Params) => string | Node | Promise<string | Node>;
 }
 
-export type RouteInfo<Params = Record<string, string>> = {
+export type RouteInfo = {
   title: string;
-  params?: Params;
-  component: Route<Params>["component"];
+  component: () => string | Node | Promise<string | Node>;
 };
 
 export interface Player {

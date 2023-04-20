@@ -22,16 +22,14 @@ export default async function MatchLineUp({ matchId }: { matchId: string; }) {
           </tr>
         </thead>
         <tbody>
-          {lineUp.map(({ board, color, player }) => {
-            return (
-              <tr>
-                <td>{board + color}</td>
-                <td>{player ? `${player.lastName} ${player.firstName}` : ""}</td>
-                <td>{player?.ffeId ?? ""}</td>
-                <td>{player?.rating ?? ""}</td>
-              </tr>
-            );
-          })}
+          {lineUp.map(({ board, color, player }) => (
+            <tr>
+              <td>{board + color}</td>
+              <td>{player ? `${player.lastName} ${player.firstName}` : ""}</td>
+              <td>{player?.ffeId ?? ""}</td>
+              <td>{player?.rating ?? ""}</td>
+            </tr>
+          ))}
         </tbody>
       </Table>
     </>

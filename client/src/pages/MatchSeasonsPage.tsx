@@ -17,7 +17,7 @@ export default async function MatchSeasonsPage() {
         </ul>
       </section>
       <section>
-        <RouterLink href="/matchs/nouveau" className="btn btn-success">Créer un match</RouterLink>
+        <RouterLink href="/matchs/nouveau" className="btn btn-success">Ajouter un match</RouterLink>
       </section>
     </>
   );

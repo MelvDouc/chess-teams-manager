@@ -55,7 +55,7 @@ export default function MatchForm({ match, handleSubmit }: {
           value={match?.date}
         />
       </Form.Row>
-      <Form.Submit backLink="/matchs" text="Créer" />
+      <Form.Submit backLink="/matchs" text="Valider" />
     </Form>
   );
 }

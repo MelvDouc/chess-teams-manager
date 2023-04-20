@@ -3,10 +3,10 @@ import Router from "@routing/Router.js";
 export default function RouterOutlet() {
   return (
     <div
-      className="router-outlet"
+      className="container"
       $init={(element) => {
-        Router.onUrlChange(async ({ component, params }) => {
-          element.replaceChildren(await component(params));
+        Router.onUrlChange(async ({ component }) => {
+          element.replaceChildren(await component());
         });
       }}
     ></div>

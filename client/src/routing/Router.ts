@@ -9,7 +9,7 @@ import PlayerUpdatePage from "@pages/PlayerUpdatePage.js";
 import { Route, RouteInfo } from "@types";
 
 class Router {
-  private routes: Map<string[], Route>;
+  private routes: Map<RegExp, Route>;
   private subscriptions: ((routeInfo: RouteInfo) => any)[] = [];
 
   constructor() {
@@ -17,40 +17,21 @@ class Router {
   }
 
   public addRoute(url: string, route: Route<any>): this {
-    this.routes.set(url.split("/"), route);
+    this.routes.set(
+      RegExp("^" + url.replace(/:([^\/]+)/g, (_, param) => `(?<${param}>[^\/]+)`) + "$"),
+      route
+    );
     return this;
   }
 
-  private getParams(urlSegments: string[], dynamicSegments: string[]) {
-    if (urlSegments.length !== dynamicSegments.length)
-      return null;
-
-    const params = {} as Record<string, any>;
-
-    for (const [i, segment] of urlSegments.entries()) {
-      if (dynamicSegments[i].startsWith(":")) {
-        params[dynamicSegments[i].slice(1)] = segment;
-        continue;
-      }
-
-      if (segment !== dynamicSegments[i])
-        return null;
-    }
-
-    return params;
-  }
-
   public updateUrl(url: string): void {
-    const segments = url.split("/");
-
     for (const [key, route] of this.routes) {
-      const params = this.getParams(segments, key);
-
-      if (params) {
+      if (key.test(url)) {
+        const params = url.match(key)?.groups ?? {};
         this.notify({
           params,
           title: route.getTitle(params),
-          component: route.component
+          component: () => route.component(params)
         });
         return;
       }
@@ -103,7 +84,7 @@ router
   })
   .addRoute("/matchs/nouveau", {
     preCheck: () => Promise.resolve(true),
-    getTitle: () => "Créer un match",
+    getTitle: () => "Ajouter un match",
     component: MatchCreatePage
   })
   .addRoute("/matchs/:season", {

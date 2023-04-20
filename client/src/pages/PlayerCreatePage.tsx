@@ -5,7 +5,7 @@ import { Player } from "@types";
 export default async function PlayerCreatePage() {
   return (
     <>
-      <h2>Créer un joueur</h2>
+      <h2>Ajouter un joueur</h2>
       <div className="container-sm">
         <PlayerForm
           player={{

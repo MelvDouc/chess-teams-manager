@@ -13,7 +13,7 @@ export default function App() {
       parent.appendChild(
         <>
           <Header />
-          <main>
+          <main className="p-4 overflow-y-auto">
             <RouterOutlet />
           </main>
         </>
