@@ -64,7 +64,7 @@ async function getLineUp(matchDetail: Partial<DbEntities.Match>) {
     return {
       board,
       color: ((board % 2 === 1) === match.whiteOnOdds) ? "B" : "N",
-      player: (ffeIdIndex === -1) ? null : players.find(p => p.ffeId === ffeIds[ffeIdIndex])!
+      player: (ffeIdIndex === -1) ? null : players.find((p) => p.ffeId === ffeIds[ffeIdIndex])!
     };
   });
 }
@@ -122,6 +122,10 @@ function getMatchErrors(match: FormMatch) {
 
   return errors;
 }
+
+// ===== ===== ===== ===== =====
+// EXPORTS
+// ===== ===== ===== ===== =====
 
 export default {
   getMatch,
