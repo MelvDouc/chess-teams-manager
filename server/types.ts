@@ -1,4 +1,3 @@
-import { ObjectId } from "mongo";
 import { Session } from "oak_sessions";
 
 export type Nullable<T> = {
@@ -7,34 +6,50 @@ export type Nullable<T> = {
 
 export namespace DbEntities {
   export interface Player {
-    ffeId: string;
-    fideId: number | null;
+    ffe_id: string;
+    fide_id: number | null;
     email: string;
-    firstName: string;
-    lastName: string;
     phone: string | null;
+    first_name: string;
+    last_name: string;
+    rating: number;
+  }
+
+  export interface Team {
+    id: number;
+    name: string;
+    captain: Player;
+  }
+
+  export interface Club {
+    id: number;
+    name: string;
+    address: string;
+    phone: string | null;
+    email: string | null;
   }
 
   export interface Match {
-    _id: ObjectId;
+    id: number;
     season: number;
     round: number;
-    teamName: string;
-    address: string;
-    opponent: string;
-    whiteOnOdds: boolean;
-    lineUp: {
-      board: number;
-      ffeId: Player["ffeId"];
-    }[];
+    team: Team;
+    opponent: Club;
+    address: Club["address"];
+    white_on_odds: boolean;
     date: Date;
   }
+
+  export type LineUp = {
+    board: number;
+    player: Player;
+  }[];
 
   export interface User {
     email: string;
     role: "ADMIN" | "CAPTAIN" | "USER";
     password: string;
-    passwordResetId?: string;
+    password_reset_id: string | null;
   }
 }
 

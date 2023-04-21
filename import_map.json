@@ -6,7 +6,7 @@
     "cors": "https://deno.land/x/cors@v1.2.2/mod.ts",
     "crypto": "https://deno.land/std@0.97.0/node/crypto.ts",
     "denomailer": "https://deno.land/x/denomailer@1.6.0/mod.ts",
-    "mongo": "https://deno.land/x/mongo@v0.31.2/mod.ts",
+    "mysql": "https://deno.land/x/mysql@v2.11.0/mod.ts",
     "nunjucks": "https://deno.land/x/nunjucks@3.2.3-2/mod.js",
     "oak": "https://deno.land/x/oak@v12.1.0/mod.ts",
     "oak_sessions": "https://deno.land/x/oak_sessions@v4.1.3/mod.ts"

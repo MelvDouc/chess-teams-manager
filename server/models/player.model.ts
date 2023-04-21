@@ -1,108 +1,46 @@
-import type { ObjectId } from "mongo";
 import db from "/database/db.ts";
-import { isNonEmptyString, isValidEmail, isValidFfeId } from "/models/validators.ts";
 import { DbEntities } from "/types.ts";
 
-const getPlayer = (filter: Partial<DbEntities.Player>) => db.players.findOne(filter);
-
-const getPlayers = () => db.players.find().toArray();
-
-const createPlayer = (player: DbEntities.Player) => db.players.insertOne(player) as Promise<ObjectId>;
-
-const updatePlayer = (ffeId: string, updates: Partial<DbEntities.Player>) => db.players.updateOne({ ffeId }, {
-  $set: updates
-});
-
-const deletePlayer = (ffeId: string) => db.players.deleteOne({ ffeId });
-
-// ===== ===== ===== ===== =====
-// ERRORS
-// ===== ===== ===== ===== =====
-
-function ensurePlayer(data: DbEntities.Player): DbEntities.Player {
-  return {
-    ffeId: (data.ffeId) ? String(data.ffeId) : "",
-    fideId: (data.fideId) ? parseInt(data.fideId as unknown as string) : null,
-    email: (data.email) ? String(data.email) : "",
-    firstName: (data.firstName) ? String(data.firstName) : "",
-    lastName: (data.lastName) ? String(data.lastName) : "",
-    phone: (data.phone) ? String(data.phone) : null
-  };
+async function getPlayer(ffeId: string): Promise<DbEntities.Player | null> {
+  const players = await db.query(`SELECT * FROM player WHERE ffe_id = ?`, [ffeId]);
+  return players[0] ?? null;
 }
 
-async function* ffeIdErrors(ffeId: string): AsyncGenerator<string> {
-  if (!isNonEmptyString(ffeId) || !isValidFfeId(ffeId)) {
-    yield "N° FFE invalide.";
-    return;
-  }
-
-  if (await getPlayer({ ffeId }))
-    yield "Il existe déjà un joueur avec ce n° FFE.";
+function getPlayers() {
+  return db.query("SELECT * FROM player");
 }
 
-async function* fideIdErrors(fideId: number | null): AsyncGenerator<string> {
-  if (fideId === null)
-    return;
-
-  if (isNaN(fideId)) {
-    yield "N° FIDE invalide.";
-    return;
-  }
-
-  if (await getPlayer({ fideId }))
-    yield "Il existe déjà un joueur avec ce n° FIDE.";
+function createPlayer({ ffe_id, fide_id, email, phone, first_name, last_name, rating }: DbEntities.Player) {
+  return db.execute(`
+    INSERT INTO player (ffe_id, fide_id, email, phone, first_name, last_name, rating)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+  `, [
+    ffe_id,
+    fide_id,
+    email,
+    phone,
+    first_name,
+    last_name,
+    rating
+  ]);
 }
 
-function* variousErrors(player: DbEntities.Player): Generator<string> {
-  if (!isNonEmptyString(player.firstName))
-    yield "Prénom requis.";
-
-  if (!isNonEmptyString(player.lastName))
-    yield "Nom de famille requis.";
-
-  if (!isNonEmptyString(player.email) || !isValidEmail(player.email))
-    yield "Email invalide.";
+function updatePlayer(ffe_id: DbEntities.Player["ffe_id"], updates: Partial<Omit<DbEntities.Player, "ffe_id">>) {
+  const placeholders = Object.keys(updates).map((key) => `${key}=?`).join();
+  return db.execute(
+    `UPDATE player SET ${placeholders} WHERE ffe_id = ?`,
+    Object.values(updates).concat(ffe_id)
+  );
 }
 
-async function getCreateErrors(player: DbEntities.Player) {
-  const errors: string[] = [];
-
-  for await (const err of ffeIdErrors(player.ffeId))
-    errors.push(err);
-
-  for await (const err of fideIdErrors(player.fideId))
-    errors.push(err);
-
-  return errors.concat(...variousErrors(player));
+function deletePlayer(ffe_id: DbEntities.Player["ffe_id"]) {
+  return db.execute("DELETE FROM player WHERE ffe_id = ?", [ffe_id]);
 }
-
-async function getUpdateErrors(updates: DbEntities.Player, playerInDb: DbEntities.Player) {
-  const errors: string[] = [];
-
-  if (updates.ffeId !== playerInDb.ffeId) {
-    for await (const err of ffeIdErrors(updates.ffeId))
-      errors.push(err);
-  }
-
-  if (updates.fideId !== playerInDb.fideId) {
-    for await (const err of fideIdErrors(updates.fideId))
-      errors.push(err);
-  }
-
-  return errors.concat(...variousErrors(updates));
-}
-
-// ===== ===== ===== ===== =====
-// EXPORT
-// ===== ===== ===== ===== =====
 
 export default {
   getPlayer,
   getPlayers,
   createPlayer,
   updatePlayer,
-  deletePlayer,
-  ensurePlayer,
-  getCreateErrors,
-  getUpdateErrors
+  deletePlayer
 };
