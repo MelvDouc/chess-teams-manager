@@ -11,10 +11,7 @@ function getClubs(): Promise<DbEntities.Club[]> {
 }
 
 function createClub({ name, address, phone, email }: Omit<DbEntities.Club, "id">) {
-  return db.execute(
-    "INSERT INTO club (name, address, phone, email) VALUES (?, ?, ?, ?)",
-    [name, address, phone, email]
-  );
+  return db.insert("club", { name, address, phone, email });
 }
 
 function updateClub(id: DbEntities.Club["id"], updates: Partial<Omit<DbEntities.Club, "id">>) {

@@ -46,9 +46,7 @@ function createTeam({ name, captain_ffe_id }: {
   name: string;
   captain_ffe_id: number;
 }) {
-  return db.execute(`
-    INSERT INTO team (name, captain_ffe_id) VALUES (?, ?)
-  `, [name, captain_ffe_id]);
+  return db.insert("team", { name, captain_ffe_id });
 }
 
 function updateTeam(id: DbEntities.Team["id"], updates: Partial<Omit<DbEntities.Team, "id">>) {

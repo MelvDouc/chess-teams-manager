@@ -125,18 +125,15 @@ async function getLineUp({ season, round, teamName }: {
 function createMatch({ season, round, team_id, opponent_id, home_club_id, white_on_odds, date }: DbMatch) {
   const dateString = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}`;
 
-  return db.execute(`
-    INSERT INTO league_match (season, round, team_id, opponent_id, home_club_id, white_on_odds, date)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
-  `, [
+  return db.insert("league_match", {
     season,
     round,
     team_id,
     opponent_id,
     home_club_id,
-    Number(white_on_odds),
-    dateString
-  ]);
+    white_on_odds: Number(white_on_odds),
+    date: dateString
+  });
 }
 
 function updateMatch(id: number, updates: Partial<Omit<DbMatch, "id">>) {
@@ -181,6 +178,10 @@ export default {
   deleteMatch,
   ensureMatch
 };
+
+// ===== ===== ===== ===== =====
+// TYPES
+// ===== ===== ===== ===== =====
 
 interface RawMatchSearch {
   id: number;

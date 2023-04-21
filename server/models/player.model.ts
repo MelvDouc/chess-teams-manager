@@ -11,10 +11,7 @@ function getPlayers() {
 }
 
 function createPlayer({ ffe_id, fide_id, email, phone, first_name, last_name, rating }: DbEntities.Player) {
-  return db.execute(`
-    INSERT INTO player (ffe_id, fide_id, email, phone, first_name, last_name, rating)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
-  `, [
+  return db.insert("player", {
     ffe_id,
     fide_id,
     email,
@@ -22,7 +19,7 @@ function createPlayer({ ffe_id, fide_id, email, phone, first_name, last_name, ra
     first_name,
     last_name,
     rating
-  ]);
+  });
 }
 
 function updatePlayer(ffe_id: DbEntities.Player["ffe_id"], updates: Partial<Omit<DbEntities.Player, "ffe_id">>) {

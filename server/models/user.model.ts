@@ -14,10 +14,7 @@ function getUsers(): Promise<User[]> {
 }
 
 function createUser({ email, password, role }: Omit<User, "password_reset_id">) {
-  return db.execute(
-    "INSERT INTO user (email, password, role) VALUES (?, ?, ?)",
-    [email, password, role]
-  );
+  return db.insert("user", { email, password, role });
 }
 
 function updateUser(email: User["email"], updates: Partial<Omit<User, "email">>) {
