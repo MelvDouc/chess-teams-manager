@@ -3,11 +3,11 @@ import { DbEntities } from "/types.ts";
 
 const fullMatchInfoSql = `
   SELECT
-    league_match.id id,
+    lm.id id,
     season,
     round,
     white_on_odds,
-    league_match.date date,
+    lm.date date,
     hc.address address,
     team.id team_id,
     team.name team_name,
@@ -23,10 +23,10 @@ const fullMatchInfoSql = `
     opp.address opponent_address,
     opp.email opponent_email,
     opp.phone opponent_phone
-  FROM league_match
-  JOIN club hc ON hc.id = league_match.home_club_id
-  JOIN club opp ON opp.id = league_match.opponent_id
-  JOIN team ON team.id = league_match.team_id
+  FROM league_match lm
+  JOIN club hc ON hc.id = lm.home_club_id
+  JOIN club opp ON opp.id = lm.opponent_id
+  JOIN team ON team.id = lm.team_id
   JOIN player cap ON cap.ffe_id = team.captain_ffe_id
 `;
 
@@ -59,12 +59,17 @@ const convertSearch = (search: RawMatchSearch): DbEntities.Match => ({
   }
 });
 
-function getMatch(filter: {
+async function getMatch({ season, round, teamName }: {
   season: number;
   round: number;
   teamName: string;
 }): Promise<DbEntities.Match | null> {
-  return db.findOne("league_match", filter);
+  const [match] = await db.query(`${fullMatchInfoSql} WHERE season = ? AND round = ? AND team.name = ?`, [
+    season, round, teamName
+  ]);
+  return (match)
+    ? convertSearch(match)
+    : null;
 }
 
 function getSeasons(): Promise<number[]> {
@@ -81,14 +86,6 @@ async function getLineUp({ season, round, teamName }: {
   round: number;
   teamName: string;
 }): Promise<DbEntities.LineUp | null> {
-  const [search] = await db.query(
-    `${fullMatchInfoSql} WHERE season = ? AND round = ? AND team.name = ?`,
-    [season, round, teamName]
-  ) as RawMatchSearch[];
-
-  if (!search)
-    return null;
-
   const data = await db.query(`
     SELECT
       board,
@@ -104,8 +101,10 @@ async function getLineUp({ season, round, teamName }: {
     FROM line_up
     JOIN player p ON p.ffe_id = line_up.player_ffe_id
     JOIN league_match lm ON lm.id = line_up.match_id
-    WHERE match_id = ?
-  `, [search.id]) as ({ board: number; color: "w" | "b"; player_rating: number; } & DbEntities.Player)[];
+    JOIN team ON team.id = lm.team_id
+    WHERE lm.season = ? AND lm.round = ? AND team.name = ?
+  `, [season, round, teamName]) as RawLineUp;
+
   return data.map(({ board, color, player_rating, ...player }) => ({
     board,
     color,
@@ -205,3 +204,9 @@ interface DbMatch {
   white_on_odds: boolean;
   date: Date;
 }
+
+type RawLineUp = ({
+  board: number;
+  color: "w" | "b";
+  player_rating: number;
+} & DbEntities.Player)[];

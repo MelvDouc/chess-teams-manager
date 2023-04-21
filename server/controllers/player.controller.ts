@@ -11,14 +11,12 @@ const getPlayers: RouterMiddleware<"/players"> = async ({ response }) => {
 
 const createPlayer: RouterMiddleware<"/players/create"> = async ({ request, response }) => {
   const data = await request.body().value;
-  const insertResult = await playerModel.createPlayer(data);
-  response.body = insertResult;
+  response.body = await playerModel.createPlayer(data);
 };
 
 const updatePlayer: RouterMiddleware<"/players/:ffeId/update"> = async ({ request, response, params }) => {
   const data = await request.body().value;
-  const updateResult = await playerModel.updatePlayer(params.ffeId, data);
-  response.body = updateResult;
+  response.body = await playerModel.updatePlayer(params.ffeId, data);
 };
 
 const deletePlayer: RouterMiddleware<"/players/:ffeId/delete"> = async ({ params, response }) => {

@@ -12,7 +12,6 @@ console.log("%cConnected to database.", "color: yellow");
 
 
 const query = client.query.bind(client);
-const execute = client.execute.bind(client);
 
 const findOne = async <T>(tableName: string, filter: Partial<T>) => {
   const whereClause = Object.keys(filter).map((key) => `${key} = ?`).join(" AND ");
@@ -36,7 +35,7 @@ const insert = (tableName: string, value: Record<string, string | number | boole
 
   return client.execute(
     `INSERT INTO ${tableName} (${keys.join()}) VALUES ${placeholders}`,
-    [value, ...values]
+    [...Object.values(value), ...values.flatMap((v) => Object.values(v))]
   );
 };
 
@@ -61,7 +60,6 @@ const deleteOne = <T>(tableName: string, filter: Partial<T>) => {
 
 export default {
   query,
-  execute,
   findOne,
   findAll,
   insert,
