@@ -17,10 +17,14 @@ const execute = client.execute.bind(client);
 const findOne = async <T>(tableName: string, filter: Partial<T>) => {
   const whereClause = Object.keys(filter).map((key) => `${key} = ?`).join(" AND ");
   const search = await client.query(
-    `SELECT * FROM ${tableName} WHERE ${whereClause}`,
+    `SELECT * FROM ${tableName} WHERE ${whereClause} LIMIT 1`,
     Object.values(filter)
   );
   return search[0] ?? null;
+};
+
+const findAll = (tableName: string) => {
+  return client.query(`SELECT * FROM ${tableName}`);
 };
 
 const insert = (tableName: string, value: Record<string, string | number | boolean | null>, ...values: (typeof value)[]) => {
@@ -50,6 +54,7 @@ export default {
   query,
   execute,
   findOne,
+  findAll,
   insert,
   update,
 };

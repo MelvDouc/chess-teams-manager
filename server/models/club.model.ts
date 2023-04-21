@@ -6,7 +6,7 @@ function getClub(id: DbEntities.Club["id"]): Promise<DbEntities.Club | null> {
 }
 
 function getClubs(): Promise<DbEntities.Club[]> {
-  return db.query("SELECT * FROM club");
+  return db.findAll("club");
 }
 
 function createClub({ name, address, phone, email }: Omit<DbEntities.Club, "id">) {

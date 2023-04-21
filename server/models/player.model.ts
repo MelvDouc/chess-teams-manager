@@ -6,7 +6,7 @@ function getPlayer(ffeId: string): Promise<DbEntities.Player | null> {
 }
 
 function getPlayers() {
-  return db.query("SELECT * FROM player");
+  return db.findAll("player");
 }
 
 function createPlayer({ ffe_id, fide_id, email, phone, first_name, last_name, rating }: DbEntities.Player) {

@@ -8,7 +8,7 @@ function getUser(filter: Partial<Omit<User, "password">>): Promise<User | null> 
 }
 
 function getUsers(): Promise<User[]> {
-  return db.query("SELECT * FROM user WHERE id = ?");
+  return db.findAll("user");
 }
 
 function createUser({ email, password, role }: Omit<User, "password_reset_id">) {

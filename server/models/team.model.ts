@@ -35,8 +35,8 @@ function getTeam(name: string): Promise<DbEntities.Team | null> {
 }
 
 async function getTeams(): Promise<DbEntities.Team[]> {
-  const search = await db.query(teamSql);
-  return search.map(convertSearch);
+  const teams = await db.query(teamSql);
+  return teams.map(convertSearch);
 }
 
 function createTeam({ name, captain_ffe_id }: {
