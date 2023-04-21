@@ -7,13 +7,13 @@ async function getClub(id: DbEntities.Club["id"]): Promise<DbEntities.Club | nul
 }
 
 function getClubs(): Promise<DbEntities.Club[]> {
-  return db.query("SELECT * FROM club WHERE id = ?");
+  return db.query("SELECT * FROM club");
 }
 
 function createClub({ name, address, phone, email }: Omit<DbEntities.Club, "id">) {
   return db.execute(
     "INSERT INTO club (name, address, phone, email) VALUES (?, ?, ?, ?)",
-    [name, email, phone, address]
+    [name, address, phone, email]
   );
 }
 

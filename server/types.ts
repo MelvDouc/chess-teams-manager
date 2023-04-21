@@ -42,6 +42,7 @@ export namespace DbEntities {
 
   export type LineUp = {
     board: number;
+    color: "w" | "b";
     player: Player;
   }[];
 

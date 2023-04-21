@@ -4,7 +4,7 @@ import { DbEntities } from "/types.ts";
 const teamSql = `
   SELECT
     team.id team_id,
-    team.id team_name,
+    team.name team_name,
     cap.ffe_id captain_ffe_id,
     cap.fide_id captain_fide_id,
     cap.email captain_email,

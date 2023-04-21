@@ -24,7 +24,7 @@ const fullMatchInfoSql = `
     opp.email opponent_email,
     opp.phone opponent_phone
   FROM league_match
-  JOIN club hc ON hc.id = league_match.home_club_id,
+  JOIN club hc ON hc.id = league_match.home_club_id
   JOIN club opp ON opp.id = league_match.opponent_id
   JOIN team ON team.id = league_match.team_id
   JOIN player cap ON cap.ffe_id = team.captain_ffe_id
@@ -65,7 +65,7 @@ async function getMatch({ season, round, teamName }: {
   teamName: string;
 }): Promise<DbEntities.Match | null> {
   const [search] = await db.query(
-    `${fullMatchInfoSql} WHERE season = ? AND round = ? AND team_name = ?`,
+    `${fullMatchInfoSql} WHERE season = ? AND round = ? AND team.name = ?`,
     [season, round, teamName]
   ) as RawMatchSearch[];
   return (search)
@@ -88,7 +88,7 @@ async function getLineUp({ season, round, teamName }: {
   teamName: string;
 }): Promise<DbEntities.LineUp | null> {
   const [search] = await db.query(
-    `${fullMatchInfoSql} WHERE season = ? AND round = ? AND team_name = ?`,
+    `${fullMatchInfoSql} WHERE season = ? AND round = ? AND team.name = ?`,
     [season, round, teamName]
   ) as RawMatchSearch[];
 
@@ -99,6 +99,7 @@ async function getLineUp({ season, round, teamName }: {
     SELECT
       board,
       player_rating,
+      IF((board % 2 = 1) = lm.white_on_odds, 'w', 'b') color,
       p.ffe_id ffe_id,
       p.fide_id fide_id,
       p.email email,
@@ -108,10 +109,12 @@ async function getLineUp({ season, round, teamName }: {
       p.rating rating
     FROM line_up
     JOIN player p ON p.ffe_id = line_up.player_ffe_id
+    JOIN league_match lm ON lm.id = line_up.match_id
     WHERE match_id = ?
-  `, [search.id]) as ({ board: number; player_rating: number; } & DbEntities.Player)[];
-  return data.map(({ board, player_rating, ...player }) => ({
+  `, [search.id]) as ({ board: number; color: "w" | "b"; player_rating: number; } & DbEntities.Player)[];
+  return data.map(({ board, color, player_rating, ...player }) => ({
     board,
+    color,
     player: {
       ...player,
       rating: player_rating

@@ -10,13 +10,11 @@ const getMatchesOfSeason: RouterMiddleware<"/matches/:season"> = async ({ params
 };
 
 const getMatch: RouterMiddleware<"/matches/:season/:round/:teamName"> = async ({ params, response }) => {
-  const match = await matchModel.getMatch({
+  response.body = await matchModel.getMatch({
     season: +params.season,
     round: +params.round,
     teamName: params.teamName
   });
-
-  response.body = match;
 };
 
 const getLineUp: RouterMiddleware<"/matches/:season/:round/:teamName/line-up"> = async ({ params, response }) => {
@@ -31,14 +29,12 @@ const getLineUp: RouterMiddleware<"/matches/:season/:round/:teamName/line-up"> =
 const createMatch: RouterMiddleware<"/matches/create"> = async ({ request, response }) => {
   const data = await request.body().value;
   // TODO: prevent duplicates
-  const insertResult = await matchModel.createMatch(matchModel.ensureMatch(data));
-  response.body = insertResult;
+  response.body = await matchModel.createMatch(matchModel.ensureMatch(data));
 };
 
 const updateMatch: RouterMiddleware<"/matches/:id/update"> = async ({ params, request, response }) => {
   const data = await request.body().value;
-  const updateResult = await matchModel.updateMatch(+params.id, data);
-  response.body = updateResult;
+  response.body = await matchModel.updateMatch(+params.id, data);
 };
 
 const deleteMatch: RouterMiddleware<"/matches/:id/delete"> = async ({ params, response }) => {

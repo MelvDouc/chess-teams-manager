@@ -6,7 +6,10 @@ const config = Deno.env.toObject() as Readonly<{
   ADMIN_EMAIL_APP_PASSWORD: string;
   ADMIN_EMAIL_HOST: string;
   ADMIN_EMAIL_PORT: string;
-  CLEARDB_DATABASE_URL: string;
+  CLEARDB_USER: string;
+  CLEARDB_PASSWORD: string;
+  CLEARDB_HOST: string;
+  CLEARDB_DATABASE: string;
   CLIENT_URL: string;
   MONGODB_URI: string;
   PORT: string;
