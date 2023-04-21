@@ -50,6 +50,15 @@ const update = <T>(tableName: string, filter: Partial<T>, updates: Partial<T>) =
   );
 };
 
+const deleteOne = <T>(tableName: string, filter: Partial<T>) => {
+  const whereClause = Object.keys(filter).map((key) => `${key} = ?`).join(" AND ");
+
+  return client.execute(
+    `DELETE FROM ${tableName} WHERE ${whereClause}`,
+    Object.values(filter)
+  );
+};
+
 export default {
   query,
   execute,
@@ -57,4 +66,5 @@ export default {
   findAll,
   insert,
   update,
+  delete: deleteOne
 };

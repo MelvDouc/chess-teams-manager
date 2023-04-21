@@ -26,7 +26,7 @@ function updatePlayer(ffe_id: DbEntities.Player["ffe_id"], updates: Partial<Omit
 }
 
 function deletePlayer(ffe_id: DbEntities.Player["ffe_id"]) {
-  return db.execute("DELETE FROM player WHERE ffe_id = ?", [ffe_id]);
+  return db.delete("player", { ffe_id });
 }
 
 export default {

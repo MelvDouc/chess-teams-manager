@@ -135,7 +135,7 @@ function updateMatch(id: number, updates: Partial<Omit<DbMatch, "id">>) {
 }
 
 function deleteMatch(id: number) {
-  return db.execute("DELETE FROM league_match WHERE id = ?", [id]);
+  return db.delete("league_match", { id });
 }
 
 // ===== ===== ===== ===== =====

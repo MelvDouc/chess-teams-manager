@@ -18,7 +18,7 @@ function updateClub(id: DbEntities.Club["id"], updates: Partial<Omit<DbEntities.
 }
 
 function deleteClub(id: DbEntities.Club["id"]) {
-  return db.execute("DELETE FROM club WHERE id = ?", [id]);
+  return db.delete("club", { id });
 }
 
 export default {

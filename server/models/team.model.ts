@@ -51,7 +51,7 @@ function updateTeam(id: DbEntities.Team["id"], updates: Partial<Omit<DbEntities.
 }
 
 function deleteTeam(id: DbEntities.Team["id"]) {
-  return db.execute("DELETE FROM team WHERE id = ?", [id]);
+  return db.delete("team", { id });
 }
 
 export default {

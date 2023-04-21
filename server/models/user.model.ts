@@ -20,7 +20,7 @@ function updateUser(email: User["email"], updates: Partial<Omit<User, "email">>)
 }
 
 function deleteUser(email: User["email"]) {
-  return db.execute("DELETE FROM club WHERE email = ?", [email]);
+  return db.delete("user", { email });
 }
 
 export default {
