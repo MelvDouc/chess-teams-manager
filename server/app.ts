@@ -7,6 +7,7 @@ import router from "/routes/router.ts";
 import { AppState } from "/types.ts";
 
 const app = new Application<AppState>();
+const port = Deno.env.get("PORT") ?? Deno.env.get("port") ?? Deno.env.get("Port") ?? config.PORT;
 
 app.use(Session.initMiddleware());
 app.use(staticMiddleware);
@@ -28,4 +29,4 @@ app.addEventListener("listen", ({ hostname, secure, port }) => {
   );
 });
 
-await app.listen({ port: +config.PORT });
+await app.listen({ port: +port });
