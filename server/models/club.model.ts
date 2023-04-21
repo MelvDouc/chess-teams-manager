@@ -1,9 +1,8 @@
 import db from "/database/db.ts";
 import { DbEntities } from "/types.ts";
 
-async function getClub(id: DbEntities.Club["id"]): Promise<DbEntities.Club | null> {
-  const search = await db.query("SELECT * FROM club WHERE id = ?", [id]);
-  return search[0] ?? null;
+function getClub(id: DbEntities.Club["id"]): Promise<DbEntities.Club | null> {
+  return db.findOne("club", { id });
 }
 
 function getClubs(): Promise<DbEntities.Club[]> {

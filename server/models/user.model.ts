@@ -3,10 +3,8 @@ import { DbEntities } from "/types.ts";
 
 type User = DbEntities.User;
 
-async function getUser(data: Partial<Omit<User, "password">>): Promise<User | null> {
-  const placeholders = Object.keys(data).map((key) => `${key}=?`).join(" AND ");
-  const search = await db.query(`SELECT * FROM user WHERE ${placeholders}`, Object.values(data));
-  return search[0] ?? null;
+function getUser(filter: Partial<Omit<User, "password">>): Promise<User | null> {
+  return db.findOne("user", filter);
 }
 
 function getUsers(): Promise<User[]> {

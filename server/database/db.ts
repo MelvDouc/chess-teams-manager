@@ -14,6 +14,15 @@ console.log("%cConnected to database.", "color: yellow");
 const query = client.query.bind(client);
 const execute = client.execute.bind(client);
 
+const findOne = async <T>(tableName: string, filter: Partial<T>) => {
+  const whereClause = Object.keys(filter).map((key) => `${key} = ?`).join(" AND ");
+  const search = await client.query(
+    `SELECT * FROM ${tableName} WHERE ${whereClause}`,
+    Object.values(filter)
+  );
+  return search[0] ?? null;
+};
+
 const insert = (tableName: string, value: Record<string, string | number | boolean | null>, ...values: (typeof value)[]) => {
   const keys = Object.keys(value);
   const questionMarks = Array(keys.length).fill("?").join();
@@ -40,6 +49,7 @@ const update = <T>(tableName: string, filter: Partial<T>, updates: Partial<T>) =
 export default {
   query,
   execute,
+  findOne,
   insert,
   update,
 };

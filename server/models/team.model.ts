@@ -30,11 +30,8 @@ const convertSearch = (search: any) => ({
   }
 });
 
-async function getTeam(name: string): Promise<DbEntities.Team | null> {
-  const [search] = await db.query(`${teamSql} WHERE team_name = ?`, [name]);
-  return (search)
-    ? convertSearch(search)
-    : null;
+function getTeam(name: string): Promise<DbEntities.Team | null> {
+  return db.findOne("team", { name });
 }
 
 async function getTeams(): Promise<DbEntities.Team[]> {

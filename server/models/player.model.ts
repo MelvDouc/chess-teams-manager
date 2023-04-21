@@ -1,9 +1,8 @@
 import db from "/database/db.ts";
 import { DbEntities } from "/types.ts";
 
-async function getPlayer(ffeId: string): Promise<DbEntities.Player | null> {
-  const players = await db.query(`SELECT * FROM player WHERE ffe_id = ?`, [ffeId]);
-  return players[0] ?? null;
+function getPlayer(ffeId: string): Promise<DbEntities.Player | null> {
+  return db.findOne("player", { ffe_id: ffeId });
 }
 
 function getPlayers() {

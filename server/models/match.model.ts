@@ -59,18 +59,12 @@ const convertSearch = (search: RawMatchSearch): DbEntities.Match => ({
   }
 });
 
-async function getMatch({ season, round, teamName }: {
+function getMatch(filter: {
   season: number;
   round: number;
   teamName: string;
 }): Promise<DbEntities.Match | null> {
-  const [search] = await db.query(
-    `${fullMatchInfoSql} WHERE season = ? AND round = ? AND team.name = ?`,
-    [season, round, teamName]
-  ) as RawMatchSearch[];
-  return (search)
-    ? convertSearch(search)
-    : null;
+  return db.findOne("league_match", filter);
 }
 
 function getSeasons(): Promise<number[]> {
