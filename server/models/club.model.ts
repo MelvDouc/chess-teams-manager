@@ -15,10 +15,7 @@ function createClub({ name, address, phone, email }: Omit<DbEntities.Club, "id">
 }
 
 function updateClub(id: DbEntities.Club["id"], updates: Partial<Omit<DbEntities.Club, "id">>) {
-  const placeholders = Object.keys(updates).map((key) => `${key}=?`).join();
-  return db.execute(
-    `UPDATE club SET ${placeholders} WHERE id = ?`, [...Object.values(updates), id]
-  );
+  return db.update<DbEntities.Club>("club", { id }, updates);
 }
 
 function deleteClub(id: DbEntities.Club["id"]) {

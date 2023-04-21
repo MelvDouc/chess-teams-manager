@@ -23,11 +23,7 @@ function createPlayer({ ffe_id, fide_id, email, phone, first_name, last_name, ra
 }
 
 function updatePlayer(ffe_id: DbEntities.Player["ffe_id"], updates: Partial<Omit<DbEntities.Player, "ffe_id">>) {
-  const placeholders = Object.keys(updates).map((key) => `${key}=?`).join();
-  return db.execute(
-    `UPDATE player SET ${placeholders} WHERE ffe_id = ?`,
-    Object.values(updates).concat(ffe_id)
-  );
+  return db.update<DbEntities.Player>("player", { ffe_id }, updates);
 }
 
 function deletePlayer(ffe_id: DbEntities.Player["ffe_id"]) {

@@ -18,10 +18,7 @@ function createUser({ email, password, role }: Omit<User, "password_reset_id">) 
 }
 
 function updateUser(email: User["email"], updates: Partial<Omit<User, "email">>) {
-  const placeholders = Object.keys(updates).map((key) => `${key}=?`).join();
-  return db.execute(
-    `UPDATE user SET ${placeholders} WHERE email = ?`, [...Object.values(updates), email]
-  );
+  return db.update<DbEntities.User>("user", { email }, updates);
 }
 
 function deleteUser(email: User["email"]) {

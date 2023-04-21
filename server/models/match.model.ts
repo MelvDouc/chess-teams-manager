@@ -137,11 +137,7 @@ function createMatch({ season, round, team_id, opponent_id, home_club_id, white_
 }
 
 function updateMatch(id: number, updates: Partial<Omit<DbMatch, "id">>) {
-  const placeholders = Object.keys(updates).map((key) => `${key}=?`).join();
-  return db.execute(
-    `UPDATE league_match SET ${placeholders} WHERE id = ?`,
-    Object.values(updates).concat(id)
-  );
+  return db.update<DbEntities.Match>("league_match", { id }, updates);
 }
 
 function deleteMatch(id: number) {

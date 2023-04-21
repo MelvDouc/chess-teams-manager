@@ -21,14 +21,25 @@ const insert = (tableName: string, value: Record<string, string | number | boole
     return `(${questionMarks})`;
   }).join();
 
-  return execute(
+  return client.execute(
     `INSERT INTO ${tableName} (${keys.join()}) VALUES ${placeholders}`,
     [value, ...values]
+  );
+};
+
+const update = <T>(tableName: string, filter: Partial<T>, updates: Partial<T>) => {
+  const placeholders = Object.keys(updates).map((key) => `${key} = ?`).join();
+  const whereClause = Object.keys(filter).map((key) => `${key} = ?`).join(" AND ");
+
+  return client.execute(
+    `UPDATE ${tableName} SET ${placeholders} WHERE ${whereClause}`,
+    [...Object.values(updates), ...Object.values(filter)]
   );
 };
 
 export default {
   query,
   execute,
-  insert
+  insert,
+  update,
 };

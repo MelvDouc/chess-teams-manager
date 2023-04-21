@@ -50,11 +50,7 @@ function createTeam({ name, captain_ffe_id }: {
 }
 
 function updateTeam(id: DbEntities.Team["id"], updates: Partial<Omit<DbEntities.Team, "id">>) {
-  const placeholders = Object.keys(updates).map((key) => `${key}=?`).join();
-  return db.execute(
-    `UPDATE team SET ${placeholders} WHERE id = ?`,
-    [...Object.values(updates), id]
-  );
+  return db.update<DbEntities.Team>("team", { id }, updates);
 }
 
 function deleteTeam(id: DbEntities.Team["id"]) {
