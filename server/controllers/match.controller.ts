@@ -38,8 +38,7 @@ const updateMatch: RouterMiddleware<"/matches/:id/update"> = async ({ params, re
 };
 
 const deleteMatch: RouterMiddleware<"/matches/:id/delete"> = async ({ params, response }) => {
-  const deleteResult = await matchModel.deleteMatch(+params.id);
-  response.body = deleteResult;
+  response.body = await matchModel.deleteMatch(+params.id);
 };
 
 
