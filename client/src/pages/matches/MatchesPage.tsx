@@ -1,11 +1,16 @@
 import Table from "@components/Table/Table.jsx";
 import RouterLink from "@routing/RouterLink.jsx";
-import { matches } from "@utils/api.js";
+import { getMatches } from "@utils/api.js";
+import { DbEntities } from "@types";
 
 export default async function MatchesPage({ season }: {
   season: number;
 }) {
-  const matchesBySeason = await matches.bySeason(season);
+  const matches = (await getMatches(season) ?? []).reduce((acc, match) => {
+    acc[match.team.name] ??= [];
+    acc[match.team.name].push(match);
+    return acc;
+  }, {} as Record<string, DbEntities.Match[]>);
 
   return (
     <>
@@ -20,24 +25,24 @@ export default async function MatchesPage({ season }: {
             <th>Actions</th>
           </tr>
         </thead>
-        {(matchesBySeason ?? []).map(({ teamName, matches }) => (
+        {Object.entries(matches).map(([teamName, matches]) => (
           <>
             <Table.SubtitleRow title={teamName} colSpan={5} />
             <tbody>
-              {matches.map(({ _id, round, opponent, address, date }) => (
+              {matches.map(({ round, opponent, address, date }) => (
                 <tr>
                   <td>{round}</td>
-                  <td>{opponent}</td>
+                  <td>{opponent.name}</td>
                   <td>
                     <address>{address}</address>
                   </td>
                   <td>{date}</td>
                   <td>
                     <Table.Actions>
-                      <RouterLink className="btn btn-primary" href={`/matchs/${_id}/modifier`}>
+                      <RouterLink className="btn btn-primary" href={`/matchs/${season}/${round}/${teamName}/modifier`}>
                         <i className={"bi bi-pen-fill"}></i>
                       </RouterLink>
-                      <RouterLink className="btn btn-warning" href={`/matchs/composition/${_id}`}>Compo</RouterLink>
+                      <RouterLink className="btn btn-warning" href={`/matchs/${season}/${round}/${teamName}/composition`}>Compo</RouterLink>
                     </Table.Actions>
                   </td>
                 </tr>

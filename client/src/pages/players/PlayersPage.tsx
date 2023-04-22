@@ -1,9 +1,9 @@
 import RouterLink from "@routing/RouterLink.jsx";
-import { players } from "@utils/api.js";
+import { getPlayers, deletePlayer } from "@utils/api.js";
 import Table from "@components/Table/Table.jsx";
 
 export default async function PlayersPage() {
-  const allPlayers = await players.all();
+  const allPlayers = await getPlayers();
 
   return (
     <>
@@ -22,21 +22,21 @@ export default async function PlayersPage() {
           </tr>
         </thead>
         <tbody>
-          {(allPlayers ?? []).map(({ ffeId, fideId, email, firstName, lastName, phone, rating }) => (
+          {(allPlayers ?? []).map(({ ffe_id, fide_id, email, first_name, last_name, phone, rating }) => (
             <tr>
-              <td>{ffeId}</td>
-              <td>{fideId}</td>
-              <td>{lastName}</td>
-              <td>{firstName}</td>
+              <td>{ffe_id}</td>
+              <td>{fide_id}</td>
+              <td>{last_name}</td>
+              <td>{first_name}</td>
               <td>{email}</td>
               <td>{phone ?? ""}</td>
               <td>{rating ?? 1199}</td>
               <td>
                 <Table.Actions>
-                  <RouterLink href={`/joueurs/${ffeId}/modifier`} className="btn btn-primary">
+                  <RouterLink href={`/joueurs/${ffe_id}/modifier`} className="btn btn-primary">
                     <i className="bi bi-pencil-fill"></i>
                   </RouterLink>
-                  <button className="btn btn-danger" onclick={(e) => deletePlayer(e, ffeId)}>
+                  <button className="btn btn-danger" onclick={(e) => delPlayer(e, ffe_id)}>
                     <i className="bi bi-trash-fill"></i>
                   </button>
                 </Table.Actions>
@@ -52,13 +52,11 @@ export default async function PlayersPage() {
   );
 }
 
-async function deletePlayer(e: Event, ffeId: string): Promise<void> {
+async function delPlayer(e: Event, ffe_id: string): Promise<void> {
   if (!confirm("Êtes-vous sûr(e) de vouloir supprimer ce joueur ?"))
     return;
 
-  const deleteResult = await players.delete(ffeId);
-
-  if (deleteResult?.success) {
+  if ((await deletePlayer(ffe_id))?.success) {
     (e.target as HTMLButtonElement).closest("tr")!.remove();
     return;
   }

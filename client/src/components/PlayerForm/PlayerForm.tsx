@@ -1,8 +1,8 @@
-import { Player } from "@types";
+import { DbEntities } from "@types";
 import Form from "@components/Form/Form.jsx";
 
 export default function PlayerForm({ player, handleSubmit }: {
-  player: Player;
+  player: DbEntities.Player;
   handleSubmit: (e: SubmitEvent) => any;
 }) {
   return (
@@ -11,30 +11,30 @@ export default function PlayerForm({ player, handleSubmit }: {
         <Form.Group
           type="text"
           labelText="N° FFE"
-          nameAndId="ffeId"
-          value={player.ffeId}
+          nameAndId="ffe_id"
+          value={player.ffe_id}
           required={true}
         />
         <Form.Group
           type="number"
           labelText="N° FIDE"
-          nameAndId="fideId"
-          value={player.fideId}
+          nameAndId="fide_id"
+          value={player.fide_id}
         />
       </Form.Row>
       <Form.Row>
         <Form.Group
           type="text"
           labelText="Prénom"
-          nameAndId="firstName"
-          value={player.firstName}
+          nameAndId="first_name"
+          value={player.first_name}
           required={true}
         />
         <Form.Group
           type="text"
           labelText="NOM"
-          nameAndId="lastName"
-          value={player.lastName}
+          nameAndId="last_name"
+          value={player.last_name}
           required={true}
         />
       </Form.Row>

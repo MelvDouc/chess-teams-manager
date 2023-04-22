@@ -1,11 +1,11 @@
 import HomePage from "@pages/HomePage.js";
-import MatchesPage from "@pages/MatchesPage.jsx";
-import MatchCreatePage from "@pages/MatchCreatePage.jsx";
-import MatchLineUp from "@pages/MatchLineUp.jsx";
-import MatchSeasonsPage from "@pages/MatchSeasonsPage.js";
-import PlayersPage from "@pages/PlayersPage.js";
-import PlayerCreatePage from "@pages/PlayerCreatePage.js";
-import PlayerUpdatePage from "@pages/PlayerUpdatePage.js";
+import MatchesPage from "@pages/matches/MatchesPage.jsx";
+import MatchCreatePage from "@pages/matches/MatchCreatePage.jsx";
+import MatchLineUp from "@pages/matches/MatchLineUp.jsx";
+import MatchSeasonsPage from "@pages/matches/MatchSeasonsPage.js";
+import PlayersPage from "@pages/players/PlayersPage.js";
+import PlayerCreatePage from "@pages/players/PlayerCreatePage.js";
+import PlayerUpdatePage from "@pages/players/PlayerUpdatePage.js";
 import { Route, RouteInfo } from "@types";
 
 class Router {
@@ -29,7 +29,6 @@ class Router {
       if (key.test(url)) {
         const params = url.match(key)?.groups ?? {};
         this.notify({
-          params,
           title: route.getTitle(params),
           component: () => route.component(params)
         });
@@ -92,7 +91,7 @@ router
     getTitle: ({ season }: { season: number; }) => `Matchs ${season - 1}-${season}`,
     component: MatchesPage
   })
-  .addRoute("/matchs/composition/:matchId", {
+  .addRoute("/matchs/:season/:round/:teamName/composition", {
     preCheck: () => Promise.resolve(true),
     getTitle: () => "Composition",
     component: MatchLineUp

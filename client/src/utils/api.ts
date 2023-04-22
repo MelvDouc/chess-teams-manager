@@ -1,4 +1,4 @@
-import { Match, Player } from "@types";
+import { DbEntities, MatchDetail } from "@types";
 
 async function fetchFromApi<T>(path: `/${string}`, init?: RequestInit): Promise<T | null> {
   try {
@@ -15,52 +15,67 @@ const jsonHeaders = {
   "Content-Type": "application/json"
 };
 
-export const players = {
-  all: () => fetchFromApi<Player[]>("/joueurs"),
-  one: (ffeId: string) => fetchFromApi<Player>(`/joueurs/${ffeId}`),
-  create: (player: Player) => fetchFromApi<{ success: boolean; errors?: string[]; }>("/joueurs/nouveau", {
+// ===== ===== ===== ===== =====
+// PLAYERS
+// ===== ===== ===== ===== =====
+
+export function getPlayer(ffe_id: DbEntities.Player["ffe_id"]) {
+  return fetchFromApi<DbEntities.Player>(`/players/${ffe_id}`);
+}
+
+export function getPlayers() {
+  return fetchFromApi<DbEntities.Player[]>("/players");
+}
+
+export function createPlayer(data: DbEntities.Player) {
+  return fetchFromApi<ExecuteResult>("/players/create", {
     method: "POST",
     headers: jsonHeaders,
-    body: JSON.stringify(player)
-  }),
-  update: (ffeId: string, updates: any) => fetchFromApi<{ success: boolean; errors?: string[]; }>(`/joueurs/${ffeId}/modifier`, {
-    method: "PATCH",
+    body: JSON.stringify(data)
+  });
+}
+
+export function updatePlayer(ffe_id: DbEntities.Player["ffe_id"], data: Partial<DbEntities.Player>) {
+  return fetchFromApi<ExecuteResult>(`/players/${ffe_id}/update`, {
+    method: "PUT",
     headers: jsonHeaders,
-    body: JSON.stringify(updates)
-  }),
-  delete: (ffeId: string) => fetchFromApi<{ success: boolean; errors?: string[]; }>(`/joueurs/${ffeId}/supprimer`, {
-    method: "DELETE"
-  })
+    body: JSON.stringify(data)
+  });
+}
+
+export function deletePlayer(ffe_id: DbEntities.Player["ffe_id"]) {
+  return fetchFromApi<SuccessResponse>(`/players/${ffe_id}/delete`, {
+    method: "DELETE",
+    headers: jsonHeaders
+  });
+}
+
+// ===== ===== ===== ===== =====
+// MATCHES
+// ===== ===== ===== ===== =====
+
+export function getMatchSeasons() {
+  return fetchFromApi<number[]>("/matches/seasons");
+}
+
+export function getMatches(season: number) {
+  return fetchFromApi<DbEntities.Match[]>(`/matches/${season}`);
+}
+
+export function getMatchLineUp({ season, round, teamName }: MatchDetail) {
+  return fetchFromApi<DbEntities.LineUp>(`/matches/${season}/${round}/${teamName}/line-up`);
+}
+
+// ===== ===== ===== ===== =====
+// TYPES
+// ===== ===== ===== ===== =====
+
+type SuccessResponse = {
+  errors?: string[];
+  success?: boolean;
 };
 
-export const matches = {
-  create: (match: Match) => fetchFromApi(`/matchs/nouveau`, {
-    method: "POST",
-    headers: jsonHeaders,
-    body: JSON.stringify(match)
-  }),
-  update: (id: string, match: Match) => fetchFromApi(`/matchs/${id}/modifier`, {
-    method: "PATCH",
-    headers: jsonHeaders,
-    body: JSON.stringify(match)
-  }),
-  delete: (id: string) => fetchFromApi(`/matchs/supprimer`, {
-    method: "DELETE",
-    headers: {
-      ...jsonHeaders,
-      id
-    }
-  }),
-  seasons: () => fetchFromApi<number[]>("/matchs/saisons"),
-  bySeason: (season: number) => fetchFromApi<{ teamName: string; matches: Match[]; }[]>(`/matchs/par-saison?saison=${season}`),
-  getLineUp: (id: string) => fetchFromApi<{
-    board: number;
-    color: string;
-    player: Player | null;
-  }[]>(`/matchs/composition/${id}`),
-  updateLineUp: (id: string, lineUp: { board: number; ffeId: string; }[]) => fetchFromApi(`/matchs/composition/${id}`, {
-    method: "PATCH",
-    headers: jsonHeaders,
-    body: JSON.stringify(lineUp)
-  })
+type ExecuteResult = {
+  affectedRows?: number;
+  lastInsertId?: number;
 };
