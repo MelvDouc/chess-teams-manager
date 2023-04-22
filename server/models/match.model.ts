@@ -1,5 +1,6 @@
+import { _TextDecoder } from "https://deno.land/std@0.132.0/node/_utils.ts";
 import db from "/database/db.ts";
-import { DbEntities } from "/types.ts";
+import { BoardColor, DbEntities } from "/types.ts";
 
 const fullMatchInfoSql = `
   SELECT
@@ -28,6 +29,28 @@ const fullMatchInfoSql = `
   JOIN club opp ON opp.id = lm.opponent_id
   JOIN team ON team.id = lm.team_id
   JOIN player cap ON cap.ffe_id = team.captain_ffe_id
+`;
+
+const lineUpSql = `
+  SELECT
+    board,
+    IF(board % 2 = lm.white_on_odds, "B", "N") color,
+    p.ffe_id ffe_id,
+    p.fide_id fide_id,
+    p.email email,
+    p.first_name first_name,
+    p.last_name last_name,
+    p.phone phone,
+    IF(player_rating IS NULL, p.rating, player_rating) rating
+  FROM line_up l
+  INNER JOIN league_match lm
+    ON lm.id = l.match_id
+  INNER JOIN player p
+    ON p.ffe_id = l.player_ffe_id
+  INNER JOIN team t
+    ON t.id = lm.team_id
+  WHERE l.match_id = ?
+  ORDER BY board
 `;
 
 const convertSearch = (search: RawMatchSearch): DbEntities.Match => ({
@@ -72,8 +95,9 @@ async function getMatch({ season, round, teamName }: {
     : null;
 }
 
-function getSeasons(): Promise<number[]> {
-  return db.query("SELECT DISTINCT season FROM league_match");
+async function getSeasons(): Promise<number[]> {
+  const seasons = await db.query("SELECT DISTINCT season FROM league_match");
+  return seasons.map((obj: { season: number; }) => obj.season);
 }
 
 async function getMatchesOfSeason(season: number): Promise<DbEntities.Match[]> {
@@ -86,33 +110,37 @@ async function getLineUp({ season, round, teamName }: {
   round: number;
   teamName: string;
 }): Promise<DbEntities.LineUp | null> {
-  const data = await db.query(`
-    SELECT
-      board,
-      player_rating,
-      IF((board % 2 = 1) = lm.white_on_odds, 'w', 'b') color,
-      p.ffe_id ffe_id,
-      p.fide_id fide_id,
-      p.email email,
-      p.phone phone,
-      p.last_name last_name,
-      p.first_name first_name,
-      p.rating rating
-    FROM line_up
-    JOIN player p ON p.ffe_id = line_up.player_ffe_id
-    JOIN league_match lm ON lm.id = line_up.match_id
-    JOIN team ON team.id = lm.team_id
-    WHERE lm.season = ? AND lm.round = ? AND team.name = ?
-  `, [season, round, teamName]) as RawLineUp;
+  const [match] = await db.query(`
+    SELECT lm.id, white_on_odds
+    FROM league_match lm
+    INNER JOIN team t
+      ON t.id = lm.team_id
+    WHERE lm.season = ?
+      AND lm.round = ?
+      AND t.name = ?
+    LIMIT 1
+  `, [season, round, teamName]) as { id: number; white_on_odds: number; }[];
 
-  return data.map(({ board, color, player_rating, ...player }) => ({
-    board,
-    color,
-    player: {
-      ...player,
-      rating: player_rating
-    }
-  }));
+  if (!match)
+    return null;
+
+  const rawLineUp = await db.query(lineUpSql, [match.id]) as ({
+    board: number;
+    color: BoardColor;
+  } & DbEntities.Player)[];
+  const boardMap = rawLineUp.reduce((acc, { board, color, ...player }) => {
+    return acc.set(board, { color, player });
+  }, new Map<number, { color: BoardColor; player: DbEntities.Player; }>());
+
+  return Array.from({ length: 8 }, (_, i) => {
+    const board = i + 1;
+
+    return {
+      board,
+      color: boardMap.get(board)?.color ?? ((board % 2 === match.white_on_odds) ? "B" : "N"),
+      player: boardMap.get(board)?.player ?? null
+    };
+  });
 }
 
 function createMatch({ season, round, team_id, opponent_id, home_club_id, white_on_odds, date }: DbMatch) {
@@ -204,9 +232,3 @@ interface DbMatch {
   white_on_odds: boolean;
   date: Date;
 }
-
-type RawLineUp = ({
-  board: number;
-  color: "w" | "b";
-  player_rating: number;
-} & DbEntities.Player)[];

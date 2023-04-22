@@ -42,8 +42,8 @@ export namespace DbEntities {
 
   export type LineUp = {
     board: number;
-    color: "w" | "b";
-    player: Player;
+    color: BoardColor;
+    player: Player | null;
   }[];
 
   export interface User {
@@ -53,6 +53,8 @@ export namespace DbEntities {
     password_reset_id: string | null;
   }
 }
+
+export type BoardColor = "B" | "N";
 
 export type AppState = {
   session: Session;
