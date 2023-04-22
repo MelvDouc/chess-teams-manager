@@ -1,5 +1,5 @@
 import db from "/database/db.ts";
-import { DbEntities } from "/types.ts";
+import { DbEntities, MySqlEntities } from "/types.ts";
 
 const teamSql = `
   SELECT
@@ -13,10 +13,11 @@ const teamSql = `
     cap.first_name captain_first_name,
     cap.rating captain_rating
   FROM team
-  JOIN player cap ON cap.ffe_id = team.captain_ffe_id
+  INNER JOIN player cap
+    ON cap.ffe_id = team.captain_ffe_id
 `;
 
-const convertSearch = (search: any) => ({
+const convertSearch = (search: MySqlEntities.TeamWithCaptain) => ({
   id: search.team_id,
   name: search.team_name,
   captain: {
@@ -31,25 +32,22 @@ const convertSearch = (search: any) => ({
 });
 
 async function getTeam(name: string): Promise<DbEntities.Team | null> {
-  const team = await db.findOne("team", { name });
+  const [team] = await db.query(`${teamSql} WHERE team.name = ? LIMIT 1`, [name]) as MySqlEntities.TeamWithCaptain[];
   return (team)
     ? convertSearch(team)
     : null;
 }
 
 async function getTeams(): Promise<DbEntities.Team[]> {
-  const teams = await db.query(teamSql);
+  const teams = await db.query(teamSql) as MySqlEntities.TeamWithCaptain[];
   return teams.map(convertSearch);
 }
 
-function createTeam({ name, captain_ffe_id }: {
-  name: string;
-  captain_ffe_id: number;
-}) {
+function createTeam({ name, captain_ffe_id }: Omit<MySqlEntities.Team, "id">) {
   return db.insert("team", { name, captain_ffe_id });
 }
 
-function updateTeam(id: DbEntities.Team["id"], updates: Partial<Omit<DbEntities.Team, "id">>) {
+function updateTeam(id: DbEntities.Team["id"], updates: Partial<Omit<MySqlEntities.Team, "id">>) {
   return db.update<DbEntities.Team>("team", { id }, updates);
 }
 

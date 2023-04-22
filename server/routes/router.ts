@@ -4,8 +4,8 @@ import clientController from "/controllers/client.controller.ts";
 import { AppState } from "/types.ts";
 
 const router = new Router<AppState>();
-router.use(apiRouter.routes(), apiRouter.allowedMethods());
 
+router.use(apiRouter.routes(), apiRouter.allowedMethods());
 router.get("/(.*)", clientController.home);
 
 export default router;
