@@ -5,8 +5,7 @@ CREATE TABLE IF NOT EXISTS player (
   phone VARCHAR(15) NULL,
   first_name VARCHAR(20) NOT NULL,
   last_name VARCHAR(20) NOT NULL,
-  rating INT DEFAULT 1199,
-  CONSTRAINT unique_player_email UNIQUE (email)
+  rating INT DEFAULT 1199
 );
 
 CREATE TABLE IF NOT EXISTS team (
