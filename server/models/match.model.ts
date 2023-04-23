@@ -13,12 +13,12 @@ async function getMatchIdAndWhiteOnOdds({ season, round, teamName }: MySqlEntiti
     .join("left", "team t")
     .on("t.id = lm.team_id")
     .where({
-      "lm.season": "?",
-      "lm.round": "?",
-      "t.name": "?"
+      "lm.season": season,
+      "lm.round": round,
+      "t.name": teamName
     })
     .limit(1)
-    .run([season, round, teamName]) as Pick<MySqlEntities.Match, "id" | "white_on_odds">[];
+    .run() as Pick<MySqlEntities.Match, "id" | "white_on_odds">[];
   return matches[0];
 }
 
@@ -110,9 +110,9 @@ function getRawLineUp(matchId: number) {
     .on("p.ffe_id = l.player_ffe_id")
     .join("left", "team t")
     .on("t.id = lm.team_id")
-    .where({ "l.match_id": "?" })
+    .where({ "l.match_id": matchId })
     .orderBy("board")
-    .run([matchId]) as Promise<({ board: number; color: BoardColor; } & DbEntities.Player)[]>;
+    .run() as Promise<({ board: number; color: BoardColor; } & DbEntities.Player)[]>;
 }
 
 // ===== ===== ===== ===== =====
@@ -122,11 +122,11 @@ function getRawLineUp(matchId: number) {
 async function getMatch({ season, round, teamName }: MySqlEntities.ShortMatchInfo): Promise<DbEntities.Match | null> {
   const [match] = await getFullMatchInfo()
     .where({
-      season: "?",
-      round: "?",
-      "t.name": "?"
+      season,
+      round,
+      "t.name": teamName
     })
-    .run([season, round, teamName]);
+    .run();
   return (match)
     ? convertSearch(match)
     : null;

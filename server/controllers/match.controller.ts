@@ -28,7 +28,6 @@ const getLineUp: RouterMiddleware<"/matches/:season/:round/:teamName/line-up"> =
 
 const createMatch: RouterMiddleware<"/matches/create"> = async ({ request, response }) => {
   const data = await request.body().value;
-  // TODO: prevent duplicates
   response.body = await matchModel.createMatch(data);
 };
 
