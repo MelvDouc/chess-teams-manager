@@ -1,6 +1,6 @@
 import { Client as MysqlClient } from "mysql";
-import config from "/config/config.ts";
-import queryBuilderFactory, { SqlRecord } from "/database/query-builder-factory.ts";
+import config from "../config/config.ts";
+import queryBuilderFactory, { SqlRecord } from "./query-builder-factory.ts";
 
 const client = new MysqlClient();
 await client.connect({

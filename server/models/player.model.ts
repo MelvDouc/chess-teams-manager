@@ -1,5 +1,5 @@
-import db from "/database/db.ts";
-import { DbEntities, MySqlEntities, WithoutId } from "/types.ts";
+import db from "../database/db.ts";
+import { DbEntities, MySqlEntities, WithoutId } from "../types.ts";
 
 function getPlayer(ffeId: string): Promise<MySqlEntities.Player | null> {
   return db.findOne("player", { ffe_id: ffeId });

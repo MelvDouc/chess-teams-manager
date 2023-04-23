@@ -1,9 +1,9 @@
 import { RouterMiddleware } from "oak";
 import { randomBytes } from "crypto";
 import { compare as comparePassword, genSalt, hash } from "bcrypt";
-import config from "/config/config.ts";
-import userModel from "/models/user.model.ts";
-import emailService from "/services/email.service.ts";
+import config from "../config/config.ts";
+import userModel from "../models/user.model.ts";
+import emailService from "../services/email.service.ts";
 
 const login: RouterMiddleware<"/auth/login"> = async ({ request, response, state }) => {
   const data = await request.body().value;

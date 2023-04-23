@@ -1,5 +1,5 @@
 import { RouterMiddleware } from "oak";
-import matchModel from "/models/match.model.ts";
+import matchModel from "../models/match.model.ts";
 
 const getSeasons: RouterMiddleware<"/matches/seasons"> = async ({ response }) => {
   response.body = await matchModel.getSeasons();

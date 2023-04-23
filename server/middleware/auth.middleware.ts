@@ -1,6 +1,6 @@
 import { RouterMiddleware } from "oak";
-import flashService from "/services/flash.service.ts";
-import { AppState } from "/types.ts";
+import flashService from "../services/flash.service.ts";
+import { AppState } from "../types.ts";
 
 export const redirectToLogin: RouterMiddleware<any, any, AppState> = async ({ request, response, state }, next) => {
   if (request.method === "GET" && request.url.pathname !== "/connexion" && !state.session.has("user")) {

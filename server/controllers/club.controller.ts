@@ -1,5 +1,5 @@
 import { RouterMiddleware } from "oak";
-import clubModel from "/models/club.model.ts";
+import clubModel from "../models/club.model.ts";
 
 const getClub: RouterMiddleware<"/clubs/:id"> = async ({ params, response }) => {
   response.body = await clubModel.getClub(+params.id);

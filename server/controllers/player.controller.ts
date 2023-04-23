@@ -1,5 +1,5 @@
 import { RouterMiddleware } from "oak";
-import playerModel from "/models/player.model.ts";
+import playerModel from "../models/player.model.ts";
 
 const getPlayer: RouterMiddleware<"/players/:ffeId"> = async ({ params, response }) => {
   response.body = await playerModel.getPlayer(params.ffeId);

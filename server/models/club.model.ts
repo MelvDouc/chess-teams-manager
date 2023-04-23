@@ -1,5 +1,5 @@
-import db from "/database/db.ts";
-import { DbEntities, MySqlEntities, WithoutId } from "/types.ts";
+import db from "../database/db.ts";
+import { DbEntities, MySqlEntities, WithoutId } from "../types.ts";
 
 function getClub(id: DbEntities.Club["id"]): Promise<MySqlEntities.Club | null> {
   return db.findOne("club", { id });

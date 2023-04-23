@@ -1,9 +1,9 @@
 import { Router } from "oak";
-import authController from "/controllers/auth.controller.ts";
-import clubController from "/controllers/club.controller.ts";
-import matchController from "/controllers/match.controller.ts";
-import playerController from "/controllers/player.controller.ts";
-import teamController from "/controllers/team.controller.ts";
+import authController from "../controllers/auth.controller.ts";
+import clubController from "../controllers/club.controller.ts";
+import matchController from "../controllers/match.controller.ts";
+import playerController from "../controllers/player.controller.ts";
+import teamController from "../controllers/team.controller.ts";
 
 const apiRouter = new Router({ prefix: "/api/v1" });
 

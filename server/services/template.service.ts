@@ -1,6 +1,6 @@
 import { default as nunjucks } from "nunjucks";
-import flashService from "/services/flash.service.ts";
-import config from "/config/config.ts";
+import flashService from "../services/flash.service.ts";
+import config from "../config/config.ts";
 
 const nunjucksEnv = nunjucks.configure(`${Deno.cwd()}/views`, {
   autoescape: true,

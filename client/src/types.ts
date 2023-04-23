@@ -1,3 +1,5 @@
+import { }
+
 export interface Route<Params = Record<string, string>> {
   preCheck: () => Promise<boolean>;
   getTitle: (params?: Params) => string;

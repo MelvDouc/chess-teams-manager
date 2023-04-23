@@ -58,6 +58,10 @@ export function getMatchSeasons() {
   return fetchFromApi<number[]>("/matches/seasons");
 }
 
+export function getMatch(season: number) {
+  return fetchFromApi<DbEntities.Match[]>(`/matches/${season}`);
+}
+
 export function getMatches(season: number) {
   return fetchFromApi<DbEntities.Match[]>(`/matches/${season}`);
 }

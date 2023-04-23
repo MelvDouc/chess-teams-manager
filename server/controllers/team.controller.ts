@@ -1,5 +1,5 @@
 import { RouterMiddleware } from "oak";
-import teamModel from "/models/team.model.ts";
+import teamModel from "../models/team.model.ts";
 
 const getTeam: RouterMiddleware<"/teams/:name"> = async ({ params, response }) => {
   response.body = await teamModel.getTeam(params.name);

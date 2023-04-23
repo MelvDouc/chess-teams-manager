@@ -1,10 +1,10 @@
 import { oakCors } from "cors";
 import { Application } from "oak";
 import { Session } from "oak_sessions";
-import config from "/config/config.ts";
-import staticMiddleware from "/middleware/static.middleware.ts";
-import router from "/routes/router.ts";
-import { AppState } from "/types.ts";
+import config from "./config/config.ts";
+import staticMiddleware from "./middleware/static.middleware.ts";
+import router from "./routes/router.ts";
+import { AppState } from "./types.ts";
 
 const app = new Application<AppState>();
 const port = Deno.env.get("PORT") ?? Deno.env.get("port") ?? Deno.env.get("Port") ?? config.PORT;

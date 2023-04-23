@@ -1,5 +1,5 @@
-import db from "/database/db.ts";
-import { BoardColor, DbEntities, MySqlEntities, WithoutId } from "/types.ts";
+import db from "../database/db.ts";
+import { BoardColor, DbEntities, MySqlEntities, WithoutId } from "../types.ts";
 
 // ===== ===== ===== ===== =====
 // HELPERS

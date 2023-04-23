@@ -1,5 +1,5 @@
-import db from "/database/db.ts";
-import { DbEntities, WithoutId } from "/types.ts";
+import db from "../database/db.ts";
+import { DbEntities, WithoutId } from "../types.ts";
 
 type User = DbEntities.User;
 

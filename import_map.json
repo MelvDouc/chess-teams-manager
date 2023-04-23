@@ -1,7 +1,6 @@
 {
   "imports": {
-    "./": "./server/",
-    "/": "./server/",
+    "@global_types": "./global.ts",
     "bcrypt": "https://deno.land/x/bcrypt@v0.4.1/mod.ts",
     "cors": "https://deno.land/x/cors@v1.2.2/mod.ts",
     "crypto": "https://deno.land/std@0.97.0/node/crypto.ts",

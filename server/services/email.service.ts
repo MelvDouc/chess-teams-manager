@@ -1,6 +1,6 @@
 import { SMTPClient } from "denomailer";
-import { render } from "/services/template.service.ts";
-import config from "/config/config.ts";
+import { render } from "./template.service.ts";
+import config from "../config/config.ts";
 
 const smtpClient = new SMTPClient({
   connection: {
