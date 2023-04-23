@@ -10,7 +10,7 @@ async function getMatchIdAndWhiteOnOdds({ season, round, teamName }: MySqlEntiti
     .createQueryBuilder()
     .select("lm.id", "white_on_odds")
     .from("league_match lm")
-    .innerJoin("team t")
+    .join("left", "team t")
     .on("t.id = lm.team_id")
     .where({
       "lm.season": "?",
@@ -48,13 +48,13 @@ function getFullMatchInfo() {
       "opp.phone opponent_phone",
     )
     .from("league_match lm")
-    .innerJoin("club hc")
+    .join("left", "club hc")
     .on("hc.id = lm.home_club_id")
-    .innerJoin("club opp")
+    .join("left", "club opp")
     .on("opp.id = lm.opponent_id")
-    .innerJoin("team")
+    .join("left", "team")
     .on("team.id = lm.team_id")
-    .innerJoin("player cap")
+    .join("left", "player cap")
     .on("cap.ffe_id = team.captain_ffe_id");
 }
 
@@ -101,14 +101,14 @@ function getRawLineUp(matchId: number) {
       "p.first_name first_name",
       "p.last_name last_name",
       "p.phone phone",
-      "IF(player_rating IS NULL, p.rating, player_rating) rating",
+      "l.player_rating rating",
     )
     .from("line_up l")
-    .innerJoin("league_match lm")
+    .join("left", "league_match lm")
     .on("lm.id = l.match_id")
-    .innerJoin("player p")
+    .join("left", "player p")
     .on("p.ffe_id = l.player_ffe_id")
-    .innerJoin("team t")
+    .join("left", "team t")
     .on("t.id = lm.team_id")
     .where({ "l.match_id": "?" })
     .orderBy("board")

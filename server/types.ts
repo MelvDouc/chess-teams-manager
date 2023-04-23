@@ -25,12 +25,7 @@ export namespace MySqlEntities {
     captain_ffe_id: Player["ffe_id"];
   }
 
-  export type TeamWithCaptain = {
-    team_id: Team["id"];
-    team_name: Team["name"];
-  } & {
-      [K in keyof Player as `captain_${K}`]: Player[K]
-    };
+  export type TeamWithCaptain = Team & Player;
 
   export interface Club {
     /** @primaryKey */
@@ -61,9 +56,13 @@ export namespace MySqlEntities {
 
   export type FullMatchInfo =
     & Pick<Match, "id" | "season" | "round" | "white_on_odds" | "date">
-    & TeamWithCaptain
     & {
       address: Club["address"];
+      team_id: Team["id"];
+      team_name: Team["name"];
+    }
+    & {
+      [K in keyof Player as `captain_${K}`]: Player[K]
     }
     & {
       [K in keyof Club as `opponent_${K}`]: Club[K]

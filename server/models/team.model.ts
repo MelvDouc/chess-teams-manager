@@ -1,37 +1,30 @@
 import db from "/database/db.ts";
 import { DbEntities, MySqlEntities, WithoutId } from "/types.ts";
 
+// ===== ===== ===== ===== =====
+// HELPERS
+// ===== ===== ===== ===== =====
+
 function getRawTeam() {
   return db
     .createQueryBuilder()
-    .select(
-      "t.id team_id",
-      "t.name team_name",
-      "cap.ffe_id captain_ffe_id",
-      "cap.fide_id captain_fide_id",
-      "cap.email captain_email",
-      "cap.phone captain_phone",
-      "cap.last_name captain_last_name",
-      "cap.first_name captain_first_name",
-      "cap.rating captain_rating",
-    ).from("team t")
-    .innerJoin("player cap")
+    .select("*")
+    .from("team t")
+    .join("left", "player cap")
     .on("cap.ffe_id = t.captain_ffe_id");
 }
 
-const convertSearch = (search: MySqlEntities.TeamWithCaptain): DbEntities.Team => ({
-  id: search.team_id,
-  name: search.team_name,
-  captain: {
-    ffe_id: search.captain_ffe_id,
-    fide_id: search.captain_fide_id,
-    email: search.captain_email,
-    first_name: search.captain_first_name,
-    last_name: search.captain_last_name,
-    phone: search.captain_phone,
-    rating: search.captain_rating
-  }
-});
+function convertSearch({ id, name, captain_ffe_id, ...captain }: MySqlEntities.Team & MySqlEntities.Player): DbEntities.Team {
+  return ({
+    id,
+    name,
+    captain
+  });
+}
+
+// ===== ===== ===== ===== =====
+// CRUD
+// ===== ===== ===== ===== =====
 
 async function getTeam(name: string): Promise<DbEntities.Team | null> {
   const [team] = await getRawTeam().where({ "t.name": "?" }).run([name]) as MySqlEntities.TeamWithCaptain[];
@@ -56,6 +49,10 @@ function updateTeam(id: DbEntities.Team["id"], updates: WithoutId<MySqlEntities.
 function deleteTeam(id: DbEntities.Team["id"]) {
   return db.delete("team", { id });
 }
+
+// ===== ===== ===== ===== =====
+// EXPORTS
+// ===== ===== ===== ===== =====
 
 export default {
   getTeam,

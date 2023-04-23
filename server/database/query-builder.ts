@@ -9,19 +9,25 @@ export default function createQueryBuilder<T>(queryFn: (sql: string, values?: (n
       return {
         from: (tableName: string) => {
           query += `\nFROM ${tableName}`;
-          return { innerJoin, limit, orderBy, where, run };
+          return {
+            join,
+            limit,
+            orderBy,
+            where,
+            run
+          };
         }
       };
     };
 
-    const innerJoin = (tableName: string) => {
-      query += `\nINNER JOIN ${tableName}`;
+    const join = (type: "left" | "right" | "inner" | "full outer", tableName: string) => {
+      query += `\n${type.toUpperCase()} JOIN ${tableName}`;
       return { on };
     };
 
     const on = (onClause: string) => {
       query += `\nON ${onClause}`;
-      return { innerJoin, where, run };
+      return { join, where, run };
     };
 
     const where = (filter: SqlRecord) => {
