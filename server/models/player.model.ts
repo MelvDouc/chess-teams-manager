@@ -6,7 +6,12 @@ function getPlayer(ffeId: string): Promise<MySqlEntities.Player | null> {
 }
 
 function getPlayers(): Promise<MySqlEntities.Player[]> {
-  return db.findAll("player");
+  return db
+    .createQueryBuilder()
+    .select("*")
+    .from("player")
+    .orderBy("rating DESC")
+    .run();
 }
 
 function createPlayer(data: MySqlEntities.Player) {

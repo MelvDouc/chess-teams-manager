@@ -11,6 +11,7 @@ await client.connect({
 });
 console.log("%cConnected to database.", "color: yellow");
 
+const queryBuilderFactory = createQueryBuilder(client.query.bind(client));
 
 const findOne = async <T>(tableName: string, filter: Partial<T>) => {
   const whereClause = Object.keys(filter).map((key) => `${key} = ?`).join(" AND ");
@@ -58,7 +59,7 @@ const deleteOne = <T>(tableName: string, filter: Partial<T>) => {
 };
 
 export default {
-  createQueryBuilder: () => createQueryBuilder(client.query.bind(client)),
+  createQueryBuilder: () => queryBuilderFactory(),
   findOne,
   findAll,
   insert,

@@ -34,7 +34,7 @@ const convertSearch = (search: MySqlEntities.TeamWithCaptain): DbEntities.Team =
 });
 
 async function getTeam(name: string): Promise<DbEntities.Team | null> {
-  const [team] = await getRawTeam().where("t.name = ?").run([name]) as MySqlEntities.TeamWithCaptain[];
+  const [team] = await getRawTeam().where({ "t.name": "?" }).run([name]) as MySqlEntities.TeamWithCaptain[];
   return (team)
     ? convertSearch(team)
     : null;
