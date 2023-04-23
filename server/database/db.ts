@@ -26,7 +26,7 @@ const findAll = (tableName: string) => {
   return client.query(`SELECT * FROM ${tableName}`);
 };
 
-const insert = (tableName: string, value: Record<string, string | number | boolean | null>, ...values: (typeof value)[]) => {
+const insert = <T extends {}>(tableName: string, value: T, ...values: T[]) => {
   const keys = Object.keys(value);
   const questionMarks = Array(keys.length).fill("?").join();
   const placeholders = Array.from({ length: values.length + 1 }, () => {

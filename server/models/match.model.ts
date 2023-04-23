@@ -1,6 +1,5 @@
-import { _TextDecoder } from "https://deno.land/std@0.132.0/node/_utils.ts";
 import db from "/database/db.ts";
-import { BoardColor, DbEntities } from "/types.ts";
+import { BoardColor, DbEntities, MySqlEntities, WithoutId } from "/types.ts";
 
 const fullMatchInfoSql = `
   SELECT
@@ -53,7 +52,7 @@ const lineUpSql = `
   ORDER BY board
 `;
 
-const convertSearch = (search: RawMatchSearch): DbEntities.Match => ({
+const convertSearch = (search: MySqlEntities.FullMatchInfo): DbEntities.Match => ({
   id: search.id,
   season: search.season,
   round: search.round,
@@ -101,7 +100,7 @@ async function getSeasons(): Promise<number[]> {
 }
 
 async function getMatchesOfSeason(season: number): Promise<DbEntities.Match[]> {
-  const search = await db.query(`${fullMatchInfoSql} WHERE season = ?`, [season]) as RawMatchSearch[];
+  const search = await db.query(`${fullMatchInfoSql} WHERE season = ?`, [season]) as MySqlEntities.FullMatchInfo[];
   return search.map(convertSearch);
 }
 
@@ -119,7 +118,7 @@ async function getLineUp({ season, round, teamName }: {
       AND lm.round = ?
       AND t.name = ?
     LIMIT 1
-  `, [season, round, teamName]) as { id: number; white_on_odds: number; }[];
+  `, [season, round, teamName]) as Pick<MySqlEntities.Match, "id" | "white_on_odds">[];
 
   if (!match)
     return null;
@@ -143,42 +142,27 @@ async function getLineUp({ season, round, teamName }: {
   });
 }
 
-function createMatch({ season, round, team_id, opponent_id, home_club_id, white_on_odds, date }: DbMatch) {
-  const dateString = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}`;
+function createMatch({ season, round, team_id, opponent_id, home_club_id, white_on_odds, date }: MySqlEntities.Match) {
+  const d = new Date(date);
+  const dateString = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()} ${d.getHours()}:${d.getMinutes()}:00`;
 
-  return db.insert("league_match", {
+  return db.insert<WithoutId<MySqlEntities.Match>>("league_match", {
     season,
     round,
     team_id,
     opponent_id,
     home_club_id,
-    white_on_odds: Number(white_on_odds),
+    white_on_odds: Number(white_on_odds) as 0 | 1,
     date: dateString
   });
 }
 
-function updateMatch(id: number, updates: Partial<Omit<DbMatch, "id">>) {
-  return db.update<DbEntities.Match>("league_match", { id }, updates);
+function updateMatch(id: number, updates: WithoutId<MySqlEntities.Match>) {
+  return db.update<MySqlEntities.Match>("league_match", { id }, updates);
 }
 
 function deleteMatch(id: number) {
   return db.delete("league_match", { id });
-}
-
-// ===== ===== ===== ===== =====
-// ERRORS
-// ===== ===== ===== ===== =====
-
-function ensureMatch(data: DbMatch): DbMatch {
-  return {
-    season: parseInt(data.season as unknown as string),
-    round: parseInt(data.round as unknown as string),
-    opponent_id: parseInt(data.opponent_id as unknown as string),
-    team_id: parseInt(data.team_id as unknown as string),
-    home_club_id: parseInt(data.home_club_id as unknown as string),
-    date: new Date(data.date),
-    white_on_odds: "white_on_odds" in data
-  };
 }
 
 // ===== ===== ===== ===== =====
@@ -192,43 +176,5 @@ export default {
   getLineUp,
   createMatch,
   updateMatch,
-  deleteMatch,
-  ensureMatch
+  deleteMatch
 };
-
-// ===== ===== ===== ===== =====
-// TYPES
-// ===== ===== ===== ===== =====
-
-interface RawMatchSearch {
-  id: number;
-  season: number;
-  round: number;
-  white_on_odds: number;
-  date: string;
-  address: string;
-  team_id: number;
-  team_name: string;
-  captain_ffe_id: string;
-  captain_fide_id: number | null;
-  captain_email: string;
-  captain_phone: string | null;
-  captain_last_name: string;
-  captain_first_name: string;
-  captain_rating: number;
-  opponent_id: number;
-  opponent_name: string;
-  opponent_address: string;
-  opponent_email: string | null;
-  opponent_phone: string | null;
-}
-
-interface DbMatch {
-  season: number;
-  round: number;
-  team_id: number;
-  opponent_id: number;
-  home_club_id: number;
-  white_on_odds: boolean;
-  date: Date;
-}

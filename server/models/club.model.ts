@@ -1,19 +1,19 @@
 import db from "/database/db.ts";
-import { DbEntities } from "/types.ts";
+import { DbEntities, MySqlEntities, WithoutId } from "/types.ts";
 
-function getClub(id: DbEntities.Club["id"]): Promise<DbEntities.Club | null> {
+function getClub(id: DbEntities.Club["id"]): Promise<MySqlEntities.Club | null> {
   return db.findOne("club", { id });
 }
 
-function getClubs(): Promise<DbEntities.Club[]> {
+function getClubs(): Promise<MySqlEntities.Club[]> {
   return db.findAll("club");
 }
 
-function createClub({ name, address, phone, email }: Omit<DbEntities.Club, "id">) {
-  return db.insert("club", { name, address, phone, email });
+function createClub(data: WithoutId<MySqlEntities.Club>) {
+  return db.insert("club", data);
 }
 
-function updateClub(id: DbEntities.Club["id"], updates: Partial<Omit<DbEntities.Club, "id">>) {
+function updateClub(id: DbEntities.Club["id"], updates: WithoutId<MySqlEntities.Club>) {
   return db.update<DbEntities.Club>("club", { id }, updates);
 }
 

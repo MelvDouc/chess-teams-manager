@@ -4,6 +4,8 @@ export type Nullable<T> = {
   [K in keyof T]: T[K] | null;
 };
 
+export type WithoutId<TEntity, TId extends string = "id"> = Omit<TEntity, TId>;
+
 export namespace MySqlEntities {
   export interface Player {
     /** @primaryKey */
@@ -50,6 +52,16 @@ export namespace MySqlEntities {
     white_on_odds: 0 | 1;
     date: string;
   }
+
+  export type FullMatchInfo =
+    & Pick<Match, "id" | "season" | "round" | "white_on_odds" | "date">
+    & TeamWithCaptain
+    & {
+      address: Club["address"];
+    }
+    & {
+      [K in keyof Club as `opponent_${K}`]: Club[K]
+    };
 
   export interface LineUp {
     board: number;

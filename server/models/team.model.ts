@@ -1,5 +1,5 @@
 import db from "/database/db.ts";
-import { DbEntities, MySqlEntities } from "/types.ts";
+import { DbEntities, MySqlEntities, WithoutId } from "/types.ts";
 
 const teamSql = `
   SELECT
@@ -17,7 +17,7 @@ const teamSql = `
     ON cap.ffe_id = team.captain_ffe_id
 `;
 
-const convertSearch = (search: MySqlEntities.TeamWithCaptain) => ({
+const convertSearch = (search: MySqlEntities.TeamWithCaptain): DbEntities.Team => ({
   id: search.team_id,
   name: search.team_name,
   captain: {
@@ -43,11 +43,11 @@ async function getTeams(): Promise<DbEntities.Team[]> {
   return teams.map(convertSearch);
 }
 
-function createTeam({ name, captain_ffe_id }: Omit<MySqlEntities.Team, "id">) {
+function createTeam({ name, captain_ffe_id }: WithoutId<MySqlEntities.Team>) {
   return db.insert("team", { name, captain_ffe_id });
 }
 
-function updateTeam(id: DbEntities.Team["id"], updates: Partial<Omit<MySqlEntities.Team, "id">>) {
+function updateTeam(id: DbEntities.Team["id"], updates: WithoutId<MySqlEntities.Team>) {
   return db.update<DbEntities.Team>("team", { id }, updates);
 }
 
