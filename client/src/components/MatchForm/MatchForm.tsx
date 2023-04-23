@@ -1,8 +1,9 @@
 import Form from "@components/Form/Form.jsx";
 import { DbEntities } from "@types";
 
-export default function MatchForm({ match, handleSubmit }: {
+export default function MatchForm({ match, clubs, handleSubmit }: {
   match: DbEntities.Match | null;
+  clubs: DbEntities.Club[];
   handleSubmit: (e: SubmitEvent) => any;
 }) {
   return (
@@ -24,12 +25,15 @@ export default function MatchForm({ match, handleSubmit }: {
         />
       </Form.Row>
       <Form.Row>
-        <Form.Group
-          type="text"
-          labelText="Adversaire"
+        <Form.Select
           nameAndId="opponent"
+          labelText="Adversaire"
+          values={clubs.map((club) => ({
+            text: club.name,
+            value: club.id,
+            selected: club.name === match?.opponent?.name
+          }))}
           required={true}
-          value={match?.opponent}
         />
         <Form.Checkbox
           nameAndId="white_on_odds"

@@ -2,8 +2,7 @@ import { Client as MysqlClient } from "mysql";
 import config from "../config/config.ts";
 import queryBuilderFactory, { SqlRecord } from "./query-builder-factory.ts";
 
-const client = new MysqlClient();
-await client.connect({
+const client = await new MysqlClient().connect({
   username: config.CLEARDB_USER,
   password: config.CLEARDB_PASSWORD,
   db: config.CLEARDB_DATABASE,

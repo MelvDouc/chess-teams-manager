@@ -11,7 +11,7 @@ export default async function MatchSeasonsPage() {
         <ul>
           {(seasons ?? []).map((season) => (
             <li>
-              <RouterLink href={`/matchs/${season}`}>{season - 1}&mdash;{season}</RouterLink>
+              <RouterLink href={`/matchs/${season}`}>{season - 1}-{season}</RouterLink>
             </li>
           ))}
         </ul>

@@ -1,6 +1,7 @@
 import HomePage from "@pages/HomePage.js";
 import MatchesPage from "@pages/matches/MatchesPage.jsx";
 import MatchCreatePage from "@pages/matches/MatchCreatePage.jsx";
+import MatchUpdatePage from "@pages/matches/MatchUpdatePage.jsx";
 import MatchLineUp from "@pages/matches/MatchLineUp.jsx";
 import MatchSeasonsPage from "@pages/matches/MatchSeasonsPage.js";
 import PlayersPage from "@pages/players/PlayersPage.js";
@@ -90,6 +91,11 @@ router
     preCheck: () => Promise.resolve(true),
     getTitle: ({ season }: { season: number; }) => `Matchs ${season - 1}-${season}`,
     component: MatchesPage
+  })
+  .addRoute("/matchs/:season/:round/:teamName/modifier", {
+    preCheck: () => Promise.resolve(true),
+    getTitle: () => "Modifier un match",
+    component: MatchUpdatePage
   })
   .addRoute("/matchs/:season/:round/:teamName/composition", {
     preCheck: () => Promise.resolve(true),

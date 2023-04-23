@@ -68,6 +68,28 @@ Form.Checkbox = ({ nameAndId, labelText, required, checked }: {
   );
 };
 
+Form.Select = ({ nameAndId, labelText, required, values }: {
+  nameAndId: string;
+  labelText: string;
+  required?: boolean;
+  values: {
+    value: string | number;
+    text: string;
+    selected?: boolean;
+  }[];
+}) => {
+  return (
+    <div>
+      <label htmlFor={nameAndId} className="form-label d-block">{labelText}</label>
+      <select name={nameAndId} id={nameAndId} required={required}>
+        {values.map(({ value, text, selected }) => (
+          <option value={value} selected={selected}>{text}</option>
+        ))}
+      </select>
+    </div>
+  );
+};
+
 Form.Submit = ({ text, backLink }: {
   text: string;
   backLink: string;

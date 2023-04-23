@@ -1,5 +1,4 @@
 import { SMTPClient } from "denomailer";
-import { render } from "./template.service.ts";
 import config from "../config/config.ts";
 
 const smtpClient = new SMTPClient({
@@ -20,9 +19,10 @@ const sendEmail = (
     to: string;
     subject: string;
   },
-  ctx: Exclude<Parameters<typeof render>[1], undefined>
+  ctx: any
 ) => {
-  const content = render(`emails/${template}.jinja`, ctx);
+  // const content = render(`emails/${template}.jinja`, ctx);
+  const content = "";
 
   return smtpClient.send({
     from: config.ADMIN_EMAIL_ADDRESS,

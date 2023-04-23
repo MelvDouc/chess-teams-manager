@@ -1,4 +1,4 @@
-import { DbEntities, MatchDetail } from "@types";
+import { DbEntities, ShortMatchInfo } from "@types";
 
 async function fetchFromApi<T>(path: `/${string}`, init?: RequestInit): Promise<T | null> {
   try {
@@ -58,17 +58,91 @@ export function getMatchSeasons() {
   return fetchFromApi<number[]>("/matches/seasons");
 }
 
-export function getMatch(season: number) {
-  return fetchFromApi<DbEntities.Match[]>(`/matches/${season}`);
+export function getMatch({ season, round, teamName }: ShortMatchInfo) {
+  return fetchFromApi<DbEntities.Match>(`/matches/${season}/${round}/${teamName}`);
 }
 
 export function getMatches(season: number) {
   return fetchFromApi<DbEntities.Match[]>(`/matches/${season}`);
 }
 
-export function getMatchLineUp({ season, round, teamName }: MatchDetail) {
+export function getMatchLineUp({ season, round, teamName }: ShortMatchInfo) {
   return fetchFromApi<DbEntities.LineUp>(`/matches/${season}/${round}/${teamName}/line-up`);
 }
+
+// ===== ===== ===== ===== =====
+// CLUBS
+// ===== ===== ===== ===== =====
+
+export function getClub(id: DbEntities.Club["id"]) {
+  return fetchFromApi<DbEntities.Club>(`/clubs/${id}`);
+}
+
+export function getClubs() {
+  return fetchFromApi<DbEntities.Club[]>("/clubs");
+}
+
+export function createClub(data: Omit<DbEntities.Club, "id">) {
+  return fetchFromApi("/clubs/create", {
+    method: "POST",
+    headers: jsonHeaders,
+    body: JSON.stringify(data)
+  });
+}
+
+export function updateClub(id: DbEntities.Club["id"], data: Partial<DbEntities.Club>) {
+  return fetchFromApi<ExecuteResult>(`/clubs/${id}/update`, {
+    method: "PUT",
+    headers: jsonHeaders,
+    body: JSON.stringify(data)
+  });
+}
+
+export function deleteClub(id: DbEntities.Club["id"]) {
+  return fetchFromApi<ExecuteResult>(`/clubs/${id}/delete`, {
+    method: "DELETE",
+    headers: jsonHeaders
+  });
+}
+
+// ===== ===== ===== ===== =====
+// TEAMS
+// ===== ===== ===== ===== =====
+
+export function getTeam(name: string) {
+  return fetchFromApi<DbEntities.Team>(`/teams/${name}`);
+}
+
+export function getTeams() {
+  return fetchFromApi<DbEntities.Team[]>(`/teams`);
+}
+
+export function createTeam(data: {
+  name: DbEntities.Team["name"];
+  captain_ffe_id: DbEntities.Player["ffe_id"];
+}) {
+  return fetchFromApi("/teams/create", {
+    method: "POST",
+    headers: jsonHeaders,
+    body: JSON.stringify(data)
+  });
+}
+
+export function updateTeam(id: DbEntities.Team["id"], data: Partial<DbEntities.Team>) {
+  return fetchFromApi<ExecuteResult>(`/teams/${id}/update`, {
+    method: "PUT",
+    headers: jsonHeaders,
+    body: JSON.stringify(data)
+  });
+}
+
+export function deleteTeam(id: DbEntities.Team["id"]) {
+  return fetchFromApi<ExecuteResult>(`/teams/${id}/delete`, {
+    method: "DELETE",
+    headers: jsonHeaders
+  });
+}
+
 
 // ===== ===== ===== ===== =====
 // TYPES
