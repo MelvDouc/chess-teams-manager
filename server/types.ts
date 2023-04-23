@@ -53,6 +53,12 @@ export namespace MySqlEntities {
     date: string;
   }
 
+  export interface ShortMatchInfo {
+    season: number;
+    round: number;
+    teamName: string;
+  }
+
   export type FullMatchInfo =
     & Pick<Match, "id" | "season" | "round" | "white_on_odds" | "date">
     & TeamWithCaptain

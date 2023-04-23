@@ -1,21 +1,23 @@
 import db from "/database/db.ts";
 import { DbEntities, MySqlEntities, WithoutId } from "/types.ts";
 
-const teamSql = `
-  SELECT
-    team.id team_id,
-    team.name team_name,
-    cap.ffe_id captain_ffe_id,
-    cap.fide_id captain_fide_id,
-    cap.email captain_email,
-    cap.phone captain_phone,
-    cap.last_name captain_last_name,
-    cap.first_name captain_first_name,
-    cap.rating captain_rating
-  FROM team
-  INNER JOIN player cap
-    ON cap.ffe_id = team.captain_ffe_id
-`;
+function getRawTeam() {
+  return db
+    .createQueryBuilder()
+    .select(
+      "t.id team_id",
+      "t.name team_name",
+      "cap.ffe_id captain_ffe_id",
+      "cap.fide_id captain_fide_id",
+      "cap.email captain_email",
+      "cap.phone captain_phone",
+      "cap.last_name captain_last_name",
+      "cap.first_name captain_first_name",
+      "cap.rating captain_rating",
+    ).from("team t")
+    .innerJoin("player cap")
+    .on("cap.ffe_id = t.captain_ffe_id");
+}
 
 const convertSearch = (search: MySqlEntities.TeamWithCaptain): DbEntities.Team => ({
   id: search.team_id,
@@ -32,14 +34,14 @@ const convertSearch = (search: MySqlEntities.TeamWithCaptain): DbEntities.Team =
 });
 
 async function getTeam(name: string): Promise<DbEntities.Team | null> {
-  const [team] = await db.query(`${teamSql} WHERE team.name = ? LIMIT 1`, [name]) as MySqlEntities.TeamWithCaptain[];
+  const [team] = await getRawTeam().where("t.name = ?").run([name]) as MySqlEntities.TeamWithCaptain[];
   return (team)
     ? convertSearch(team)
     : null;
 }
 
 async function getTeams(): Promise<DbEntities.Team[]> {
-  const teams = await db.query(teamSql) as MySqlEntities.TeamWithCaptain[];
+  const teams = await getRawTeam().run() as MySqlEntities.TeamWithCaptain[];
   return teams.map(convertSearch);
 }
 

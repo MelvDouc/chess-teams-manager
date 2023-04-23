@@ -1,40 +1,40 @@
-export default function queryBuilder<T>(queryFn: (sql: string, values?: (number | string | null)[]) => T) {
+export default function createQueryBuilder<T>(queryFn: (sql: string, values?: (number | string | null)[]) => T) {
   let query = "";
   const run = (values?: (number | string | null)[]) => queryFn(query, values);
 
   const select = (col: string, ...cols: string[]) => {
-    query += `SELECT ${[col, ...cols].join()}`;
+    query += `SELECT\n${[col, ...cols].join(",\n")}`;
 
     return {
       from: (tableName: string) => {
-        query += ` FROM ${tableName}`;
-        return { innerJoin, where };
+        query += `\nFROM ${tableName}`;
+        return { innerJoin, where, run };
       }
     };
   };
 
   const innerJoin = (tableName: string) => {
-    query += ` INNER JOIN ${tableName}`;
+    query += `\nINNER JOIN ${tableName}`;
     return { on };
   };
 
   const on = (onClause: string) => {
-    query += ` ON ${onClause}`;
-    return { innerJoin, where };
+    query += `\nON ${onClause}`;
+    return { innerJoin, where, run };
   };
 
   const where = (whereClause: string) => {
-    query += ` WHERE ${whereClause}`;
+    query += `\nWHERE ${whereClause}`;
     return { limit, orderBy, run };
   };
 
   const orderBy = (col: string, ...cols: string[]) => {
-    query += ` ORDER BY ${[col, ...cols].join()}`;
+    query += `\nORDER BY ${[col, ...cols].join()}`;
     return { limit, run };
   };
 
   const limit = (value: number) => {
-    query += ` LIMIT ${value}`;
+    query += `\nLIMIT ${value}`;
     return { run };
   };
 

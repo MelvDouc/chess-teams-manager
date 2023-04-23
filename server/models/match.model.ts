@@ -1,132 +1,146 @@
 import db from "/database/db.ts";
 import { BoardColor, DbEntities, MySqlEntities, WithoutId } from "/types.ts";
 
-const fullMatchInfoSql = `
-  SELECT
-    lm.id id,
-    season,
-    round,
-    white_on_odds,
-    lm.date date,
-    hc.address address,
-    team.id team_id,
-    team.name team_name,
-    cap.ffe_id captain_ffe_id,
-    cap.fide_id captain_fide_id,
-    cap.email captain_email,
-    cap.phone captain_phone,
-    cap.last_name captain_last_name,
-    cap.first_name captain_first_name,
-    cap.rating captain_rating,
-    opp.id opponent_id,
-    opp.name opponent_name,
-    opp.address opponent_address,
-    opp.email opponent_email,
-    opp.phone opponent_phone
-  FROM league_match lm
-  JOIN club hc ON hc.id = lm.home_club_id
-  JOIN club opp ON opp.id = lm.opponent_id
-  JOIN team ON team.id = lm.team_id
-  JOIN player cap ON cap.ffe_id = team.captain_ffe_id
-`;
+// ===== ===== ===== ===== =====
+// HELPERS
+// ===== ===== ===== ===== =====
 
-const lineUpSql = `
-  SELECT
-    board,
-    IF(board % 2 = lm.white_on_odds, "B", "N") color,
-    p.ffe_id ffe_id,
-    p.fide_id fide_id,
-    p.email email,
-    p.first_name first_name,
-    p.last_name last_name,
-    p.phone phone,
-    IF(player_rating IS NULL, p.rating, player_rating) rating
-  FROM line_up l
-  INNER JOIN league_match lm
-    ON lm.id = l.match_id
-  INNER JOIN player p
-    ON p.ffe_id = l.player_ffe_id
-  INNER JOIN team t
-    ON t.id = lm.team_id
-  WHERE l.match_id = ?
-  ORDER BY board
-`;
+async function getMatchIdAndWhiteOnOdds({ season, round, teamName }: MySqlEntities.ShortMatchInfo) {
+  const matches = await db
+    .createQueryBuilder()
+    .select("lm.id", "white_on_odds")
+    .from("league_match lm")
+    .innerJoin("team t")
+    .on("t.id = lm.team_id")
+    .where("lm.season = ? AND lm.round = ? AND t.name = ?")
+    .limit(1)
+    .run([season, round, teamName]) as Pick<MySqlEntities.Match, "id" | "white_on_odds">[];
+  return matches[0];
+}
 
-const convertSearch = (search: MySqlEntities.FullMatchInfo): DbEntities.Match => ({
-  id: search.id,
-  season: search.season,
-  round: search.round,
-  address: search.address,
-  white_on_odds: Boolean(search.white_on_odds),
-  date: new Date(search.date),
-  team: {
-    id: search.team_id,
-    name: search.team_name,
-    captain: {
-      ffe_id: search.captain_ffe_id,
-      fide_id: search.captain_fide_id,
-      email: search.captain_email,
-      first_name: search.captain_first_name,
-      last_name: search.captain_last_name,
-      phone: search.captain_phone,
-      rating: search.captain_rating
+function getFullMatchInfo() {
+  return db
+    .createQueryBuilder()
+    .select(
+      "lm.id id",
+      "season",
+      "round",
+      "white_on_odds",
+      "lm.date date",
+      "hc.address address",
+      "team.id team_id",
+      "team.name team_name",
+      "cap.ffe_id captain_ffe_id",
+      "cap.fide_id captain_fide_id",
+      "cap.email captain_email",
+      "cap.phone captain_phone",
+      "cap.last_name captain_last_name",
+      "cap.first_name captain_first_name",
+      "cap.rating captain_rating",
+      "opp.id opponent_id",
+      "opp.name opponent_name",
+      "opp.address opponent_address",
+      "opp.email opponent_email",
+      "opp.phone opponent_phone",
+    )
+    .from("league_match lm")
+    .innerJoin("club hc")
+    .on("hc.id = lm.home_club_id")
+    .innerJoin("club opp")
+    .on("opp.id = lm.opponent_id")
+    .innerJoin("team")
+    .on("team.id = lm.team_id")
+    .innerJoin("player cap")
+    .on("cap.ffe_id = team.captain_ffe_id");
+}
+
+function convertSearch(search: MySqlEntities.FullMatchInfo): DbEntities.Match {
+  return {
+    id: search.id,
+    season: search.season,
+    round: search.round,
+    address: search.address,
+    white_on_odds: Boolean(search.white_on_odds),
+    date: new Date(search.date),
+    team: {
+      id: search.team_id,
+      name: search.team_name,
+      captain: {
+        ffe_id: search.captain_ffe_id,
+        fide_id: search.captain_fide_id,
+        email: search.captain_email,
+        first_name: search.captain_first_name,
+        last_name: search.captain_last_name,
+        phone: search.captain_phone,
+        rating: search.captain_rating
+      }
+    },
+    opponent: {
+      id: search.opponent_id,
+      name: search.opponent_name,
+      address: search.opponent_address,
+      email: search.opponent_email,
+      phone: search.opponent_phone,
     }
-  },
-  opponent: {
-    id: search.opponent_id,
-    name: search.opponent_name,
-    address: search.opponent_address,
-    email: search.opponent_email,
-    phone: search.opponent_phone,
-  }
-});
+  };
+}
 
-async function getMatch({ season, round, teamName }: {
-  season: number;
-  round: number;
-  teamName: string;
-}): Promise<DbEntities.Match | null> {
-  const [match] = await db.query(`${fullMatchInfoSql} WHERE season = ? AND round = ? AND team.name = ?`, [
-    season, round, teamName
-  ]);
+function getRawLineUp(matchId: number) {
+  return db
+    .createQueryBuilder()
+    .select(
+      "board",
+      "IF(board % 2 = lm.white_on_odds, 'B', 'N') color",
+      "p.ffe_id ffe_id",
+      "p.fide_id fide_id",
+      "p.email email",
+      "p.first_name first_name",
+      "p.last_name last_name",
+      "p.phone phone",
+      "IF(player_rating IS NULL, p.rating, player_rating) rating",
+    )
+    .from("line_up l")
+    .innerJoin("league_match lm")
+    .on("lm.id = l.match_id")
+    .innerJoin("player p")
+    .on("p.ffe_id = l.player_ffe_id")
+    .innerJoin("team t")
+    .on("t.id = lm.team_id")
+    .where("l.match_id = ?")
+    .orderBy("board")
+    .run([matchId]) as Promise<({ board: number; color: BoardColor; } & DbEntities.Player)[]>;
+}
+
+// ===== ===== ===== ===== =====
+// CRUD
+// ===== ===== ===== ===== =====
+
+async function getMatch({ season, round, teamName }: MySqlEntities.ShortMatchInfo): Promise<DbEntities.Match | null> {
+  const [match] = await getFullMatchInfo()
+    .where("season = ? AND round = ? AND team.name = ?")
+    .run([season, round, teamName]);
   return (match)
     ? convertSearch(match)
     : null;
 }
 
-async function getSeasons(): Promise<number[]> {
-  const seasons = await db.query("SELECT DISTINCT season FROM league_match");
-  return seasons.map((obj: { season: number; }) => obj.season);
-}
-
 async function getMatchesOfSeason(season: number): Promise<DbEntities.Match[]> {
-  const search = await db.query(`${fullMatchInfoSql} WHERE season = ?`, [season]) as MySqlEntities.FullMatchInfo[];
+  const search = await getFullMatchInfo().run();
   return search.map(convertSearch);
 }
 
-async function getLineUp({ season, round, teamName }: {
-  season: number;
-  round: number;
-  teamName: string;
-}): Promise<DbEntities.LineUp | null> {
-  const [match] = await db.query(`
-    SELECT lm.id, white_on_odds
-    FROM league_match lm
-    INNER JOIN team t
-      ON t.id = lm.team_id
-    WHERE lm.season = ?
-      AND lm.round = ?
-      AND t.name = ?
-    LIMIT 1
-  `, [season, round, teamName]) as Pick<MySqlEntities.Match, "id" | "white_on_odds">[];
+async function getSeasons(): Promise<number[]> {
+  const seasons = await db.createQueryBuilder().select("DISTINCT season").from("league_match").run();
+  return seasons.map((obj: { season: number; }) => obj.season);
+}
+
+async function getLineUp({ season, round, teamName }: MySqlEntities.ShortMatchInfo): Promise<DbEntities.LineUp | null> {
+  const match = await getMatchIdAndWhiteOnOdds({ season, round, teamName });
 
   if (!match)
     return null;
 
-  const rawLineUp = await db.query(lineUpSql, [match.id]) as ({
-    board: number;
-    color: BoardColor;
-  } & DbEntities.Player)[];
+  const rawLineUp = await getRawLineUp(match.id);
   const boardMap = rawLineUp.reduce((acc, { board, color, ...player }) => {
     return acc.set(board, { color, player });
   }, new Map<number, { color: BoardColor; player: DbEntities.Player; }>());

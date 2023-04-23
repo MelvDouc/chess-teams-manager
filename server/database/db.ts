@@ -1,5 +1,6 @@
-import config from "/config/config.ts";
 import { Client as MysqlClient } from "mysql";
+import config from "/config/config.ts";
+import createQueryBuilder from "/database/query-builder.ts";
 
 const client = new MysqlClient();
 await client.connect({
@@ -10,8 +11,6 @@ await client.connect({
 });
 console.log("%cConnected to database.", "color: yellow");
 
-
-const query = client.query.bind(client);
 
 const findOne = async <T>(tableName: string, filter: Partial<T>) => {
   const whereClause = Object.keys(filter).map((key) => `${key} = ?`).join(" AND ");
@@ -59,7 +58,7 @@ const deleteOne = <T>(tableName: string, filter: Partial<T>) => {
 };
 
 export default {
-  query,
+  createQueryBuilder: () => createQueryBuilder(client.query.bind(client)),
   findOne,
   findAll,
   insert,
