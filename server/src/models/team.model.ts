@@ -1,5 +1,5 @@
-import db from "../database/db.ts";
-import { DbEntities, MySqlEntities, WithoutId } from "../types.ts";
+import db from "../database/db.js";
+import { DbEntities, MySqlEntities, WithoutId } from "../types.js";
 
 // ===== ===== ===== ===== =====
 // HELPERS
@@ -27,14 +27,14 @@ function convertSearch({ id, name, captain_ffe_id, ...captain }: MySqlEntities.T
 // ===== ===== ===== ===== =====
 
 async function getTeam(name: string): Promise<DbEntities.Team | null> {
-  const [team] = await getRawTeam().where({ "t.name": name }).run() as MySqlEntities.TeamWithCaptain[];
+  const [team] = await getRawTeam().where({ "t.name": name }).run() as unknown as MySqlEntities.TeamWithCaptain[];
   return (team)
     ? convertSearch(team)
     : null;
 }
 
 async function getTeams(): Promise<DbEntities.Team[]> {
-  const teams = await getRawTeam().run() as MySqlEntities.TeamWithCaptain[];
+  const teams = await getRawTeam().run() as unknown as MySqlEntities.TeamWithCaptain[];
   return teams.map(convertSearch);
 }
 
@@ -42,7 +42,7 @@ function createTeam({ name, captain_ffe_id }: WithoutId<MySqlEntities.Team>) {
   return db.insert("team", { name, captain_ffe_id });
 }
 
-function updateTeam(id: DbEntities.Team["id"], updates: WithoutId<MySqlEntities.Team>) {
+function updateTeam(id: DbEntities.Team["id"], updates: Partial<WithoutId<MySqlEntities.Team>>) {
   return db.update<DbEntities.Team>("team", { id }, updates);
 }
 

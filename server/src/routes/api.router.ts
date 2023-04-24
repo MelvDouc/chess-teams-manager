@@ -1,11 +1,11 @@
-import { Router } from "oak";
-import authController from "../controllers/auth.controller.ts";
-import clubController from "../controllers/club.controller.ts";
-import matchController from "../controllers/match.controller.ts";
-import playerController from "../controllers/player.controller.ts";
-import teamController from "../controllers/team.controller.ts";
+import { Router } from "express";
+import authController from "../controllers/auth.controller.js";
+import clubController from "../controllers/club.controller.js";
+import matchController from "../controllers/match.controller.js";
+import playerController from "../controllers/player.controller.js";
+import teamController from "../controllers/team.controller.js";
 
-const apiRouter = new Router({ prefix: "/api/v1" });
+const apiRouter = Router();
 
 apiRouter
   .get("/clubs/:id", clubController.getClub)

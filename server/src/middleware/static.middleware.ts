@@ -1,5 +1,5 @@
 import type { Context } from "oak";
-import { AppState } from "../types.ts";
+import { AppState } from "../types.js";
 
 const staticMiddleware = async ({ request, response }: Context<AppState>, next: () => Promise<any>) => {
   if (!request.url.pathname.startsWith("/public/"))

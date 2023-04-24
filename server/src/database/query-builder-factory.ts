@@ -1,10 +1,10 @@
-import { Client as MysqlClient } from "mysql";
+import { Connection } from "mysql2/promise";
 
-export default function queryBuilderFactory(client: MysqlClient) {
+export default function queryBuilderFactory(client: Connection) {
   return () => {
     let query = "";
-    const runQuery = () => client.query(query);
-    const execute = () => client.execute(query);
+    const runQuery = async () => (await client.query(query))[0];
+    const execute = async () => (await client.execute(query))[0];
 
     const join = (type: "left" | "right" | "inner" | "full outer", tableName: string) => {
       query += `\n${type.toUpperCase()} JOIN ${tableName}`;

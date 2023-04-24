@@ -1,5 +1,5 @@
-import db from "../database/db.ts";
-import { DbEntities, MySqlEntities, WithoutId } from "../types.ts";
+import db from "../database/db.js";
+import { DbEntities, MySqlEntities, WithoutId } from "../types.js";
 
 function getClub(id: DbEntities.Club["id"]): Promise<MySqlEntities.Club | null> {
   return db.findOne("club", { id });
@@ -13,7 +13,7 @@ function createClub(data: WithoutId<MySqlEntities.Club>) {
   return db.insert("club", data);
 }
 
-function updateClub(id: DbEntities.Club["id"], updates: WithoutId<MySqlEntities.Club>) {
+function updateClub(id: DbEntities.Club["id"], updates: Partial<WithoutId<MySqlEntities.Club>>) {
   return db.update<DbEntities.Club>("club", { id }, updates);
 }
 

@@ -1,12 +1,16 @@
-import { Client as MysqlClient } from "mysql";
-import config from "../config/config.ts";
-import queryBuilderFactory, { SqlRecord } from "./query-builder-factory.ts";
+import { createConnection } from "mysql2/promise";
+import queryBuilderFactory, { SqlRecord } from "./query-builder-factory.js";
 
-const client = await new MysqlClient().connect({
-  username: config.CLEARDB_USER,
-  password: config.CLEARDB_PASSWORD,
-  db: config.CLEARDB_DATABASE,
-  hostname: config.CLEARDB_HOST
+if (process.env.NODE_ENV !== "production") {
+  const { config } = await import("dotenv");
+  config();
+}
+
+const client = await createConnection({
+  user: process.env.CLEARDB_USER,
+  password: process.env.CLEARDB_PASSWORD,
+  database: process.env.CLEARDB_DATABASE,
+  host: process.env.CLEARDB_HOST
 });
 console.log("%cConnected to database.", "color: yellow");
 
@@ -19,14 +23,14 @@ const findOne = async <T>(tableName: string, filter: SqlRecord): Promise<T | nul
     .where(filter)
     .limit(1)
     .run();
-  return query[0] ?? null;
+  return (query as unknown as T[])[0] ?? null;
 };
 
-const findAll = (tableName: string) => {
+const findAll = <T>(tableName: string) => {
   return createQueryBuilder()
     .select("*")
     .from(tableName)
-    .run();
+    .run() as unknown as Promise<T>;
 };
 
 const insert = <T extends {}>(tableName: string, value: T, ...values: T[]) => {

@@ -1,5 +1,7 @@
+/*
+
 import { SMTPClient } from "denomailer";
-import config from "../config/config.ts";
+import config from "../config/config.js";
 
 const smtpClient = new SMTPClient({
   connection: {
@@ -36,3 +38,5 @@ const sendEmail = (
 export default {
   sendEmail
 };
+
+*/

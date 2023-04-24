@@ -1,5 +1,5 @@
-import db from "../database/db.ts";
-import { BoardColor, DbEntities, MySqlEntities, WithoutId } from "../types.ts";
+import db from "../database/db.js";
+import { BoardColor, DbEntities, MySqlEntities, WithoutId } from "../types.js";
 
 // ===== ===== ===== ===== =====
 // HELPERS
@@ -126,20 +126,20 @@ async function getMatch({ season, round, teamName }: MySqlEntities.ShortMatchInf
       round,
       "t.name": teamName
     })
-    .run();
+    .run() as unknown as MySqlEntities.FullMatchInfo[];
   return (match)
     ? convertSearch(match)
     : null;
 }
 
 async function getMatchesOfSeason(season: number): Promise<DbEntities.Match[]> {
-  const search = await getFullMatchInfo().run();
+  const search = await getFullMatchInfo().where({ season }).run() as unknown as MySqlEntities.FullMatchInfo[];
   return search.map(convertSearch);
 }
 
 async function getSeasons(): Promise<number[]> {
-  const seasons = await db.createQueryBuilder().select("DISTINCT season").from("league_match").run();
-  return seasons.map((obj: { season: number; }) => obj.season);
+  const seasons = await db.createQueryBuilder().select("DISTINCT season").from("league_match").run() as unknown as { season: number; }[];
+  return seasons.map((obj) => obj.season);
 }
 
 async function getLineUp({ season, round, teamName }: MySqlEntities.ShortMatchInfo): Promise<DbEntities.LineUp | null> {
@@ -179,7 +179,7 @@ function createMatch({ season, round, team_id, opponent_id, home_club_id, white_
   });
 }
 
-function updateMatch(id: number, updates: WithoutId<MySqlEntities.Match>) {
+function updateMatch(id: number, updates: Partial<WithoutId<MySqlEntities.Match>>) {
   return db.update<MySqlEntities.Match>("league_match", { id }, updates);
 }
 

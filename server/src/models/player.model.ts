@@ -1,5 +1,5 @@
-import db from "../database/db.ts";
-import { DbEntities, MySqlEntities, WithoutId } from "../types.ts";
+import db from "../database/db.js";
+import { DbEntities, MySqlEntities, WithoutId } from "../types.js";
 
 function getPlayer(ffeId: string): Promise<MySqlEntities.Player | null> {
   return db.findOne("player", { ffe_id: ffeId });
@@ -11,14 +11,14 @@ function getPlayers(): Promise<MySqlEntities.Player[]> {
     .select("*")
     .from("player")
     .orderBy("rating DESC")
-    .run();
+    .run() as unknown as Promise<MySqlEntities.Player[]>;
 }
 
 function createPlayer(data: MySqlEntities.Player) {
   return db.insert("player", data);
 }
 
-function updatePlayer(ffe_id: DbEntities.Player["ffe_id"], updates: WithoutId<MySqlEntities.Player, "ffe_id">) {
+function updatePlayer(ffe_id: DbEntities.Player["ffe_id"], updates: Partial<WithoutId<MySqlEntities.Player, "ffe_id">>) {
   return db.update<DbEntities.Player>("player", { ffe_id }, updates);
 }
 

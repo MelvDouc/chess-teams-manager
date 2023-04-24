@@ -1,5 +1,5 @@
-import db from "../database/db.ts";
-import { DbEntities, WithoutId } from "../types.ts";
+import db from "../database/db.js";
+import { DbEntities, WithoutId } from "../types.js";
 
 type User = DbEntities.User;
 
@@ -15,7 +15,7 @@ function createUser({ email, password, role }: Omit<User, "password_reset_id">) 
   return db.insert("user", { email, password, role });
 }
 
-function updateUser(email: User["email"], updates: WithoutId<User, "email">) {
+function updateUser(email: User["email"], updates: Partial<WithoutId<User, "email">>) {
   return db.update<DbEntities.User>("user", { email }, updates);
 }
 
