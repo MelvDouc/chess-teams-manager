@@ -1,25 +1,36 @@
+import { z } from "zod";
 import db from "../database/db.js";
-import { DbEntities, MySqlEntities, WithoutId } from "../types.js";
+import { DbEntities, WithoutId } from "../types.js";
 
-function getClub(id: DbEntities.Club["id"]): Promise<MySqlEntities.Club | null> {
-  return db.findOne("club", { id });
-}
+const createClubSchema = z.object({
+  name: z.string().min(1).max(20),
+  address: z.string().min(1),
+  email: z.string().email({ message: "Adresse email invalide." }).max(50).nullable(),
+  phone: z.string().max(15).nullable(),
+});
 
-function getClubs(): Promise<MySqlEntities.Club[]> {
-  return db.findAll("club");
-}
+const updateClubSchema = z.object({
+  name: z.string().min(1).max(20).optional(),
+  address: z.string().min(1).optional(),
+  email: z.string().email({ message: "Adresse email invalide." }).max(50).nullable().optional(),
+  phone: z.string().max(15).nullable().optional(),
+});
 
-function createClub(data: WithoutId<MySqlEntities.Club>) {
-  return db.insert("club", data);
-}
+const getClub = (id: number) => db.findOne("club", { id });
 
-function updateClub(id: DbEntities.Club["id"], updates: Partial<WithoutId<MySqlEntities.Club>>) {
-  return db.update<DbEntities.Club>("club", { id }, updates);
-}
+const getClubs = () => db.findAll("club");
 
-function deleteClub(id: DbEntities.Club["id"]) {
+const createClub = (data: DbEntities.Club) => {
+  return db.insert("club", createClubSchema.parse(data));
+};
+
+const updateClub = (id: number, updates: Partial<WithoutId<DbEntities.Club>>) => {
+  return db.update("club", { id }, updateClubSchema.parse(updates));
+};
+
+const deleteClub = (id: number) => {
   return db.delete("club", { id });
-}
+};
 
 export default {
   getClub,

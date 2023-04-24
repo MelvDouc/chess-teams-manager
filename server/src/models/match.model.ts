@@ -138,7 +138,9 @@ async function getMatchesOfSeason(season: number): Promise<DbEntities.Match[]> {
 }
 
 async function getSeasons(): Promise<number[]> {
-  const seasons = await db.createQueryBuilder().select("DISTINCT season").from("league_match").run() as unknown as { season: number; }[];
+  const seasons = await db.createQueryBuilder()
+    .select("DISTINCT season")
+    .from("league_match").run() as unknown as { season: number; }[];
   return seasons.map((obj) => obj.season);
 }
 

@@ -37,7 +37,10 @@ const insert = <T extends {}>(tableName: string, value: T, ...values: T[]) => {
   return createQueryBuilder()
     .insertInto(tableName)
     .values([value, ...values])
-    .run();
+    .run() as unknown as Promise<{
+      affectedRows: number;
+      insertId: number;
+    }>;
 };
 
 const update = <T>(tableName: string, filter: SqlRecord, updates: Partial<T>) => {
@@ -45,14 +48,20 @@ const update = <T>(tableName: string, filter: SqlRecord, updates: Partial<T>) =>
     .update(tableName)
     .set(updates as {})
     .where(filter)
-    .run();
+    .run() as unknown as Promise<{
+      affectedRows: number;
+      insertId: number;
+    }>;
 };
 
 const deleteOne = (tableName: string, filter: SqlRecord) => {
   return createQueryBuilder()
     .deleteFrom(tableName)
     .where(filter)
-    .run();
+    .run() as unknown as Promise<{
+      affectedRows: number;
+      insertId: number;
+    }>;
 };
 
 export default {
