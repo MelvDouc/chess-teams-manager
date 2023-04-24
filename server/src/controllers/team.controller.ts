@@ -1,25 +1,28 @@
-import { RouteHandler } from "../types.js";
+import asyncWrapper from "../middleware/async-wrapper.js";
 import teamModel from "../models/team.model.js";
 
-const getTeam: RouteHandler = async (req, res) => {
+const getTeam = asyncWrapper(async (req, res) => {
   res.json(await teamModel.getTeam(req.params.name));
-};
+});
 
-const getTeams: RouteHandler = async (req, res) => {
+const getTeams = asyncWrapper(async (req, res) => {
   res.json(await teamModel.getTeams());
-};
+});
 
-const createTeam: RouteHandler = async (req, res) => {
-  res.json(await teamModel.createTeam(req.body));
-};
+const createTeam = asyncWrapper(async (req, res) => {
+  const { insertId } = await teamModel.createTeam(req.body);
+  res.json(insertId);
+});
 
-const updateTeam: RouteHandler = async (req, res) => {
-  res.json(await teamModel.updateTeam(+req.params.id, req.body));
-};
+const updateTeam = asyncWrapper(async (req, res) => {
+  const { affectedRows } = await teamModel.updateTeam(+req.params.id, req.body);
+  res.json({ success: affectedRows > 0 });
+});
 
-const deleteTeam: RouteHandler = async (req, res) => {
-  res.json(await teamModel.deleteTeam(+req.params.id));
-};
+const deleteTeam = asyncWrapper(async (req, res) => {
+  const { affectedRows } = await teamModel.deleteTeam(+req.params.id);
+  res.json({ success: affectedRows > 0 });
+});
 
 
 export default {

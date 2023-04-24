@@ -1,25 +1,28 @@
-import { RouteHandler } from "../types.js";
+import asyncWrapper from "../middleware/async-wrapper.js";
 import playerModel from "../models/player.model.js";
 
-const getPlayer: RouteHandler = async (req, res) => {
+const getPlayer = asyncWrapper(async (req, res) => {
   res.json(await playerModel.getPlayer(req.params.ffeId));
-};
+});
 
-const getPlayers: RouteHandler = async (req, res) => {
+const getPlayers = asyncWrapper(async (req, res) => {
   res.json(await playerModel.getPlayers());
-};
+});
 
-const createPlayer: RouteHandler = async (req, res) => {
-  res.json(await playerModel.createPlayer(req.body));
-};
+const createPlayer = asyncWrapper(async (req, res) => {
+  const { insertId } = await playerModel.createPlayer(req.body);
+  res.json(insertId);
+});
 
-const updatePlayer: RouteHandler = async (req, res) => {
-  res.json(await playerModel.updatePlayer(req.params.ffeId, req.body));
-};
+const updatePlayer = asyncWrapper(async (req, res) => {
+  const { affectedRows } = await playerModel.updatePlayer(req.params.ffeId, req.body);
+  res.json({ success: affectedRows > 0 });
+});
 
-const deletePlayer: RouteHandler = async (req, res) => {
-  res.json(await playerModel.deletePlayer(req.params.ffeId));
-};
+const deletePlayer = asyncWrapper(async (req, res) => {
+  const { affectedRows } = await playerModel.deletePlayer(req.params.ffeId);
+  res.json({ success: affectedRows > 0 });
+});
 
 
 export default {

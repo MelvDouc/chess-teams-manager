@@ -1,15 +1,15 @@
-import { RouteHandler } from "../types.js";
 import matchModel from "../models/match.model.js";
+import asyncWrapper from "../middleware/async-wrapper.js";
 
-const getSeasons: RouteHandler = async (req, res) => {
+const getSeasons = asyncWrapper(async (req, res) => {
   res.json(await matchModel.getSeasons());
-};
+});
 
-const getMatchesOfSeason: RouteHandler = async (req, res) => {
+const getMatchesOfSeason = asyncWrapper(async (req, res) => {
   res.json(await matchModel.getMatchesOfSeason(+req.params.season));
-};
+});
 
-const getMatch: RouteHandler = async (req, res) => {
+const getMatch = asyncWrapper(async (req, res) => {
   res.json(
     await matchModel.getMatch({
       season: +req.params.season,
@@ -17,9 +17,9 @@ const getMatch: RouteHandler = async (req, res) => {
       teamName: req.params.teamName
     })
   );
-};
+});
 
-const getLineUp: RouteHandler = async (req, res) => {
+const getLineUp = asyncWrapper(async (req, res) => {
   res.json(
     await matchModel.getLineUp({
       season: +req.params.season,
@@ -27,20 +27,22 @@ const getLineUp: RouteHandler = async (req, res) => {
       teamName: req.params.teamName
     })
   );
-};
+});
 
+const createMatch = asyncWrapper(async (req, res) => {
+  const { insertId } = await matchModel.createMatch(req.body);
+  res.json(insertId);
+});
 
-const createMatch: RouteHandler = async (req, res) => {
-  res.json(await matchModel.createMatch(req.body));
-};
+const updateMatch = asyncWrapper(async (req, res) => {
+  const { affectedRows } = await matchModel.updateMatch(+req.params.id, req.body);
+  res.json({ success: affectedRows > 0 });
+});
 
-const updateMatch: RouteHandler = async (req, res) => {
-  res.json(await matchModel.updateMatch(+req.params.id, req.body));
-};
-
-const deleteMatch: RouteHandler = async (req, res) => {
-  res.json(await matchModel.deleteMatch(+req.params.id));
-};
+const deleteMatch = asyncWrapper(async (req, res) => {
+  const { affectedRows } = await matchModel.deleteMatch(+req.params.id);
+  res.json({ success: affectedRows > 0 });
+});
 
 
 export default {
