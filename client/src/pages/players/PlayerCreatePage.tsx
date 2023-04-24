@@ -20,8 +20,9 @@ export default async function PlayerCreatePage() {
           handleSubmit={async (e) => {
             e.preventDefault();
             const formData = Object.fromEntries([...new FormData(e.target as HTMLFormElement)]) as unknown as DbEntities.Player;
+            const insertedId = await createPlayer(formData);
 
-            if (!(await createPlayer(formData))?.affectedRows)
+            if (insertedId === null || insertedId === 0)
               return alert("Une erreur s'est produite.");
 
             location.assign("/joueurs");

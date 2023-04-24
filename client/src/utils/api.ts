@@ -28,7 +28,7 @@ export function getPlayers() {
 }
 
 export function createPlayer(data: DbEntities.Player) {
-  return fetchFromApi<ExecuteResult>("/players/create", {
+  return fetchFromApi<number>("/players/create", {
     method: "POST",
     headers: jsonHeaders,
     body: JSON.stringify(data)
@@ -36,7 +36,7 @@ export function createPlayer(data: DbEntities.Player) {
 }
 
 export function updatePlayer(ffe_id: DbEntities.Player["ffe_id"], data: Partial<DbEntities.Player>) {
-  return fetchFromApi<ExecuteResult>(`/players/${ffe_id}/update`, {
+  return fetchFromApi<SuccessResponse>(`/players/${ffe_id}/update`, {
     method: "PUT",
     headers: jsonHeaders,
     body: JSON.stringify(data)
