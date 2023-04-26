@@ -1,6 +1,6 @@
-import { Connection } from "mysql2/promise";
+import { Pool } from "mysql2/promise";
 
-export default function queryBuilderFactory(client: Connection) {
+export default function queryBuilderFactory(client: Pool) {
   return () => {
     let query = "";
     const runQuery = async () => (await client.query(query))[0];

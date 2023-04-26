@@ -20,16 +20,11 @@ const updateClub: RouteHandler = asyncWrapper(async (req, res) => {
   res.json({ success: affectedRows > 0 });
 });
 
-const deleteClub: RouteHandler = asyncWrapper(async (req, res) => {
-  const { affectedRows } = await clubModel.deleteClub(+req.params.id);
-  res.json({ success: affectedRows > 0 });
-});
 
 
 export default {
   getClub,
   getClubs,
   createClub,
-  updateClub,
-  deleteClub
+  updateClub
 };

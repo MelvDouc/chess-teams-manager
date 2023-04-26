@@ -11,8 +11,7 @@ apiRouter
   .get("/clubs/:id", clubController.getClub)
   .get("/clubs", clubController.getClubs)
   .post("/clubs/create", clubController.createClub)
-  .put("/clubs/:id/update", clubController.updateClub)
-  .delete("/clubs/:id/delete", clubController.deleteClub);
+  .put("/clubs/:id/update", clubController.updateClub);
 
 apiRouter
   .get("/players/:ffeId", playerController.getPlayer)

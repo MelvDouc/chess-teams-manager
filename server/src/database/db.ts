@@ -1,8 +1,8 @@
-import { createConnection } from "mysql2/promise";
+import { createPool } from "mysql2/promise";
 import queryBuilderFactory, { SqlRecord } from "./query-builder-factory.js";
 import config from "../config/config.js";
 
-const client = await createConnection({
+const client = createPool({
   user: config.CLEARDB_USER,
   password: config.CLEARDB_PASSWORD,
   database: config.CLEARDB_DATABASE,
