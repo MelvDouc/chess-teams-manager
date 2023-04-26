@@ -1,18 +1,14 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { createTransport } from "nodemailer";
-
-if (process.env.NODE_ENV !== "production") {
-  const { config } = await import("dotenv");
-  config();
-}
+import config from "../config/config.js";
 
 const transport = createTransport({
-  host: process.env.ADMIN_EMAIL_HOST,
-  port: +process.env.ADMIN_EMAIL_PORT,
+  host: config.ADMIN_EMAIL_HOST,
+  port: +config.ADMIN_EMAIL_PORT,
   auth: {
-    user: process.env.ADMIN_EMAIL_ADDRESS,
-    pass: process.env.ADMIN_EMAIL_APP_PASSWORD
+    user: config.ADMIN_EMAIL_ADDRESS,
+    pass: config.ADMIN_EMAIL_APP_PASSWORD
   }
 });
 
@@ -23,19 +19,30 @@ async function sendEmail({ to, subject, templateName, context }: {
   context: Record<string, any>;
 }) {
   try {
-    const html = await readFile(join(process.cwd(), "server", "email-templates", templateName), "utf-8");
-    const htmlMessage = html.replace(/\{{2}\s*(.+)\s*\}{2}/g, (_, key) => context[key] ?? "");
+    const fileContents = await readFile(
+      join(process.cwd(), "server", "email-templates", `${templateName}.html`),
+      "utf-8"
+    );
+    const htmlMessage = addContext(fileContents, context);
     return transport.sendMail({
-      from: process.env.ADMIN_EMAIL_ADDRESS,
+      from: config.ADMIN_EMAIL_ADDRESS,
       to,
       subject,
       html: htmlMessage,
-      text: htmlMessage.replace(/<[^>]+>/g, "")
+      text: stripTags(htmlMessage)
     });
   } catch (error) {
     console.log(error);
     return null;
   }
+}
+
+function addContext(fileContents: string, ctx: Record<string, any>): string {
+  return fileContents.replace(/\{\{\s*([^\s]+)\s*\}\}/g, (_, key) => ctx[key] ?? "");
+}
+
+function stripTags(html: string): string {
+  return html.replace(/<[^>]+>/g, "");
 }
 
 export default {

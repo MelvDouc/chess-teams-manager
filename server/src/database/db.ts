@@ -1,16 +1,12 @@
 import { createConnection } from "mysql2/promise";
 import queryBuilderFactory, { SqlRecord } from "./query-builder-factory.js";
-
-if (process.env.NODE_ENV !== "production") {
-  const { config } = await import("dotenv");
-  config();
-}
+import config from "../config/config.js";
 
 const client = await createConnection({
-  user: process.env.CLEARDB_USER,
-  password: process.env.CLEARDB_PASSWORD,
-  database: process.env.CLEARDB_DATABASE,
-  host: process.env.CLEARDB_HOST
+  user: config.CLEARDB_USER,
+  password: config.CLEARDB_PASSWORD,
+  database: config.CLEARDB_DATABASE,
+  host: config.CLEARDB_HOST
 });
 console.log("%cConnected to database.", "color: yellow");
 

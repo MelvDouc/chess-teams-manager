@@ -1,11 +1,12 @@
-import { join } from "path";
+import { join } from "node:path";
 import express from "express";
+import config from "./config/config.js";
 import router from "./routes/router.js";
 
 const app = express();
 const port = process.env["PORT"] ?? process.env["port"] ?? process.env["Port"];
 
-if (process.env.NODE_ENV === "development") {
+if (config.NODE_ENV === "development") {
   const { default: cors } = await import("cors");
   app.use(cors({
     origin: "http://localhost:5173"

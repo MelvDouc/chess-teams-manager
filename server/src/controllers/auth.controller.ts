@@ -1,7 +1,8 @@
-import { randomBytes } from "crypto";
+import { randomBytes } from "node:crypto";
 import * as bcryptjs from "bcryptjs";
+import config from "../config/config.js";
 import userModel from "../models/user.model.js";
-// import emailService from "../services/email.service.js";
+import emailService from "../services/email.service.js";
 import { RouteHandler } from "../types.js";
 
 const login: RouteHandler = async (req, res) => {
@@ -9,7 +10,7 @@ const login: RouteHandler = async (req, res) => {
   const { email, password } = data as { email: string; password: string; };
   const user = await userModel.getUser({ email });
 
-  if (!user || !(await bcryptjs.compare(password, user.password)))
+  if (!user || !bcryptjs.compareSync(password, user.password))
     return res.json({
       errors: ["Identifiants invalides."]
     });
@@ -30,11 +31,15 @@ const passwordForgotten: RouteHandler = async (req, res) => {
 
   const password_reset_id = randomBytes(32).toString("hex");
   await userModel.updateUser(email, { password_reset_id });
-  // await emailService.sendEmail("password-reset", {
-  //   to: email,
-  //   subject: "Réinitialisation du mot de passe"
-  // }, { link: `${process.env.CLIENT_URL}/nouveau-mot-de-passe/${password_reset_id}` });
-  res.json({ success: true });
+  const sendResult = await emailService.sendEmail({
+    templateName: "password-reset",
+    to: email,
+    subject: "Réinitialisation du mot de passe",
+    context: {
+      link: `${config.CLIENT_URL}/nouveau-mot-de-passe/${password_reset_id}`
+    }
+  });
+  res.json({ success: !!sendResult });
 };
 
 const passwordReset: RouteHandler = async (req, res) => {
