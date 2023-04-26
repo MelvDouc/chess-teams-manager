@@ -1,6 +1,6 @@
-import MatchForm from "@components/MatchForm/MatchForm.jsx";
-import { getMatch, getClubs } from "@utils/api.js";
-import { ShortMatchInfo } from "@types";
+import MatchForm from "@src/components/MatchForm/MatchForm.jsx";
+import { getMatch, getClubs } from "@src/utils/api.js";
+import { ShortMatchInfo } from "@src/types.js";
 
 export default async function MatchCreatePage(matchInfo: ShortMatchInfo) {
   const match = await getMatch(matchInfo);

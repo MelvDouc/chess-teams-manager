@@ -1,5 +1,5 @@
-import Form from "@components/Form/Form.jsx";
-import { DbEntities } from "@types";
+import Form from "@src/components/Form/Form.jsx";
+import { DbEntities } from "@src/types.js";
 
 export default function MatchForm({ match, clubs, handleSubmit }: {
   match: DbEntities.Match | null;

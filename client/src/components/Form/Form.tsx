@@ -1,4 +1,4 @@
-import RouterLink from "@routing/RouterLink.jsx";
+import RouterLink from "@src/routing/RouterLink.jsx";
 
 export default function Form({ handleSubmit, children }: {
   handleSubmit: (e: SubmitEvent) => any;
@@ -27,13 +27,14 @@ Form.Row = ({ children }: { children?: ComponentChildren; }) => {
   return row;
 };
 
-Form.Group = ({ nameAndId, labelText, required, type, placeholder, value }: {
+Form.Group = ({ nameAndId, labelText, required, type, placeholder, value, updateValue }: {
   type: "text" | "textarea" | "number" | "email" | "password";
   nameAndId: string;
   labelText: string;
   required?: boolean;
   placeholder?: string;
   value?: any;
+  updateValue?: (value: any) => void;
 }) => {
   const control: HTMLInputElement | HTMLTextAreaElement = (type === "textarea")
     ? <textarea>{value ?? ""}</textarea>
@@ -45,6 +46,8 @@ Form.Group = ({ nameAndId, labelText, required, type, placeholder, value }: {
   control.required = !!required;
   if (placeholder)
     control.placeholder = placeholder;
+  if (updateValue)
+    control.addEventListener("input", () => updateValue(control.value));
 
   return (
     <div>

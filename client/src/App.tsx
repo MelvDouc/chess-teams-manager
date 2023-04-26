@@ -1,6 +1,6 @@
-import Header from "@components/Header/Header.jsx";
-import Router from "@routing/Router.js";
-import RouterOutlet from "@routing/RouterOutlet.jsx";
+import Header from "@src/components/Header/Header.jsx";
+import Router from "@src/routing/Router.js";
+import RouterOutlet from "@src/routing/RouterOutlet.jsx";
 
 export default function App() {
   window.onpopstate = () => Router.updateUrl(location.pathname);

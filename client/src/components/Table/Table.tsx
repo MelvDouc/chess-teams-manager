@@ -1,4 +1,4 @@
-import cssClasses from "@components/Table/Table.module.scss";
+import cssClasses from "@src/components/Table/Table.module.scss";
 
 export default function Table({ large, children }: {
   large: boolean;

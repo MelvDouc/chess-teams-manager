@@ -1,7 +1,7 @@
-import Table from "@components/Table/Table.jsx";
-import RouterLink from "@routing/RouterLink.jsx";
-import { getMatches } from "@utils/api.js";
-import { DbEntities } from "@types";
+import Table from "@src/components/Table/Table.jsx";
+import RouterLink from "@src/routing/RouterLink.jsx";
+import { getMatches } from "@src/utils/api.js";
+import { DbEntities } from "@src/types.js";
 
 export default async function MatchesPage({ season }: {
   season: number;

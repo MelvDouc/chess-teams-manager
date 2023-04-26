@@ -1,6 +1,6 @@
-import RouterLink from "@routing/RouterLink.jsx";
-import { getPlayers, deletePlayer } from "@utils/api.js";
-import Table from "@components/Table/Table.jsx";
+import Table from "@src/components/Table/Table.jsx";
+import RouterLink from "@src/routing/RouterLink.jsx";
+import { getPlayers, deletePlayer } from "@src/utils/api.js";
 
 export default async function PlayersPage() {
   const allPlayers = await getPlayers();

@@ -1,6 +1,6 @@
-import PlayerForm from "@components/PlayerForm/PlayerForm.jsx";
-import { getPlayer, updatePlayer } from "@utils/api.js";
-import { DbEntities } from "@types";
+import PlayerForm from "@src/components/PlayerForm/PlayerForm.jsx";
+import { getPlayer, updatePlayer } from "@src/utils/api.js";
+import { DbEntities } from "@src/types.js";
 
 export default async function PlayerUpdatePage({ ffeId }: { ffeId: string; }) {
   const player = (await getPlayer(ffeId))!;

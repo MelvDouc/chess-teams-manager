@@ -1,6 +1,6 @@
-import { DbEntities, MySqlEntities, BoardColor } from "../../global.js";
+import { DbEntities, MySqlEntities, BoardColor, WithoutId } from "../../global.js";
 
-export type { DbEntities, BoardColor };
+export type { DbEntities, BoardColor, WithoutId };
 export type ShortMatchInfo = MySqlEntities.ShortMatchInfo;
 
 export interface Route<Params = Record<string, string>> {

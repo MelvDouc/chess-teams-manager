@@ -1,4 +1,4 @@
-import Router from "@routing/Router.js";
+import Router from "@src/routing/Router.js";
 
 export default function RouterLink({ href, className, children }: {
   href: string;

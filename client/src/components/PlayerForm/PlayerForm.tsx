@@ -1,5 +1,5 @@
-import { DbEntities } from "@types";
-import Form from "@components/Form/Form.jsx";
+import Form from "@src/components/Form/Form.jsx";
+import { DbEntities } from "@src/types.js";
 
 export default function PlayerForm({ player, handleSubmit }: {
   player: DbEntities.Player;

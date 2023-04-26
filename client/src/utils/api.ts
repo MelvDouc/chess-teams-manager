@@ -1,4 +1,4 @@
-import { DbEntities, ShortMatchInfo } from "@types";
+import { DbEntities, ShortMatchInfo } from "@src/types.js";
 
 async function fetchFromApi<T>(path: `/${string}`, init?: RequestInit): Promise<T | null> {
   try {
@@ -91,7 +91,7 @@ export function createClub(data: Omit<DbEntities.Club, "id">) {
 }
 
 export function updateClub(id: DbEntities.Club["id"], data: Partial<DbEntities.Club>) {
-  return fetchFromApi<ExecuteResult>(`/clubs/${id}/update`, {
+  return fetchFromApi<SuccessResponse>(`/clubs/${id}/update`, {
     method: "PUT",
     headers: jsonHeaders,
     body: JSON.stringify(data)
@@ -99,7 +99,7 @@ export function updateClub(id: DbEntities.Club["id"], data: Partial<DbEntities.C
 }
 
 export function deleteClub(id: DbEntities.Club["id"]) {
-  return fetchFromApi<ExecuteResult>(`/clubs/${id}/delete`, {
+  return fetchFromApi<SuccessResponse>(`/clubs/${id}/delete`, {
     method: "DELETE",
     headers: jsonHeaders
   });

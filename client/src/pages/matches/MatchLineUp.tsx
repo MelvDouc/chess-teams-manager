@@ -1,8 +1,8 @@
-import { getMatchLineUp } from "@utils/api.js";
-import Table from "@components/Table/Table.jsx";
-import { MatchDetail } from "@types";
+import { getMatchLineUp } from "@src/utils/api.js";
+import Table from "@src/components/Table/Table.jsx";
+import { ShortMatchInfo } from "@src/types.js";
 
-export default async function MatchLineUp(matchDetail: MatchDetail) {
+export default async function MatchLineUp(matchDetail: ShortMatchInfo) {
   const lineUp = await getMatchLineUp(matchDetail);
 
   if (!lineUp)

@@ -1,6 +1,6 @@
-import PlayerForm from "@components/PlayerForm/PlayerForm.jsx";
-import { createPlayer } from "@utils/api.js";
-import { DbEntities } from "@types";
+import PlayerForm from "@src/components/PlayerForm/PlayerForm.jsx";
+import { createPlayer } from "@src/utils/api.js";
+import { DbEntities } from "@src/types.js";
 
 export default async function PlayerCreatePage() {
   return (

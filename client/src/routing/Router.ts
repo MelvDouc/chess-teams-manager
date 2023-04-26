@@ -1,13 +1,16 @@
-import HomePage from "@pages/HomePage.js";
-import MatchesPage from "@pages/matches/MatchesPage.jsx";
-import MatchCreatePage from "@pages/matches/MatchCreatePage.jsx";
-import MatchUpdatePage from "@pages/matches/MatchUpdatePage.jsx";
-import MatchLineUp from "@pages/matches/MatchLineUp.jsx";
-import MatchSeasonsPage from "@pages/matches/MatchSeasonsPage.js";
-import PlayersPage from "@pages/players/PlayersPage.js";
-import PlayerCreatePage from "@pages/players/PlayerCreatePage.js";
-import PlayerUpdatePage from "@pages/players/PlayerUpdatePage.js";
-import { Route, RouteInfo } from "@types";
+import HomePage from "@src/pages/HomePage.js";
+import ClubsPage from "@src/pages/clubs/ClubsPage.jsx";
+import ClubCreatePage from "@src/pages/clubs/ClubCreatePage.jsx";
+import ClubUpdatePage from "@src/pages/clubs/ClubUpdatePage.jsx";
+import MatchesPage from "@src/pages/matches/MatchesPage.jsx";
+import MatchCreatePage from "@src/pages/matches/MatchCreatePage.jsx";
+import MatchUpdatePage from "@src/pages/matches/MatchUpdatePage.jsx";
+import MatchLineUp from "@src/pages/matches/MatchLineUp.jsx";
+import MatchSeasonsPage from "@src/pages/matches/MatchSeasonsPage.js";
+import PlayersPage from "@src/pages/players/PlayersPage.js";
+import PlayerCreatePage from "@src/pages/players/PlayerCreatePage.js";
+import PlayerUpdatePage from "@src/pages/players/PlayerUpdatePage.js";
+import { Route, RouteInfo } from "@src/types.js";
 
 class Router {
   private routes: Map<RegExp, Route>;
@@ -62,6 +65,21 @@ const homeRoute = {
 router
   .addRoute("/", homeRoute)
   .addRoute("/accueil", homeRoute)
+  .addRoute("/clubs", {
+    preCheck: () => Promise.resolve(true),
+    getTitle: () => "Clubs",
+    component: ClubsPage
+  })
+  .addRoute("/clubs/nouveau", {
+    preCheck: () => Promise.resolve(true),
+    getTitle: () => "Ajouter un club",
+    component: ClubCreatePage
+  })
+  .addRoute("/clubs/:id/modifier", {
+    preCheck: () => Promise.resolve(true),
+    getTitle: () => "Modifier un club",
+    component: ClubUpdatePage
+  })
   .addRoute("/joueurs", {
     preCheck: () => Promise.resolve(true),
     getTitle: () => "Joueurs",

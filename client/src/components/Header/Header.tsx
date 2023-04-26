@@ -1,4 +1,4 @@
-import RouterLink from "@routing/RouterLink.jsx";
+import RouterLink from "@src/routing/RouterLink.jsx";
 import cssClasses from "./Header.module.scss";
 
 export default function Header() {
@@ -12,6 +12,9 @@ export default function Header() {
           <ul className="m-0 p-0 d-flex gap-3 list-style-none">
             <li>
               <RouterLink href="/accueil">Accueil</RouterLink>
+            </li>
+            <li>
+              <RouterLink href="/clubs">Clubs</RouterLink>
             </li>
             <li>
               <RouterLink href="/matchs">Matchs</RouterLink>
