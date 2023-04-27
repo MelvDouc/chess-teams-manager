@@ -1,4 +1,5 @@
 import RouterLink from "@src/routing/RouterLink.jsx";
+import auth from "@src/utils/auth.js";
 import cssClasses from "./Header.module.scss";
 
 export default function Header() {
@@ -9,22 +10,33 @@ export default function Header() {
       </section>
       <section>
         <nav className={cssClasses.nav}>
-          <ul className="m-0 p-0 d-flex gap-3 list-style-none">
-            <li>
-              <RouterLink href="/accueil">Accueil</RouterLink>
-            </li>
-            <li>
-              <RouterLink href="/clubs">Clubs</RouterLink>
-            </li>
-            <li>
-              <RouterLink href="/matchs">Matchs</RouterLink>
-            </li>
-            <li>
-              <RouterLink href="/joueurs">Joueurs</RouterLink>
-            </li>
-            <li>
-              <RouterLink href="/equipes">Équipes</RouterLink>
-            </li>
+          <ul
+            className="m-0 p-0 d-flex gap-3 list-style-none"
+            $init={(element) => {
+              auth.onUserSet((user) => {
+                element.replaceChildren(
+                  user
+                    ? (
+                      <>
+                        <li>
+                          <RouterLink href="/clubs">Clubs</RouterLink>
+                        </li>
+                        <li>
+                          <RouterLink href="/matchs">Matchs</RouterLink>
+                        </li>
+                        <li>
+                          <RouterLink href="/joueurs">Joueurs</RouterLink>
+                        </li>
+                        <li>
+                          <RouterLink href="/equipes">Équipes</RouterLink>
+                        </li>
+                      </>
+                    )
+                    : <></>
+                );
+              });
+            }}
+          >
           </ul>
         </nav>
       </section>

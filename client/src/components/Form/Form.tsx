@@ -139,13 +139,15 @@ Form.Select = ({ nameAndId, labelText, required, values, updateValue }: {
 
 Form.Submit = ({ text, backLink }: {
   text: string;
-  backLink: string;
+  backLink?: string;
 }) => {
   return (
     <Form.Row>
       <div className="d-flex justify-content-center align-items-center gap-3 mt-4">
         <button classNames={["btn", "btn-success"]}>{text}</button>
-        <RouterLink href={backLink} className="link-danger">Annuler</RouterLink>
+        {backLink
+          ? <RouterLink href={backLink} className="link-danger">Annuler</RouterLink>
+          : null}
       </div>
     </Form.Row>
   );

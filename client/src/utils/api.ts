@@ -1,4 +1,4 @@
-import { DbEntities, MySqlEntities, ShortMatchInfo, WithoutId } from "@src/types.js";
+import { DbEntities, MySqlEntities, ShortMatchInfo, UserData, WithoutId } from "@src/types.js";
 
 async function fetchFromApi<T>(path: `/${string}`, init?: RequestInit): Promise<T | null> {
   try {
@@ -162,6 +162,25 @@ export function deleteTeam(id: DbEntities.Team["id"]) {
   });
 }
 
+// ===== ===== ===== ===== =====
+// AUTH
+// ===== ===== ===== ===== =====
+
+export function login(data: Pick<DbEntities.User, "email" | "password">) {
+  return fetchFromApi<{ auth_token: string; }>("/auth/login", {
+    method: "POST",
+    headers: jsonHeaders,
+    body: JSON.stringify(data)
+  });
+}
+
+export function decodeToken(auth_token: string) {
+  return fetchFromApi<UserData | null>("/auth/decode-token", {
+    method: "POST",
+    headers: jsonHeaders,
+    body: JSON.stringify({ auth_token })
+  });
+}
 
 // ===== ===== ===== ===== =====
 // TYPES
