@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "nodemon server/src/app.ts",
+    "dev": "nodemon --ignore client server/src/app.ts",
     "start": "node server/dist/app.js",
     "build": "tsc -p server"
   },
