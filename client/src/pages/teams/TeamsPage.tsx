@@ -1,9 +1,10 @@
 import Table from "@src/components/Table/Table.jsx";
 import RouterLink from "@src/routing/RouterLink.jsx";
-import { getTeams } from "@src/utils/api.js";
+import { get } from "@src/utils/api.js";
+import { PublicEntities } from "@src/types.js";
 
 export default async function TeamsPage() {
-  const teams = await getTeams();
+  const teams = await get<PublicEntities.Team[]>("/teams");
 
   return (
     <>

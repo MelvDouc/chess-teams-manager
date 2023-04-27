@@ -1,7 +1,7 @@
 import Table from "@src/components/Table/Table.jsx";
 import RouterLink from "@src/routing/RouterLink.jsx";
 import { getMatches } from "@src/utils/api.js";
-import { DbEntities } from "@src/types.js";
+import { PublicEntities } from "@src/types.js";
 
 export default async function MatchesPage({ season }: {
   season: number;
@@ -10,7 +10,7 @@ export default async function MatchesPage({ season }: {
     acc[match.team.name] ??= [];
     acc[match.team.name].push(match);
     return acc;
-  }, {} as Record<string, DbEntities.Match[]>);
+  }, {} as Record<string, PublicEntities.Match[]>);
 
   return (
     <>

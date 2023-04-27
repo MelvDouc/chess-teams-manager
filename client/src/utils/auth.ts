@@ -13,6 +13,7 @@ const userDataObs = new Observable<UserData | null>(null);
 
 export default {
   getUser: () => userDataObs.value,
+  getToken: () => localStorage.getItem(localStorageKey),
   logIn: async (credentials: UserCredentials): Promise<boolean> => {
     const authToken = await login(credentials);
 

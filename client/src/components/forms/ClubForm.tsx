@@ -1,9 +1,9 @@
 import Form from "@src/components/Form/Form.jsx";
-import { DbEntities, WithoutId } from "@src/types.js";
+import { PublicEntities, WithoutId } from "@src/types.js";
 
 export default function ClubForm({ club, handleSubmit }: {
-  club: DbEntities.Club | null;
-  handleSubmit: (club: WithoutId<DbEntities.Club>) => any;
+  club: PublicEntities.Club | null;
+  handleSubmit: (club: WithoutId<PublicEntities.Club>) => any;
 }) {
   const c = club ?? {
     name: "",
@@ -43,7 +43,10 @@ export default function ClubForm({ club, handleSubmit }: {
           type="text"
           labelText="Tél."
           value={c.phone}
-          updateValue={(phone) => c.phone = phone || null}
+          updateValue={(phone) => {
+            phone = (phone ?? "").replace(/\s+/g, "");
+            c.phone = phone || null;
+          }}
         />
         <Form.Group
           nameAndId="email"

@@ -1,6 +1,7 @@
 import LogOutButton from "@src/components/LogOutButton/LogOutButton.jsx";
 import RouterLink from "@src/routing/RouterLink.jsx";
-import auth from "@src/utils/auth.js";
+import auth, { RoleIndex } from "@src/utils/auth.js";
+import { UserRole } from "@src/types.js";
 import cssClasses from "./Header.module.scss";
 
 export default function Header() {
@@ -16,29 +17,7 @@ export default function Header() {
             $init={(element) => {
               auth.onUserSet((user) => {
                 element.replaceChildren(
-                  user
-                    ? (
-                      <>
-                        <li>
-                          <RouterLink href="/clubs">Clubs</RouterLink>
-                        </li>
-                        <li>
-                          <RouterLink href="/matchs">Matchs</RouterLink>
-                        </li>
-                        <li>
-                          <RouterLink href="/joueurs">Joueurs</RouterLink>
-                        </li>
-                        <li>
-                          <RouterLink href="/equipes">Équipes</RouterLink>
-                        </li>
-                        <li>
-                          <div className="d-flex justify-content-center align-items-center">
-                            <LogOutButton />
-                          </div>
-                        </li>
-                      </>
-                    )
-                    : <></>
+                  user ? getLinks(user.role) : <></>
                 );
               });
             }}
@@ -47,5 +26,35 @@ export default function Header() {
         </nav>
       </section>
     </header>
+  );
+}
+
+function getLinks(role: UserRole) {
+  return (
+    <>
+      <li>
+        <RouterLink href="/matchs">Matchs</RouterLink>
+      </li>
+      {
+        (RoleIndex[role] >= RoleIndex.CAPTAIN)
+          ? (<>
+            <li>
+              <RouterLink href="/clubs">Clubs</RouterLink>
+            </li>
+            <li>
+              <RouterLink href="/joueurs">Joueurs</RouterLink>
+            </li>
+            <li>
+              <RouterLink href="/equipes">Équipes</RouterLink>
+            </li>
+          </>)
+          : null
+      }
+      <li>
+        <div className="d-flex justify-content-center align-items-center">
+          <LogOutButton />
+        </div>
+      </li>
+    </>
   );
 }

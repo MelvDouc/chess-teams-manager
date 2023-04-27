@@ -1,9 +1,10 @@
 import Form from "@src/components/Form/Form.jsx";
-import { DbEntities } from "@src/types.js";
+import userRoles from "@src/utils/user-roles.js";
+import { PublicEntities } from "@src/types.js";
 
 export default function PlayerForm({ player, handleSubmit }: {
-  player: DbEntities.Player | null;
-  handleSubmit: (player: DbEntities.Player) => void;
+  player: PublicEntities.Player | null;
+  handleSubmit: (player: PublicEntities.Player) => void;
 }) {
   const p = player ?? {
     ffe_id: "",
@@ -11,6 +12,7 @@ export default function PlayerForm({ player, handleSubmit }: {
     first_name: "",
     last_name: "",
     email: "",
+    role: "USER",
     phone: null,
     rating: 1199
   };
@@ -27,7 +29,8 @@ export default function PlayerForm({ player, handleSubmit }: {
           nameAndId="ffe_id"
           value={player?.ffe_id}
           updateValue={(ffe_id) => p.ffe_id = ffe_id}
-          required={true}
+          disabled={player !== null}
+          required={player === null}
         />
         <Form.Group
           type="number"
@@ -66,6 +69,17 @@ export default function PlayerForm({ player, handleSubmit }: {
         />
       </Form.Row>
       <Form.Row>
+        <Form.Select
+          labelText="Rôle"
+          nameAndId="role"
+          required
+          values={userRoles.map((role) => ({
+            text: role,
+            value: role,
+            selected: p.role === role
+          }))}
+          updateValue={(role) => p.role = role}
+        />
         <Form.Group
           type="text"
           labelText="Tél."

@@ -1,7 +1,7 @@
 import { RoleIndex } from "@src/utils/auth.js";
 
 import {
-  DbEntities,
+  PublicEntities,
   MySqlEntities,
   BoardColor,
   WithoutId,
@@ -11,7 +11,7 @@ import {
 } from "../../global.js";
 
 export type {
-  DbEntities,
+  PublicEntities,
   MySqlEntities,
   BoardColor,
   WithoutId,

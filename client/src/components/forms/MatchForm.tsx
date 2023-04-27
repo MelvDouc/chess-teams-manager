@@ -1,14 +1,14 @@
 import Form from "@src/components/Form/Form.jsx";
-import { getClubs, getTeams } from "@src/utils/api.js";
-import { DbEntities, MySqlEntities, WithoutId } from "@src/types.js";
+import { get } from "@src/utils/api.js";
+import { PublicEntities, MySqlEntities, WithoutId } from "@src/types.js";
 
 export default async function MatchForm({ match, handleSubmit }: {
-  match: DbEntities.Match | null;
+  match: PublicEntities.Match | null;
   handleSubmit: (match: WithoutId<MySqlEntities.Match>) => any;
 }) {
-  const teams = (await getTeams()) ?? [];
-  const clubs = (await getClubs()) ?? [];
-  const [firstClub] = clubs;
+  const teams = (await get<PublicEntities.Team[]>("/teams") ?? []);
+  const clubs = (await get<PublicEntities.Club[]>("/clubs") ?? []);
+  const [firstClub] = clubs!;
   const m = match ?? {
     date: "",
     time: "14:15",
@@ -94,7 +94,6 @@ export default async function MatchForm({ match, handleSubmit }: {
           labelText="Blancs aux premiers"
           checked={m.white_on_odds}
           updateValue={(white_on_odds) => m.white_on_odds = white_on_odds}
-          required
         />
       </Form.Row>
       <Form.Row>

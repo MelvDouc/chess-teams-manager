@@ -1,14 +1,15 @@
 import Form from "@src/components/Form/Form.jsx";
-import { getPlayers } from "@src/utils/api.js";
+import { get } from "@src/utils/api.js";
+import { PublicEntities } from "@src/types.js";
 
 export default async function TeamForm({ team, handleSubmit }: {
   team: Team | null;
   handleSubmit: (team: Team) => void;
 }) {
-  const players = (await getPlayers() ?? []);
+  const players = await get<PublicEntities.Player[]>("/players");
   const t = team ?? {
     name: "",
-    captain_ffe_id: players[0]?.ffe_id ?? ""
+    captain_ffe_id: players?.at(0)?.ffe_id ?? ""
   };
 
   return (
@@ -28,7 +29,7 @@ export default async function TeamForm({ team, handleSubmit }: {
         <Form.Select
           labelText="Capitaine"
           nameAndId="captain_ffe_id"
-          values={players.map(({ ffe_id, first_name, last_name }) => {
+          values={(players ?? []).map(({ ffe_id, first_name, last_name }) => {
             return {
               value: ffe_id,
               text: `${first_name} ${last_name}`,

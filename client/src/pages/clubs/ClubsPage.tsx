@@ -1,9 +1,10 @@
 import Table from "@src/components/Table/Table.jsx";
 import RouterLink from "@src/routing/RouterLink.jsx";
-import { getClubs } from "@src/utils/api.js";
+import { get } from "@src/utils/api.js";
+import { PublicEntities } from "@src/types.js";
 
 export default async function ClubsPage() {
-  const clubs = await getClubs();
+  const clubs = await get<PublicEntities.Club[]>("/clubs");
 
   return (
     <>

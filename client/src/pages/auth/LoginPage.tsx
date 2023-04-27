@@ -5,8 +5,8 @@ import auth from "@src/utils/auth.js";
 
 export default async function LoginPage() {
   const credentials = {
-    email: "",
-    password: ""
+    ffe_id: "",
+    pwd: ""
   };
 
   return (
@@ -25,19 +25,19 @@ export default async function LoginPage() {
         >
           <Form.Row>
             <Form.Group
-              type="email"
-              nameAndId="email"
-              labelText="Email"
-              updateValue={(email) => credentials.email = email}
+              type="text"
+              nameAndId="ffe_id"
+              labelText="N° FFE"
+              updateValue={(ffe_id) => credentials.ffe_id = ffe_id}
               required
             />
           </Form.Row>
           <Form.Row>
             <Form.Group
               type="password"
-              nameAndId="password"
+              nameAndId="pwd"
               labelText="Mot de passe"
-              updateValue={(password) => credentials.password = password}
+              updateValue={(password) => credentials.pwd = password}
               required
             />
           </Form.Row>

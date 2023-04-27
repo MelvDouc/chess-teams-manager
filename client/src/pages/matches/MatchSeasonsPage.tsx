@@ -1,8 +1,8 @@
 import RouterLink from "@src/routing/RouterLink.jsx";
-import { getMatchSeasons } from "@src/utils/api.js";
+import { get } from "@src/utils/api.js";
 
 export default async function MatchSeasonsPage() {
-  const seasons = await getMatchSeasons();
+  const seasons = await get<number[]>("/matches/seasons");
 
   return (
     <>

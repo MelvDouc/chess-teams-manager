@@ -1,34 +1,22 @@
 import PlayerForm from "@src/components/forms/PlayerForm.jsx";
-import { createPlayer } from "@src/utils/api.js";
-import { DbEntities } from "@src/types.js";
+import { post } from "@src/utils/api.js";
 
-export default async function PlayerCreatePage() {
+export default function PlayerCreatePage() {
+  const form = PlayerForm({
+    player: null,
+    handleSubmit: async (player) => {
+      const insertedId = await post("/players/create", player);
+
+      if (!insertedId)
+        return alert("Le joueur n'a pas pu être créé.");
+      location.assign("/joueurs");
+    }
+  });
+
   return (
     <>
       <h2>Ajouter un joueur</h2>
-      <div className="container-sm">
-        <PlayerForm
-          player={{
-            ffe_id: "",
-            fide_id: null,
-            email: "",
-            last_name: "",
-            first_name: "",
-            phone: null,
-            rating: 1199
-          }}
-          handleSubmit={async (e) => {
-            e.preventDefault();
-            const formData = Object.fromEntries([...new FormData(e.target as HTMLFormElement)]) as unknown as DbEntities.Player;
-            const insertedId = await createPlayer(formData);
-
-            if (insertedId === null || insertedId === 0)
-              return alert("Une erreur s'est produite.");
-
-            location.assign("/joueurs");
-          }}
-        />
-      </div>
+      {form}
     </>
   );
 }

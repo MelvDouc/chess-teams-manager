@@ -28,11 +28,12 @@ Form.Row = ({ children }: { children?: ComponentChildren; }) => {
   return row;
 };
 
-Form.Group = ({ nameAndId, labelText, required, type, min, max, placeholder, value, updateValue }: {
+Form.Group = ({ nameAndId, labelText, required, type, min, max, placeholder, value, updateValue, disabled }: {
   type: "text" | "textarea" | "number" | "email" | "password" | "date" | "time" | "datetime-local";
   nameAndId: string;
   labelText: string;
   required?: boolean;
+  disabled?: boolean;
   min?: number;
   max?: number;
   placeholder?: string;
@@ -53,6 +54,8 @@ Form.Group = ({ nameAndId, labelText, required, type, min, max, placeholder, val
     control.setAttribute("max", String(max));
   if (placeholder)
     control.placeholder = placeholder;
+  if (disabled)
+    control.disabled = true;
   if (updateValue) {
     switch (type) {
       case "number":

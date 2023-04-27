@@ -1,16 +1,14 @@
 import TeamForm from "@src/components/forms/TeamForm.jsx";
-import { createTeam } from "@src/utils/api.js";
+import { post } from "@src/utils/api.js";
 
 export default async function TeamCreatePage() {
   const teamForm = await TeamForm({
     team: null,
     handleSubmit: async (team) => {
-      const createResult = await createTeam(team);
+      const insertId = await post("/teams/create", team);
 
-      if (!createResult) {
-        alert("L'équipe n'a pu être créée.");
-        return;
-      }
+      if (!insertId)
+        return alert("L'équipe n'a pu être créée.");
 
       location.assign("/equipes");
     }

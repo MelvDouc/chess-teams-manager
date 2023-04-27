@@ -1,16 +1,14 @@
 import MatchForm from "@src/components/forms/MatchForm.jsx";
-import { createMatch } from "@src/utils/api.js";
+import { post } from "@src/utils/api.js";
 
 export default async function MatchCreatePage() {
   const form = await MatchForm({
     match: null,
-    handleSubmit: async (data) => {
-      const insertedId = await createMatch(data);
+    handleSubmit: async (match) => {
+      const insertedId = await post("/matches/create", match);
 
-      if (!insertedId) {
-        alert("Le match n'a pu être créé.");
-        return;
-      }
+      if (!insertedId)
+        return alert("Le match n'a pu être créé.");
 
       location.assign("/matchs");
     }
@@ -19,6 +17,7 @@ export default async function MatchCreatePage() {
   return (
     <>
       <h2>Ajouter un match</h2>
+      <p className="mb2">Pensez à d'abord ajouter le club adverse.</p>
       {form}
     </>
   );
