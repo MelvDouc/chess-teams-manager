@@ -67,7 +67,10 @@ export function getMatches(season: number) {
 }
 
 export function getMatchLineUp({ season, round, teamName }: ShortMatchInfo) {
-  return fetchFromApi<DbEntities.LineUp>(`/matches/${season}/${round}/${teamName}/line-up`);
+  return fetchFromApi<{
+    match: DbEntities.Match;
+    lineUp: DbEntities.LineUp;
+  }>(`/matches/${season}/${round}/${teamName}/line-up`);
 }
 
 export function createMatch(data: WithoutId<MySqlEntities.Match>) {

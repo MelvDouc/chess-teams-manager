@@ -22,11 +22,18 @@ const findOne = async <T>(tableName: string, filter: SqlRecord): Promise<T | nul
   return (query as unknown as T[])[0] ?? null;
 };
 
-const findAll = <T>(tableName: string) => {
+const findAll = <T>(tableName: string, filter?: SqlRecord) => {
+  if (filter)
+    return createQueryBuilder()
+      .select("*")
+      .from(tableName)
+      .where(filter)
+      .run() as unknown as Promise<T[]>;
+
   return createQueryBuilder()
     .select("*")
     .from(tableName)
-    .run() as unknown as Promise<T>;
+    .run() as unknown as Promise<T[]>;
 };
 
 const insert = <T extends {}>(tableName: string, value: T, ...values: T[]) => {
@@ -46,7 +53,6 @@ const update = <T>(tableName: string, filter: SqlRecord, updates: Partial<T>) =>
     .where(filter)
     .run() as unknown as Promise<{
       affectedRows: number;
-      insertId: number;
     }>;
 };
 
@@ -56,7 +62,6 @@ const deleteOne = (tableName: string, filter: SqlRecord) => {
     .where(filter)
     .run() as unknown as Promise<{
       affectedRows: number;
-      insertId: number;
     }>;
 };
 

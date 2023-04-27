@@ -3,9 +3,9 @@ import Table from "@src/components/Table/Table.jsx";
 import { ShortMatchInfo } from "@src/types.js";
 
 export default async function MatchLineUp(matchDetail: ShortMatchInfo) {
-  const lineUp = await getMatchLineUp(matchDetail);
+  const matchAndLineUp = await getMatchLineUp(matchDetail);
 
-  if (!lineUp)
+  if (!matchAndLineUp)
     return (
       <p>Composition indisponible.</p>
     );
@@ -23,7 +23,7 @@ export default async function MatchLineUp(matchDetail: ShortMatchInfo) {
           </tr>
         </thead>
         <tbody>
-          {lineUp.map(({ board, color, player }) => (
+          {matchAndLineUp.lineUp.map(({ board, color, player }) => (
             <tr>
               <td>{board + color}</td>
               <td>{player ? `${player.last_name} ${player.first_name}` : ""}</td>

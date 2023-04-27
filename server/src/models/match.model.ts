@@ -5,23 +5,6 @@ import { BoardColor, DbEntities, MySqlEntities, WithoutId } from "../types.js";
 // HELPERS
 // ===== ===== ===== ===== =====
 
-async function getMatchIdAndWhiteOnOdds({ season, round, teamName }: MySqlEntities.ShortMatchInfo) {
-  const matches = await db
-    .createQueryBuilder()
-    .select("lm.id", "white_on_odds")
-    .from("league_match lm")
-    .join("left", "team t")
-    .on("t.id = lm.team_id")
-    .where({
-      "lm.season": season,
-      "lm.round": round,
-      "t.name": teamName
-    })
-    .limit(1)
-    .run() as Pick<MySqlEntities.Match, "id" | "white_on_odds">[];
-  return matches[0];
-}
-
 function getFullMatchInfo() {
   return db
     .createQueryBuilder()
@@ -148,7 +131,6 @@ async function getMatch({ season, round, teamName }: MySqlEntities.ShortMatchInf
 
 async function getMatchesOfSeason(season: number): Promise<DbEntities.Match[]> {
   const search = await getFullMatchInfo().where({ season }).run() as unknown as MySqlEntities.FullMatchInfo[];
-  console.log({ search_length: search.length });
   return search.map(convertSearch);
 }
 
@@ -161,8 +143,11 @@ async function getSeasons(): Promise<number[]> {
   return seasons.map((obj) => obj.season);
 }
 
-async function getLineUp({ season, round, teamName }: MySqlEntities.ShortMatchInfo): Promise<DbEntities.LineUp | null> {
-  const match = await getMatchIdAndWhiteOnOdds({ season, round, teamName });
+async function getLineUp({ season, round, teamName }: MySqlEntities.ShortMatchInfo): Promise<{
+  match: DbEntities.Match;
+  lineUp: DbEntities.LineUp;
+} | null> {
+  const match = await getMatch({ season, round, teamName });
 
   if (!match)
     return null;
@@ -172,15 +157,18 @@ async function getLineUp({ season, round, teamName }: MySqlEntities.ShortMatchIn
     return acc.set(board, { color, player });
   }, new Map<number, { color: BoardColor; player: DbEntities.Player; }>());
 
-  return Array.from({ length: 8 }, (_, i) => {
-    const board = i + 1;
+  return {
+    match,
+    lineUp: Array.from({ length: 8 }, (_, i) => {
+      const board = i + 1;
 
-    return {
-      board,
-      color: boardMap.get(board)?.color ?? ((board % 2 === match.white_on_odds) ? "B" : "N"),
-      player: boardMap.get(board)?.player ?? null
-    };
-  });
+      return {
+        board,
+        color: boardMap.get(board)?.color ?? (((board % 2 === 0) === match.white_on_odds) ? "B" : "N"),
+        player: boardMap.get(board)?.player ?? null
+      };
+    })
+  };
 }
 
 function createMatch({ season, round, team_id, opponent_id, home_club_id, white_on_odds, date, time }: MySqlEntities.Match) {

@@ -51,7 +51,7 @@ export default function PlayerForm({ player, handleSubmit }: {
           labelText="NOM"
           nameAndId="last_name"
           value={player?.last_name}
-          updateValue={(last_name) => p.last_name = last_name}
+          updateValue={(last_name) => p.last_name = last_name.toUpperCase()}
           required={true}
         />
       </Form.Row>
