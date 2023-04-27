@@ -1,29 +1,33 @@
-import db from "../database/db.js";
-import { PublicEntities, MySqlEntities, SqlRecord, WithoutId } from "../types.js";
+import { collections } from "../database/db.js";
+import {
+  DeleteResult,
+  InsertOneResult,
+  Player,
+  UpdateFilter,
+  UpdateResult,
+  WithId
+} from "../types.js";
 
-function getPlayer(filter: SqlRecord): Promise<MySqlEntities.Player | null> {
-  return db.findOne("player", filter);
+type PlayerFilter = Partial<Player>;
+
+function getPlayer(filter: PlayerFilter): Promise<WithId<Player> | null> {
+  return collections.players.findOne(filter);
 }
 
-function getPlayers(): Promise<MySqlEntities.Player[]> {
-  return db
-    .createQueryBuilder()
-    .select("*")
-    .from("player")
-    .orderBy("rating DESC")
-    .run() as unknown as Promise<MySqlEntities.Player[]>;
+function getPlayers(): Promise<WithId<Player>[]> {
+  return collections.players.find().toArray();
 }
 
-function createPlayer(data: MySqlEntities.Player) {
-  return db.insert("player", data);
+function createPlayer(data: Player): Promise<InsertOneResult<Player>> {
+  return collections.players.insertOne(data);
 }
 
-function updatePlayer(filter: SqlRecord, updates: Partial<WithoutId<MySqlEntities.Player, "ffe_id">>) {
-  return db.update<PublicEntities.Player>("player", filter, updates);
+function updatePlayer(filter: PlayerFilter, updates: UpdateFilter<Omit<Player, "ffe_id">>): Promise<UpdateResult<Player>> {
+  return collections.players.updateOne(filter, updates);
 }
 
-function deletePlayer(filter: SqlRecord) {
-  return db.delete("player", filter);
+function deletePlayer(filter: PlayerFilter): Promise<DeleteResult> {
+  return collections.players.deleteOne(filter);
 }
 
 export default {

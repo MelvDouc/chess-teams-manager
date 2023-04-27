@@ -2,7 +2,7 @@ import asyncWrapper from "../middleware/async-wrapper.js";
 import playerModel from "../models/player.model.js";
 
 const getPlayer = asyncWrapper(async (req, res) => {
-  res.json(await playerModel.getPlayer({ ffe_id: req.params.ffeId }));
+  res.json(await playerModel.getPlayer({ ffeId: req.params.ffeId }));
 });
 
 const getPlayers = asyncWrapper(async (req, res) => {
@@ -10,18 +10,18 @@ const getPlayers = asyncWrapper(async (req, res) => {
 });
 
 const createPlayer = asyncWrapper(async (req, res) => {
-  const { insertId } = await playerModel.createPlayer(req.body);
-  res.json(insertId);
+  const { acknowledged, insertedId } = await playerModel.createPlayer(req.body);
+  res.json({ success: acknowledged && !!insertedId });
 });
 
 const updatePlayer = asyncWrapper(async (req, res) => {
-  const { affectedRows } = await playerModel.updatePlayer({ ffe_id: req.params.ffeId }, req.body);
-  res.json({ success: affectedRows > 0 });
+  const { acknowledged, modifiedCount } = await playerModel.updatePlayer({ ffeId: req.params.ffeId }, req.body);
+  res.json({ success: acknowledged && modifiedCount > 0 });
 });
 
 const deletePlayer = asyncWrapper(async (req, res) => {
-  const { affectedRows } = await playerModel.deletePlayer({ ffe_id: req.params.ffeId });
-  res.json({ success: affectedRows > 0 });
+  const { acknowledged, deletedCount } = await playerModel.deletePlayer({ ffeId: req.params.ffeId });
+  res.json({ success: acknowledged && deletedCount > 0 });
 });
 
 
