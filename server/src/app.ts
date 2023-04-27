@@ -19,5 +19,5 @@ app.use(router);
 app.use(express.static(join(process.cwd(), "client", "dist")));
 
 app.listen(port, () => {
-  console.log(`App running on http://localhost:${port} ...`);
+  console.log(`App running on \x1b[32m\x1b[1mhttp://localhost:${port}\x1b[0m ...`);
 });

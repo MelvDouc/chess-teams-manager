@@ -39,6 +39,7 @@ apiRouter
 
 apiRouter
   .post("/auth/login", authController.login)
+  .post("/auth/decode-token", authController.decodeToken)
   .post("/auth/password-forgotten", authController.passwordForgotten)
   .post("/auth/password-reset/:passwordResetId", authController.passwordReset)
   .delete("/auth/logout", authController.logout);

@@ -16,6 +16,7 @@ const configSchema = z.object({
   CLEARDB_HOST: z.string(),
   CLEARDB_DATABASE: z.string(),
   CLIENT_URL: z.string(),
+  JWT_SECRET: z.string(),
   MONGODB_URI: z.string(),
   PORT: z.string()
 });

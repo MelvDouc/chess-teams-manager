@@ -8,7 +8,7 @@ const client = createPool({
   database: config.CLEARDB_DATABASE,
   host: config.CLEARDB_HOST
 });
-console.log("%cConnected to database.", "color: yellow");
+console.log("\n\x1b[33mConnected to database.\x1b[0m");
 
 const createQueryBuilder = queryBuilderFactory(client);
 
