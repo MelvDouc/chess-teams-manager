@@ -10,8 +10,8 @@ import { RouteHandler } from "../types.js";
 // def user pwd: 'abc'
 
 const login = asyncWrapper(async (req, res) => {
-  const { ffe_id, pwd } = req.body as { ffe_id: string; pwd: string; };
-  const player = await playerModel.getPlayer({ ffe_id });
+  const { ffeId, pwd } = req.body as { ffeId: string; pwd: string; };
+  const player = await playerModel.getPlayer({ ffeId });
 
   if (!player || !bcryptjs.compareSync(pwd, player.pwd))
     return res.json(null);
@@ -25,30 +25,31 @@ const decodeToken = asyncWrapper(async (req, res) => {
 });
 
 const passwordForgotten: RouteHandler = async (req, res) => {
-  const data = req.body;
-  const { ffe_id } = data as { ffe_id: string; };
-  const player = await playerModel.getPlayer({ ffe_id });
+  const { ffeId } = req.body as { ffeId: string; };
+  const player = await playerModel.getPlayer({ ffeId });
 
   if (!player)
     return res.json({
       errors: ["Adresse email invalide."]
     });
 
-  const passwordResetId = randomBytes(32).toString("hex");
-  await playerModel.updatePlayer({ ffe_id }, { pwd_reset_id: passwordResetId });
+  const pwdResetId = randomBytes(32).toString("hex");
+  await playerModel.updatePlayer({ ffeId }, {
+    $set: { pwdResetId }
+  });
   const sendResult = await emailService.sendEmail({
     templateName: "password-reset",
     to: player.email,
     subject: "Réinitialisation du mot de passe",
     context: {
-      link: `${config.CLIENT_URL}/nouveau-mot-de-passe/${passwordResetId}`
+      link: `${config.CLIENT_URL}/nouveau-mot-de-passe/${pwdResetId}`
     }
   });
   res.json({ success: !!sendResult });
 };
 
 const passwordReset: RouteHandler = async (req, res) => {
-  const player = await playerModel.getPlayer({ pwd_reset_id: req.params.passwordResetId });
+  const player = await playerModel.getPlayer({ pwdResetId: req.params.pwdResetId });
 
   if (!player)
     return res.json({
@@ -63,9 +64,13 @@ const passwordReset: RouteHandler = async (req, res) => {
     });
 
   const salt = await bcryptjs.genSalt(10);
-  await playerModel.updatePlayer({ ffe_id: player.ffe_id }, {
-    pwd: await bcryptjs.hash(password2, salt),
-    pwd_reset_id: null
+  await playerModel.updatePlayer({ ffeId: player.ffeId }, {
+    $set: {
+      pwd: await bcryptjs.hash(password2, salt)
+    },
+    $unset: {
+      pwdResetId: ""
+    }
   });
   res.json({ success: true });
 };

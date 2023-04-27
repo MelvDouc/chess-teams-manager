@@ -3,7 +3,6 @@ import e from "express";
 export type {
   DeleteResult,
   InsertOneResult,
-  UpdateFilter,
   UpdateResult,
   WithId,
   WithoutId
@@ -12,7 +11,15 @@ export type {
   LineUpRow,
   Match,
   Player,
+  PlayerCredentials,
+  PlayerData,
   PlayerRole
 } from "../../global.js";
 
+export type UpdateFilter<T> = {
+  $set?: Partial<T>;
+  $unset?: {
+    [K in keyof T]?: "";
+  };
+};
 export type RouteHandler = (req: e.Request, res: e.Response, next?: e.NextFunction) => any;

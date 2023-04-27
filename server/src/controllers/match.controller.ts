@@ -39,5 +39,8 @@ const deleteMatch = asyncWrapper(async (req, res) => {
 export default {
   getMatch,
   getMatches,
-  getSeasons
+  getSeasons,
+  createMatch,
+  updateMatch,
+  deleteMatch
 };

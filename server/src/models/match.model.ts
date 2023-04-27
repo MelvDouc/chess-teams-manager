@@ -27,7 +27,7 @@ function createMatch(data: Match): Promise<InsertOneResult<Match>> {
 }
 
 function updateMatch(filter: MatchFilter, updates: UpdateFilter<Match>): Promise<UpdateResult<Match>> {
-  return collections.matches.updateOne(filter, updates);
+  return collections.matches.updateOne(filter, updates as any);
 }
 
 function deleteMatch(filter: MatchFilter): Promise<DeleteResult> {
