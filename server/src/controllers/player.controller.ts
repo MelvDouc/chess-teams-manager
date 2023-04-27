@@ -6,7 +6,10 @@ const getPlayer = asyncWrapper(async (req, res) => {
 });
 
 const getPlayers = asyncWrapper(async (req, res) => {
-  res.json(await playerModel.getPlayers());
+  const players = await playerModel.getPlayers();
+  res.json(
+    players.map(({ pwd, pwdResetId, ...others }) => ({ ...others }))
+  );
 });
 
 const createPlayer = asyncWrapper(async (req, res) => {

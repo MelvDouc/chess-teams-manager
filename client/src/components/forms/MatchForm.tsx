@@ -1,38 +1,25 @@
 import Form from "@src/components/Form/Form.jsx";
-import { get } from "@src/utils/api.js";
-import { PublicEntities, MySqlEntities, WithoutId } from "@src/types.js";
+import { Match } from "@src/types.js";
 
 export default async function MatchForm({ match, handleSubmit }: {
-  match: PublicEntities.Match | null;
-  handleSubmit: (match: WithoutId<MySqlEntities.Match>) => any;
+  match: Match | null;
+  handleSubmit: (match: Match) => any;
 }) {
-  const teams = (await get<PublicEntities.Team[]>("/teams") ?? []);
-  const clubs = (await get<PublicEntities.Club[]>("/clubs") ?? []);
-  const [firstClub] = clubs!;
-  const m = match ?? {
-    date: "",
-    time: "14:15",
-    opponent: { id: firstClub?.id ?? 0, name: firstClub?.address },
-    home_club: { id: firstClub?.id ?? 0, address: firstClub?.address },
-    season: 0,
+  const m: Match = match ?? {
+    address: "",
+    date: new Date(),
+    lineUp: [],
+    opponent: "",
+    teamName: "",
     round: 1,
-    white_on_odds: true,
-    team: { id: teams[0]?.id ?? 0, name: teams[0]?.name ?? "" }
+    season: 2023,
+    whiteOnOdds: true
   };
 
   return (
     <Form handleSubmit={(e) => {
       e.preventDefault();
-      handleSubmit({
-        date: m.date,
-        time: m.time,
-        home_club_id: m.home_club.id,
-        opponent_id: m.opponent.id,
-        team_id: m.team.id,
-        round: m.round,
-        season: m.season,
-        white_on_odds: Number(m.white_on_odds) as 0 | 1
-      });
+      handleSubmit(m);
     }}>
       <Form.Row>
         <Form.Group
@@ -54,64 +41,47 @@ export default async function MatchForm({ match, handleSubmit }: {
         />
       </Form.Row>
       <Form.Row>
-        <Form.Select
+        <Form.Group
+          type="text"
           nameAndId="opponent"
           labelText="Adversaire"
-          values={clubs.map((club) => ({
-            text: club.name,
-            value: club.id,
-            selected: club.name === m.opponent.name
-          }))}
-          updateValue={(id) => m.opponent.id = Number(id)}
+          value={m.opponent}
+          updateValue={(opponent) => m.opponent = opponent}
           required
         />
-        <Form.Select
-          nameAndId="home_club"
-          labelText="Club qui reçoit"
-          values={clubs.map((club) => ({
-            text: club.name,
-            value: club.id,
-            selected: club.address === m.home_club.address
-          }))}
-          updateValue={(id) => m.home_club.id = Number(id)}
+        <Form.Group
+          type="textarea"
+          nameAndId="address"
+          labelText="Adresse"
+          value={m.address}
+          updateValue={(address) => m.address = address.trim()}
           required
         />
       </Form.Row>
       <Form.Row>
-        <Form.Select
-          nameAndId="team"
+        <Form.Group
+          type="text"
+          nameAndId="teamName"
           labelText="Équipe"
-          values={teams.map((team) => ({
-            text: team.name,
-            value: team.id,
-            selected: m.team.id === team.id
-          }))}
-          updateValue={(id) => m.team.id = Number(id)}
+          placeholder="Thionville I"
+          value={m.teamName}
+          updateValue={(teamName) => m.teamName = teamName.trim()}
           required
         />
         <Form.Checkbox
-          nameAndId="white_on_odds"
+          nameAndId="whiteOnOdds"
           labelText="Blancs aux premiers"
-          checked={m.white_on_odds}
-          updateValue={(white_on_odds) => m.white_on_odds = white_on_odds}
+          checked={m.whiteOnOdds}
+          updateValue={(whiteOnOdds) => m.whiteOnOdds = whiteOnOdds}
         />
       </Form.Row>
       <Form.Row>
         <Form.Group
-          type="date"
+          type="datetime-local"
           labelText="Date"
           nameAndId="date"
-          placeholder="AAAA-MM-JJ"
-          value={m.date.slice(0, 10)}
+          value={m.date}
           updateValue={(date) => m.date = date}
-          required
-        />
-        <Form.Group
-          type="time"
-          labelText="Heure"
-          nameAndId="time"
-          value={m.time}
-          updateValue={(time) => m.time = time}
           required
         />
       </Form.Row>

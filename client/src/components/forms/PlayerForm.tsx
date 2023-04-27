@@ -1,16 +1,16 @@
 import Form from "@src/components/Form/Form.jsx";
-import userRoles from "@src/utils/user-roles.js";
-import { PublicEntities } from "@src/types.js";
+import playerRoles from "@src/utils/player-roles.js";
+import { Player } from "@src/types.js";
 
 export default function PlayerForm({ player, handleSubmit }: {
-  player: PublicEntities.Player | null;
-  handleSubmit: (player: PublicEntities.Player) => void;
+  player: Player | null;
+  handleSubmit: (player: Omit<Player, "pwd" | "pwdResetId">) => void;
 }) {
-  const p = player ?? {
-    ffe_id: "",
-    fide_id: null,
-    first_name: "",
-    last_name: "",
+  const p: Omit<Player, "pwd" | "pwdResetId"> = player ?? {
+    ffeId: "",
+    fideId: null,
+    firstName: "",
+    lastName: "",
     email: "",
     role: "USER",
     phone: null,
@@ -26,18 +26,18 @@ export default function PlayerForm({ player, handleSubmit }: {
         <Form.Group
           type="text"
           labelText="N° FFE"
-          nameAndId="ffe_id"
-          value={player?.ffe_id}
-          updateValue={(ffe_id) => p.ffe_id = ffe_id}
+          nameAndId="ffeId"
+          value={p.ffeId}
+          updateValue={(ffeId) => p.ffeId = ffeId}
           disabled={player !== null}
           required={player === null}
         />
         <Form.Group
           type="number"
           labelText="N° FIDE"
-          nameAndId="fide_id"
-          value={player?.fide_id}
-          updateValue={(fide_id) => p.fide_id = Number(fide_id) || null}
+          nameAndId="fideId"
+          value={p.fideId}
+          updateValue={(fideId) => p.fideId = Number(fideId) || null}
         />
       </Form.Row>
       <Form.Row>
@@ -45,16 +45,16 @@ export default function PlayerForm({ player, handleSubmit }: {
           type="text"
           labelText="Prénom"
           nameAndId="first_name"
-          value={player?.first_name}
-          updateValue={(first_name) => p.first_name = first_name}
+          value={p.firstName}
+          updateValue={(firstName) => p.firstName = firstName}
           required={true}
         />
         <Form.Group
           type="text"
           labelText="NOM"
           nameAndId="last_name"
-          value={player?.last_name}
-          updateValue={(last_name) => p.last_name = last_name.toUpperCase()}
+          value={p.lastName}
+          updateValue={(lastName) => p.lastName = lastName.toUpperCase()}
           required={true}
         />
       </Form.Row>
@@ -63,7 +63,7 @@ export default function PlayerForm({ player, handleSubmit }: {
           type="email"
           labelText="Email"
           nameAndId="email"
-          value={player?.email}
+          value={p.email}
           updateValue={(email) => p.email = email}
           required={true}
         />
@@ -73,7 +73,7 @@ export default function PlayerForm({ player, handleSubmit }: {
           labelText="Rôle"
           nameAndId="role"
           required
-          values={userRoles.map((role) => ({
+          values={playerRoles.map((role) => ({
             text: role,
             value: role,
             selected: p.role === role
@@ -84,14 +84,14 @@ export default function PlayerForm({ player, handleSubmit }: {
           type="text"
           labelText="Tél."
           nameAndId="phone"
-          value={player?.phone}
+          value={p.phone}
           updateValue={(phone) => p.phone = phone}
         />
         <Form.Group
           type="number"
           labelText="Elo"
           nameAndId="rating"
-          value={player?.rating}
+          value={p.rating}
           updateValue={(rating) => (!isNaN(Number(rating))) && (p.rating = Number(rating))}
         />
       </Form.Row>

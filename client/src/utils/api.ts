@@ -1,12 +1,5 @@
 import auth from "./auth.js";
-import {
-  PublicEntities,
-  MySqlEntities,
-  ShortMatchInfo,
-  UserCredentials,
-  UserData,
-  WithoutId
-} from "@src/types.js";
+import { PlayerCredentials, PlayerData } from "@src/types.js";
 
 const jsonHeaders = {
   "Content-Type": "application/json"
@@ -64,37 +57,10 @@ export function deleteOne(path: Path) {
 }
 
 // ===== ===== ===== ===== =====
-// MATCHES
-// ===== ===== ===== ===== =====
-
-export function getMatch({ season, round, teamName }: ShortMatchInfo) {
-  return fetchFromApi<PublicEntities.Match>(`/matches/${season}/${round}/${teamName}`);
-}
-
-export function getMatches(season: number) {
-  return fetchFromApi<PublicEntities.Match[]>(`/matches/${season}`);
-}
-
-export function getMatchLineUp({ season, round, teamName }: ShortMatchInfo) {
-  return fetchFromApi<{
-    match: PublicEntities.Match;
-    lineUp: PublicEntities.LineUp;
-  }>(`/matches/${season}/${round}/${teamName}/line-up`);
-}
-
-export function updateMatch(id: PublicEntities.Match["id"], data: Partial<WithoutId<MySqlEntities.Match>>) {
-  return fetchFromApi<SuccessResponse>(`/matches/${id}/update`, {
-    method: "PUT",
-    headers: jsonHeaders,
-    body: JSON.stringify(data)
-  });
-}
-
-// ===== ===== ===== ===== =====
 // AUTH
 // ===== ===== ===== ===== =====
 
-export function login(credentials: UserCredentials) {
+export function login(credentials: PlayerCredentials) {
   return fetchFromApi<string>("/auth/login", {
     method: "POST",
     headers: jsonHeaders,
@@ -103,7 +69,7 @@ export function login(credentials: UserCredentials) {
 }
 
 export function decodeToken(auth_token: string) {
-  return fetchFromApi<UserData | null>("/auth/decode-token", {
+  return fetchFromApi<PlayerData | null>("/auth/decode-token", {
     method: "POST",
     headers: jsonHeaders,
     body: JSON.stringify({ auth_token })

@@ -1,6 +1,6 @@
 import { Observable } from "reactfree-jsx";
 import { decodeToken, login } from "./api.js";
-import { UserCredentials, UserData } from "@src/types.js";
+import { PlayerCredentials, PlayerData } from "@src/types.js";
 
 export enum RoleIndex {
   USER,
@@ -9,12 +9,12 @@ export enum RoleIndex {
 }
 
 const localStorageKey = "auth_token";
-const userDataObs = new Observable<UserData | null>(null);
+const userDataObs = new Observable<PlayerData | null>(null);
 
 export default {
   getUser: () => userDataObs.value,
   getToken: () => localStorage.getItem(localStorageKey),
-  logIn: async (credentials: UserCredentials): Promise<boolean> => {
+  logIn: async (credentials: PlayerCredentials): Promise<boolean> => {
     const authToken = await login(credentials);
 
     if (!authToken)
@@ -36,5 +36,5 @@ export default {
     localStorage.removeItem(localStorageKey);
     userDataObs.value = null;
   },
-  onUserSet: (subscription: (user: UserData | null) => any) => userDataObs.subscribe(subscription)
+  onUserSet: (subscription: (user: PlayerData | null) => any) => userDataObs.subscribe(subscription)
 };

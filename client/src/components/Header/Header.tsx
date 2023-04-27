@@ -1,7 +1,7 @@
 import LogOutButton from "@src/components/LogOutButton/LogOutButton.jsx";
 import RouterLink from "@src/routing/RouterLink.jsx";
 import auth, { RoleIndex } from "@src/utils/auth.js";
-import { UserRole } from "@src/types.js";
+import { PlayerRole } from "@src/types.js";
 import cssClasses from "./Header.module.scss";
 
 export default function Header() {
@@ -29,7 +29,7 @@ export default function Header() {
   );
 }
 
-function getLinks(role: UserRole) {
+function getLinks(role: PlayerRole) {
   return (
     <>
       <li>
@@ -39,13 +39,7 @@ function getLinks(role: UserRole) {
         (RoleIndex[role] >= RoleIndex.CAPTAIN)
           ? (<>
             <li>
-              <RouterLink href="/clubs">Clubs</RouterLink>
-            </li>
-            <li>
               <RouterLink href="/joueurs">Joueurs</RouterLink>
-            </li>
-            <li>
-              <RouterLink href="/equipes">Équipes</RouterLink>
             </li>
           </>)
           : null

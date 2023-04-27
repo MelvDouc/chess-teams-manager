@@ -1,25 +1,17 @@
 import { RoleIndex } from "@src/utils/auth.js";
-
-import {
-  PublicEntities,
-  MySqlEntities,
-  BoardColor,
-  WithoutId,
-  UserCredentials,
-  UserData,
-  UserRole
-} from "../../global.js";
+import { Match } from "../../global.js";
 
 export type {
-  PublicEntities,
-  MySqlEntities,
   BoardColor,
-  WithoutId,
-  UserCredentials,
-  UserData,
-  UserRole
-};
-export type ShortMatchInfo = MySqlEntities.ShortMatchInfo;
+  LineUpRow,
+  Player,
+  PlayerCredentials,
+  PlayerData,
+  PlayerRole
+} from "../../global.js";
+
+export type { Match };
+export type ShortMatchInfo = Pick<Match, "season" | "round" | "teamName">;
 
 export interface Route<Params = Record<string, string>> {
   getTitle: (params?: Params) => string;
