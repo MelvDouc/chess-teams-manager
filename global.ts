@@ -40,6 +40,7 @@ export namespace MySqlEntities {
     home_club_id: Club["id"];
     white_on_odds: 0 | 1;
     date: string;
+    time: string;
   }
 
   export interface ShortMatchInfo {
@@ -49,9 +50,8 @@ export namespace MySqlEntities {
   }
 
   export type FullMatchInfo =
-    & Pick<Match, "id" | "season" | "round" | "white_on_odds" | "date">
+    & Pick<Match, "id" | "season" | "round" | "white_on_odds" | "date" | "time">
     & {
-      address: Club["address"];
       team_id: Team["id"];
       team_name: Team["name"];
     }
@@ -60,6 +60,9 @@ export namespace MySqlEntities {
     }
     & {
       [K in keyof Club as `opponent_${K}`]: Club[K]
+    }
+    & {
+      [K in keyof Club as `hc_${K}`]: Club[K]
     };
 
   export interface LineUp {
@@ -93,9 +96,10 @@ export namespace DbEntities {
     round: number;
     team: Team;
     opponent: Club;
-    address: Club["address"];
+    home_club: Club;
     white_on_odds: boolean;
-    date: Date;
+    date: string;
+    time: string;
   }
 
   export type LineUp = {
