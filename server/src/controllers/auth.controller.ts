@@ -10,11 +10,10 @@ import { RouteHandler } from "../types.js";
 // def user pwd: 'abc'
 
 const login = asyncWrapper(async (req, res) => {
-  const data = req.body;
-  const { email, password } = data as { email: string; password: string; };
-  const player = await playerModel.getPlayer({ email });
+  const { ffe_id, pwd } = req.body as { ffe_id: string; pwd: string; };
+  const player = await playerModel.getPlayer({ ffe_id });
 
-  if (!player || !bcryptjs.compareSync(password, player.pwd))
+  if (!player || !bcryptjs.compareSync(pwd, player.pwd))
     return res.json(null);
 
   res.json(jwtService.createToken(player));
@@ -27,19 +26,19 @@ const decodeToken = asyncWrapper(async (req, res) => {
 
 const passwordForgotten: RouteHandler = async (req, res) => {
   const data = req.body;
-  const { email } = data as { email: string; };
-  const user = await playerModel.getPlayer({ email });
+  const { ffe_id } = data as { ffe_id: string; };
+  const player = await playerModel.getPlayer({ ffe_id });
 
-  if (!user)
+  if (!player)
     return res.json({
       errors: ["Adresse email invalide."]
     });
 
   const passwordResetId = randomBytes(32).toString("hex");
-  await playerModel.updatePlayer({ email }, { pwd_reset_id: passwordResetId });
+  await playerModel.updatePlayer({ ffe_id }, { pwd_reset_id: passwordResetId });
   const sendResult = await emailService.sendEmail({
     templateName: "password-reset",
-    to: email,
+    to: player.email,
     subject: "Réinitialisation du mot de passe",
     context: {
       link: `${config.CLIENT_URL}/nouveau-mot-de-passe/${passwordResetId}`

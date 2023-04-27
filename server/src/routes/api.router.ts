@@ -24,8 +24,7 @@ apiRouter
   .get("/teams/:name", teamController.getTeam)
   .get("/teams", teamController.getTeams)
   .post("/teams/create", teamController.createTeam)
-  .put("/teams/:id/update", teamController.updateTeam)
-  .delete("/teams/:id/delete", teamController.deleteTeam);
+  .put("/teams/:id/update", teamController.updateTeam);
 
 apiRouter
   .get("/matches/seasons", matchController.getSeasons)

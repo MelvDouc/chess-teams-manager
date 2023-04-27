@@ -133,7 +133,10 @@ async function getMatch({ season, round, teamName }: MySqlEntities.ShortMatchInf
 }
 
 async function getMatchesOfSeason(season: number): Promise<PublicEntities.Match[]> {
-  const search = await getFullMatchInfo().where({ season }).run() as unknown as MySqlEntities.FullMatchInfo[];
+  const search = await getFullMatchInfo()
+    .where({ season })
+    .orderBy("round")
+    .run() as unknown as MySqlEntities.FullMatchInfo[];
   return search.map(convertSearch);
 }
 

@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS team (
   id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(20) NOT NULL,
   captain_ffe_id VARCHAR(10) NOT NULL,
-  CONSTRAINT fk_captain_ffe_id FOREIGN KEY (captain_ffe_id) REFERENCES player (ffe_id)
+  CONSTRAINT fk_captain_ffe_id FOREIGN KEY (captain_ffe_id) REFERENCES player (ffe_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS club (
@@ -36,9 +36,9 @@ CREATE TABLE IF NOT EXISTS league_match (
   white_on_odds TINYINT NOT NULL,
   date DATE NOT NULL,
   time TIME NOT NULL,
-  CONSTRAINT fk_match_team_id FOREIGN KEY (team_id) REFERENCES team (id),
-  CONSTRAINT fk_match_opponent_id FOREIGN KEY (opponent_id) REFERENCES club (id),
-  CONSTRAINT fk_match_home_club_id FOREIGN KEY (opponent_id) REFERENCES club (id)
+  CONSTRAINT fk_match_team_id FOREIGN KEY (team_id) REFERENCES team (id) ON DELETE CASCADE,
+  CONSTRAINT fk_match_opponent_id FOREIGN KEY (opponent_id) REFERENCES club (id) ON DELETE CASCADE,
+  CONSTRAINT fk_match_home_club_id FOREIGN KEY (opponent_id) REFERENCES club (id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS line_up (
@@ -46,6 +46,6 @@ CREATE TABLE IF NOT EXISTS line_up (
   player_rating INT DEFAULT 1199,
   player_ffe_id VARCHAR(10) NOT NULL,
   match_id INT NOT NULL,
-  CONSTRAINT fk_line_up_player_ffe_id FOREIGN KEY (player_ffe_id) REFERENCES player (ffe_id),
-  CONSTRAINT fk_line_up_match_id FOREIGN KEY (match_id) REFERENCES league_match (id)
+  CONSTRAINT fk_line_up_player_ffe_id FOREIGN KEY (player_ffe_id) REFERENCES player (ffe_id) ON DELETE CASCADE,
+  CONSTRAINT fk_line_up_match_id FOREIGN KEY (match_id) REFERENCES league_match (id) ON DELETE CASCADE
 );

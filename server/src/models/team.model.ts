@@ -12,7 +12,7 @@ function getRawTeam() {
       "t.id id",
       "t.name name",
       "cap.ffe_id ffe_id",
-      "cap.fide fide_id",
+      "cap.fide_id fide_id",
       "cap.role role",
       "cap.email email",
       "cap.phone phone",

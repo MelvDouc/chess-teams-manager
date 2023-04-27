@@ -19,16 +19,10 @@ const updateTeam = asyncWrapper(async (req, res) => {
   res.json({ success: affectedRows > 0 });
 });
 
-const deleteTeam = asyncWrapper(async (req, res) => {
-  const { affectedRows } = await teamModel.deleteTeam(+req.params.id);
-  res.json({ success: affectedRows > 0 });
-});
-
 
 export default {
   getTeam,
   getTeams,
   createTeam,
-  updateTeam,
-  deleteTeam
+  updateTeam
 };

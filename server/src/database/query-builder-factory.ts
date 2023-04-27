@@ -101,7 +101,7 @@ function formatWhereFilter(filter: SqlRecord, key: string): string {
 function formatValue(value: SqlValue): string | number {
   switch (typeof value) {
     case "string":
-      return `'${value}'`;
+      return `'${value.replace(/'/g, "\\'")}'`;
     case "number":
       return value;
     case "boolean":

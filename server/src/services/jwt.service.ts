@@ -4,8 +4,8 @@ import { UserData, UserRole } from "../types.js";
 
 const Roles = ["ADMIN", "CAPTAIN", "USER"] as const;
 
-function createToken({ email, role }: UserData): string {
-  return jwt.sign({ email, role }, config.JWT_SECRET, {
+function createToken({ ffe_id, role }: UserData): string {
+  return jwt.sign({ ffe_id, role }, config.JWT_SECRET, {
     expiresIn: "1y"
   });
 }
@@ -16,12 +16,12 @@ function decodeToken(token: string): Promise<UserData | null> {
       if (err)
         return resolve(null);
 
-      const { email, role } = decoded as { email: unknown; role: unknown; };
+      const { ffe_id, role } = decoded as { ffe_id: unknown; role: unknown; };
 
-      if (typeof email !== "string" || !Roles.includes(role as UserRole))
+      if (typeof ffe_id !== "string" || !Roles.includes(role as UserRole))
         return resolve(null);
 
-      resolve({ email, role: role as UserRole });
+      resolve({ ffe_id, role: role as UserRole });
     });
   });
 }
