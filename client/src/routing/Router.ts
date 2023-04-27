@@ -10,6 +10,9 @@ import MatchSeasonsPage from "@src/pages/matches/MatchSeasonsPage.js";
 import PlayersPage from "@src/pages/players/PlayersPage.js";
 import PlayerCreatePage from "@src/pages/players/PlayerCreatePage.js";
 import PlayerUpdatePage from "@src/pages/players/PlayerUpdatePage.js";
+import TeamsPage from "@src/pages/teams/TeamsPage.jsx";
+import TeamCreatePage from "@src/pages/teams/TeamCreatePage.js";
+import TeamUpdatePage from "@src/pages/teams/TeamUpdatePage.js";
 import { Route, RouteInfo } from "@src/types.js";
 
 class Router {
@@ -119,6 +122,21 @@ router
     preCheck: () => Promise.resolve(true),
     getTitle: () => "Composition",
     component: MatchLineUp
+  })
+  .addRoute("/equipes", {
+    preCheck: () => Promise.resolve(true),
+    getTitle: () => "Équipes",
+    component: TeamsPage
+  })
+  .addRoute("/equipes/ajouter", {
+    preCheck: () => Promise.resolve(true),
+    getTitle: () => "Ajouter une équipe",
+    component: TeamCreatePage
+  })
+  .addRoute("/equipes/:name/modifier", {
+    preCheck: () => Promise.resolve(true),
+    getTitle: ({ name }) => `Modifier ${name}`,
+    component: TeamUpdatePage
   });
 
 export default router;

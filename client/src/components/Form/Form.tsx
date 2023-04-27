@@ -1,4 +1,5 @@
 import RouterLink from "@src/routing/RouterLink.jsx";
+import cssClasses from "@src/components/Form/Form.module.scss";
 
 export default function Form({ handleSubmit, children }: {
   handleSubmit: (e: SubmitEvent) => any;
@@ -27,11 +28,13 @@ Form.Row = ({ children }: { children?: ComponentChildren; }) => {
   return row;
 };
 
-Form.Group = ({ nameAndId, labelText, required, type, placeholder, value, updateValue }: {
-  type: "text" | "textarea" | "number" | "email" | "password";
+Form.Group = ({ nameAndId, labelText, required, type, min, max, placeholder, value, updateValue }: {
+  type: "text" | "textarea" | "number" | "email" | "password" | "date" | "time" | "datetime-local";
   nameAndId: string;
   labelText: string;
   required?: boolean;
+  min?: number;
+  max?: number;
   placeholder?: string;
   value?: any;
   updateValue?: (value: any) => void;
@@ -44,10 +47,24 @@ Form.Group = ({ nameAndId, labelText, required, type, placeholder, value, update
   control.classList.add("form-control");
   control.name = nameAndId;
   control.required = !!required;
+  if (min !== undefined)
+    control.setAttribute("min", String(min));
+  if (max !== undefined)
+    control.setAttribute("max", String(max));
   if (placeholder)
     control.placeholder = placeholder;
-  if (updateValue)
-    control.addEventListener("input", () => updateValue(control.value));
+  if (updateValue) {
+    switch (type) {
+      case "number":
+        control.addEventListener("input", () => updateValue((control as HTMLInputElement).valueAsNumber));
+        break;
+      case "datetime-local":
+        control.addEventListener("input", () => updateValue((control as HTMLInputElement).valueAsDate));
+        break;
+      default:
+        control.addEventListener("input", () => updateValue(control.value));
+    }
+  }
 
   return (
     <div>
@@ -57,21 +74,38 @@ Form.Group = ({ nameAndId, labelText, required, type, placeholder, value, update
   );
 };
 
-Form.Checkbox = ({ nameAndId, labelText, required, checked }: {
+Form.Checkbox = ({ nameAndId, labelText, required, checked, updateValue }: {
   nameAndId: string;
   labelText: string;
   required?: boolean;
   checked?: boolean;
+  updateValue?: (value: boolean) => void;
 }) => {
   return (
-    <div className="h-100 d-flex align-items-center gap-2">
-      <input type="checkbox" name={nameAndId} id={nameAndId} checked={checked === true} required={required === true} />
-      <label htmlFor={nameAndId}>{labelText}</label>
+    <div className="h-100 d-flex align-items-center">
+      <div classNames={["form-check", "form-switch"]}>
+        <input
+          classNames={["form-check-input", cssClasses.formSwitchInput]}
+          type="checkbox"
+          role="switch"
+          id={nameAndId}
+          checked={checked === true}
+          required={required === true}
+          $init={(element) => {
+            if (updateValue)
+              element.addEventListener("change", () => updateValue(element.checked));
+          }}
+        />
+        <label
+          className="form-check-label"
+          htmlFor={nameAndId}
+        >{labelText}</label>
+      </div>
     </div>
   );
 };
 
-Form.Select = ({ nameAndId, labelText, required, values }: {
+Form.Select = ({ nameAndId, labelText, required, values, updateValue }: {
   nameAndId: string;
   labelText: string;
   required?: boolean;
@@ -80,11 +114,21 @@ Form.Select = ({ nameAndId, labelText, required, values }: {
     text: string;
     selected?: boolean;
   }[];
+  updateValue?: (value: any) => void;
 }) => {
   return (
     <div>
       <label htmlFor={nameAndId} className="form-label d-block">{labelText}</label>
-      <select name={nameAndId} id={nameAndId} required={required}>
+      <select
+        name={nameAndId}
+        className="form-control"
+        id={nameAndId}
+        required={required}
+        $init={(element) => {
+          if (updateValue)
+            element.addEventListener("change", () => updateValue(element.value));
+        }}
+      >
         {values.map(({ value, text, selected }) => (
           <option value={value} selected={selected}>{text}</option>
         ))}

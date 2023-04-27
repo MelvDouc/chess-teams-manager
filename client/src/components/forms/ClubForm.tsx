@@ -1,4 +1,3 @@
-import { Observable } from "reactfree-jsx";
 import Form from "@src/components/Form/Form.jsx";
 import { DbEntities, WithoutId } from "@src/types.js";
 
@@ -6,25 +5,25 @@ export default function ClubForm({ club, handleSubmit }: {
   club: DbEntities.Club | null;
   handleSubmit: (club: WithoutId<DbEntities.Club>) => any;
 }) {
-  const clubObs = new Observable<WithoutId<DbEntities.Club>>(club ?? {
+  const c = club ?? {
     name: "",
     address: "",
     email: null,
     phone: null,
-  });
+  };
 
   return (
     <Form handleSubmit={async (e) => {
       e.preventDefault();
-      await handleSubmit(clubObs.value);
+      await handleSubmit(c);
     }}>
       <Form.Row>
         <Form.Group
           nameAndId="name"
           type="text"
           labelText="Nom"
-          value={club?.name}
-          updateValue={(name) => clubObs.value.name = name}
+          value={c.name}
+          updateValue={(name) => c.name = name}
           required
         />
       </Form.Row>
@@ -33,8 +32,8 @@ export default function ClubForm({ club, handleSubmit }: {
           nameAndId="address"
           type="textarea"
           labelText="Adresse"
-          value={club?.address}
-          updateValue={(address) => clubObs.value.address = address}
+          value={c.address}
+          updateValue={(address) => c.address = address}
           required
         />
       </Form.Row>
@@ -43,15 +42,15 @@ export default function ClubForm({ club, handleSubmit }: {
           nameAndId="phone"
           type="text"
           labelText="Tél."
-          value={club?.phone}
-          updateValue={(phone) => clubObs.value.phone = phone || null}
+          value={c.phone}
+          updateValue={(phone) => c.phone = phone || null}
         />
         <Form.Group
           nameAndId="email"
           type="email"
           labelText="Email"
-          value={club?.email}
-          updateValue={(email) => clubObs.value.email = email || null}
+          value={c.email}
+          updateValue={(email) => c.email = email || null}
         />
       </Form.Row>
       <Form.Submit text="Envoyer" backLink="/clubs" />

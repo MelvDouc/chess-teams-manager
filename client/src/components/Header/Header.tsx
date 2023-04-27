@@ -22,6 +22,9 @@ export default function Header() {
             <li>
               <RouterLink href="/joueurs">Joueurs</RouterLink>
             </li>
+            <li>
+              <RouterLink href="/equipes">Équipes</RouterLink>
+            </li>
           </ul>
         </nav>
       </section>

@@ -1,4 +1,4 @@
-import { DbEntities, ShortMatchInfo } from "@src/types.js";
+import { DbEntities, MySqlEntities, ShortMatchInfo, WithoutId } from "@src/types.js";
 
 async function fetchFromApi<T>(path: `/${string}`, init?: RequestInit): Promise<T | null> {
   try {
@@ -68,6 +68,22 @@ export function getMatches(season: number) {
 
 export function getMatchLineUp({ season, round, teamName }: ShortMatchInfo) {
   return fetchFromApi<DbEntities.LineUp>(`/matches/${season}/${round}/${teamName}/line-up`);
+}
+
+export function createMatch(data: WithoutId<MySqlEntities.Match>) {
+  return fetchFromApi<number>(`/matches/create`, {
+    method: "POST",
+    headers: jsonHeaders,
+    body: JSON.stringify(data)
+  });
+}
+
+export function updateMatch(id: DbEntities.Match["id"], data: Partial<WithoutId<MySqlEntities.Match>>) {
+  return fetchFromApi<SuccessResponse>(`/matches/${id}/update`, {
+    method: "PUT",
+    headers: jsonHeaders,
+    body: JSON.stringify(data)
+  });
 }
 
 // ===== ===== ===== ===== =====

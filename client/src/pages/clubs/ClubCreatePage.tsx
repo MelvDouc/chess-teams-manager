@@ -1,4 +1,4 @@
-import ClubForm from "@src/components/ClubForm/ClubForm.jsx";
+import ClubForm from "@src/components/forms/ClubForm.jsx";
 import { createClub } from "@src/utils/api.js";
 
 export default function ClubCreatePage() {

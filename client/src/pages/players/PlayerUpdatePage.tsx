@@ -1,4 +1,4 @@
-import PlayerForm from "@src/components/PlayerForm/PlayerForm.jsx";
+import PlayerForm from "@src/components/forms/PlayerForm.jsx";
 import { getPlayer, updatePlayer } from "@src/utils/api.js";
 import { DbEntities } from "@src/types.js";
 

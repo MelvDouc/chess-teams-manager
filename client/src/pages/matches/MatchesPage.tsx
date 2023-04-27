@@ -29,14 +29,14 @@ export default async function MatchesPage({ season }: {
           <>
             <Table.SubtitleRow title={teamName} colSpan={5} />
             <tbody>
-              {matches.map(({ round, opponent, address, date }) => (
+              {matches.map(({ round, opponent, home_club, date, time }) => (
                 <tr>
                   <td>{round}</td>
                   <td>{opponent.name}</td>
                   <td>
-                    <address>{address}</address>
+                    <address>{home_club.address}</address>
                   </td>
-                  <td>{date}</td>
+                  <td>{date.slice(0, 10)} à {time.slice(0, 5)}</td>
                   <td>
                     <Table.Actions>
                       <RouterLink className="btn btn-primary" href={`/matchs/${season}/${round}/${teamName}/modifier`}>
