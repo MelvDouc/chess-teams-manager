@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS team (
 
 CREATE TABLE IF NOT EXISTS club (
   id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  name VARCHAR(20) NOT NULL,
+  name VARCHAR(50) NOT NULL,
   address TEXT NOT NULL,
   email VARCHAR(50) NULL,
   phone VARCHAR(15) NULL
@@ -31,7 +31,8 @@ CREATE TABLE IF NOT EXISTS league_match (
   opponent_id INT NOT NULL,
   home_club_id INT NOT NULL,
   white_on_odds TINYINT NOT NULL,
-  date DATETIME NOT NULL,
+  date DATE NOT NULL,
+  time TIME NOT NULL,
   CONSTRAINT fk_match_team_id FOREIGN KEY (team_id) REFERENCES team (id),
   CONSTRAINT fk_match_opponent_id FOREIGN KEY (opponent_id) REFERENCES club (id),
   CONSTRAINT fk_match_home_club_id FOREIGN KEY (opponent_id) REFERENCES club (id)

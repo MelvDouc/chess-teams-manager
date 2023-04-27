@@ -31,9 +31,9 @@ function getFullMatchInfo() {
       "round",
       "white_on_odds",
       "lm.date date",
-      "hc.address address",
-      "team.id team_id",
-      "team.name team_name",
+      "lm.time time",
+      "t.id team_id",
+      "t.name team_name",
       "cap.ffe_id captain_ffe_id",
       "cap.fide_id captain_fide_id",
       "cap.email captain_email",
@@ -46,16 +46,21 @@ function getFullMatchInfo() {
       "opp.address opponent_address",
       "opp.email opponent_email",
       "opp.phone opponent_phone",
+      "hc.id hc_id",
+      "hc.name hc_name",
+      "hc.address hc_address",
+      "hc.email hc_email",
+      "hc.phone hc_phone",
     )
     .from("league_match lm")
-    .join("left", "club hc")
+    .join("inner", "club hc")
     .on("hc.id = lm.home_club_id")
-    .join("left", "club opp")
+    .join("inner", "club opp")
     .on("opp.id = lm.opponent_id")
-    .join("left", "team")
-    .on("team.id = lm.team_id")
-    .join("left", "player cap")
-    .on("cap.ffe_id = team.captain_ffe_id");
+    .join("inner", "team t")
+    .on("t.id = lm.team_id")
+    .join("inner", "player cap")
+    .on("cap.ffe_id = t.captain_ffe_id");
 }
 
 function convertSearch(search: MySqlEntities.FullMatchInfo): DbEntities.Match {
@@ -63,9 +68,9 @@ function convertSearch(search: MySqlEntities.FullMatchInfo): DbEntities.Match {
     id: search.id,
     season: search.season,
     round: search.round,
-    address: search.address,
     white_on_odds: Boolean(search.white_on_odds),
-    date: new Date(search.date),
+    date: search.date,
+    time: search.time,
     team: {
       id: search.team_id,
       name: search.team_name,
@@ -84,7 +89,14 @@ function convertSearch(search: MySqlEntities.FullMatchInfo): DbEntities.Match {
       name: search.opponent_name,
       address: search.opponent_address,
       email: search.opponent_email,
-      phone: search.opponent_phone,
+      phone: search.opponent_phone
+    },
+    home_club: {
+      id: search.hc_id,
+      name: search.hc_name,
+      address: search.hc_address,
+      email: search.hc_email,
+      phone: search.hc_phone
     }
   };
 }
@@ -104,11 +116,11 @@ function getRawLineUp(matchId: number) {
       "l.player_rating rating",
     )
     .from("line_up l")
-    .join("left", "league_match lm")
+    .join("inner", "league_match lm")
     .on("lm.id = l.match_id")
-    .join("left", "player p")
+    .join("inner", "player p")
     .on("p.ffe_id = l.player_ffe_id")
-    .join("left", "team t")
+    .join("inner", "team t")
     .on("t.id = lm.team_id")
     .where({ "l.match_id": matchId })
     .orderBy("board")
@@ -122,9 +134,11 @@ function getRawLineUp(matchId: number) {
 async function getMatch({ season, round, teamName }: MySqlEntities.ShortMatchInfo): Promise<DbEntities.Match | null> {
   const [match] = await getFullMatchInfo()
     .where({
-      season,
-      round,
-      "t.name": teamName
+      $and: {
+        season,
+        round,
+        "t.name": teamName
+      }
     })
     .run() as unknown as MySqlEntities.FullMatchInfo[];
   return (match)
@@ -134,13 +148,16 @@ async function getMatch({ season, round, teamName }: MySqlEntities.ShortMatchInf
 
 async function getMatchesOfSeason(season: number): Promise<DbEntities.Match[]> {
   const search = await getFullMatchInfo().where({ season }).run() as unknown as MySqlEntities.FullMatchInfo[];
+  console.log({ search_length: search.length });
   return search.map(convertSearch);
 }
 
 async function getSeasons(): Promise<number[]> {
-  const seasons = await db.createQueryBuilder()
+  const seasons = await db
+    .createQueryBuilder()
     .select("DISTINCT season")
-    .from("league_match").run() as unknown as { season: number; }[];
+    .from("league_match")
+    .run() as unknown as { season: number; }[];
   return seasons.map((obj) => obj.season);
 }
 
@@ -166,10 +183,7 @@ async function getLineUp({ season, round, teamName }: MySqlEntities.ShortMatchIn
   });
 }
 
-function createMatch({ season, round, team_id, opponent_id, home_club_id, white_on_odds, date }: MySqlEntities.Match) {
-  const d = new Date(date);
-  const dateString = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()} ${d.getHours()}:${d.getMinutes()}:00`;
-
+function createMatch({ season, round, team_id, opponent_id, home_club_id, white_on_odds, date, time }: MySqlEntities.Match) {
   return db.insert<WithoutId<MySqlEntities.Match>>("league_match", {
     season,
     round,
@@ -177,7 +191,8 @@ function createMatch({ season, round, team_id, opponent_id, home_club_id, white_
     opponent_id,
     home_club_id,
     white_on_odds: Number(white_on_odds) as 0 | 1,
-    date: dateString
+    date,
+    time
   });
 }
 

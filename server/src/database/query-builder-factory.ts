@@ -53,9 +53,10 @@ export default function queryBuilderFactory(client: Pool) {
         query += `\nINSERT INTO ${tableName}`;
         return {
           values: <T extends Record<string, SqlValue>>(values: T[]) => {
+            const keys = Object.keys(values[0]);
             const valuesField = values
               .map((value) => {
-                return "(" + Object.keys(value).map(formatValue).join() + ")";
+                return "(" + keys.map((key) => formatValue(value[key])).join() + ")";
               })
               .join();
             query += ` (${Object.keys(values[0]).join()}) VALUES ${valuesField}`;
