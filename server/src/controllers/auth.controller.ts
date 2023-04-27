@@ -1,5 +1,5 @@
 import { randomBytes } from "node:crypto";
-import * as bcryptjs from "bcryptjs";
+import { default as bcryptjs } from "bcryptjs";
 import config from "../config/config.js";
 import userModel from "../models/user.model.js";
 import asyncWrapper from "../middleware/async-wrapper.js";
@@ -7,18 +7,16 @@ import emailService from "../services/email.service.js";
 import jwtService from "../services/jwt.service.js";
 import { RouteHandler } from "../types.js";
 
-const login: RouteHandler = async (req, res) => {
+const login = asyncWrapper(async (req, res) => {
   const data = req.body;
   const { email, password } = data as { email: string; password: string; };
   const user = await userModel.getUser({ email });
 
   if (!user || !bcryptjs.compareSync(password, user.password))
-    return res.json({
-      errors: ["Identifiants invalides."]
-    });
+    return res.json(null);
 
-  res.json({ auth_token: jwtService.createToken(user) });
-};
+  res.json(jwtService.createToken(user));
+});
 
 const decodeToken = asyncWrapper(async (req, res) => {
   const { auth_token } = req.body;

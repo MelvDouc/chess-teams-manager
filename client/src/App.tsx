@@ -1,6 +1,7 @@
 import Header from "@src/components/Header/Header.jsx";
 import Router from "@src/routing/Router.js";
 import RouterOutlet from "@src/routing/RouterOutlet.jsx";
+import auth from "@src/utils/auth.js";
 
 export default function App() {
   window.onpopstate = () => Router.updateUrl(location.pathname);
@@ -18,7 +19,7 @@ export default function App() {
           </main>
         </>
       );
-      Router.updateUrl(location.pathname);
+      auth.logBack().then(() => Router.updateUrl(location.pathname));
     }
   };
 }

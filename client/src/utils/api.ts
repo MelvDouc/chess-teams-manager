@@ -1,4 +1,11 @@
-import { DbEntities, MySqlEntities, ShortMatchInfo, UserData, WithoutId } from "@src/types.js";
+import {
+  DbEntities,
+  MySqlEntities,
+  ShortMatchInfo,
+  UserCredentials,
+  UserData,
+  WithoutId
+} from "@src/types.js";
 
 async function fetchFromApi<T>(path: `/${string}`, init?: RequestInit): Promise<T | null> {
   try {
@@ -166,11 +173,11 @@ export function deleteTeam(id: DbEntities.Team["id"]) {
 // AUTH
 // ===== ===== ===== ===== =====
 
-export function login(data: Pick<DbEntities.User, "email" | "password">) {
-  return fetchFromApi<{ auth_token: string; }>("/auth/login", {
+export function login(credentials: UserCredentials) {
+  return fetchFromApi<string>("/auth/login", {
     method: "POST",
     headers: jsonHeaders,
-    body: JSON.stringify(data)
+    body: JSON.stringify(credentials)
   });
 }
 

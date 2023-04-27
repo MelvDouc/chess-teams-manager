@@ -1,5 +1,6 @@
 export type WithoutId<TEntity, TId extends string = "id"> = Omit<TEntity, TId>;
 export type UserRole = "ADMIN" | "CAPTAIN" | "USER";
+export type UserCredentials = Pick<DbEntities.User, "email" | "password">;
 export type UserData = Pick<DbEntities.User, "email" | "role">;
 export type BoardColor = "B" | "N";
 

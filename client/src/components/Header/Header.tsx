@@ -1,3 +1,4 @@
+import LogOutButton from "@src/components/LogOutButton/LogOutButton.jsx";
 import RouterLink from "@src/routing/RouterLink.jsx";
 import auth from "@src/utils/auth.js";
 import cssClasses from "./Header.module.scss";
@@ -29,6 +30,11 @@ export default function Header() {
                         </li>
                         <li>
                           <RouterLink href="/equipes">Équipes</RouterLink>
+                        </li>
+                        <li>
+                          <div className="d-flex justify-content-center align-items-center">
+                            <LogOutButton />
+                          </div>
                         </li>
                       </>
                     )

@@ -12,8 +12,7 @@ export default function RouterLink({ href, className, children }: {
         className && (element.className = className);
         element.addEventListener("click", (e) => {
           e.preventDefault();
-          window.history.pushState({}, "", href);
-          Router.updateUrl(href);
+          Router.navigate(href);
         });
       }}
     >{children}</a>

@@ -1,8 +1,11 @@
+import { RoleIndex } from "@src/utils/auth.js";
+
 import {
   DbEntities,
   MySqlEntities,
   BoardColor,
   WithoutId,
+  UserCredentials,
   UserData,
   UserRole
 } from "../../global.js";
@@ -12,15 +15,16 @@ export type {
   MySqlEntities,
   BoardColor,
   WithoutId,
+  UserCredentials,
   UserData,
   UserRole
 };
 export type ShortMatchInfo = MySqlEntities.ShortMatchInfo;
 
 export interface Route<Params = Record<string, string>> {
-  preCheck: () => Promise<boolean>;
   getTitle: (params?: Params) => string;
   component: (params?: Params) => string | Node | Promise<string | Node>;
+  minRole?: RoleIndex;
 }
 
 export type RouteInfo = {
