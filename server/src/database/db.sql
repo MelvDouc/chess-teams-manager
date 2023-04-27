@@ -2,6 +2,9 @@ CREATE TABLE IF NOT EXISTS player (
   ffe_id VARCHAR(10) NOT NULL PRIMARY KEY,
   fide_id INT NULL,
   email VARCHAR(50) NOT NULL,
+  pwd VARCHAR(255) NOT NULL,
+  pwd_reset_id VARCHAR(255) NULL,
+  role ENUM("ADMIN", "CAPTAIN", "USER") NOT NULL,
   phone VARCHAR(15) NULL,
   first_name VARCHAR(20) NOT NULL,
   last_name VARCHAR(20) NOT NULL,
@@ -45,11 +48,4 @@ CREATE TABLE IF NOT EXISTS line_up (
   match_id INT NOT NULL,
   CONSTRAINT fk_line_up_player_ffe_id FOREIGN KEY (player_ffe_id) REFERENCES player (ffe_id),
   CONSTRAINT fk_line_up_match_id FOREIGN KEY (match_id) REFERENCES league_match (id)
-);
-
-CREATE TABLE IF NOT EXISTS user (
-  email VARCHAR(50) NOT NULL PRIMARY KEY,
-  role ENUM("ADMIN", "CAPTAIN", "USER"),
-  password VARCHAR(255) NOT NULL,
-  password_reset_id VARCHAR(255) NULL
 );

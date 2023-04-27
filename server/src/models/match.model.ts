@@ -1,5 +1,5 @@
 import db from "../database/db.js";
-import { BoardColor, DbEntities, MySqlEntities, WithoutId } from "../types.js";
+import { BoardColor, PublicEntities, MySqlEntities, WithoutId } from "../types.js";
 
 // ===== ===== ===== ===== =====
 // HELPERS
@@ -19,6 +19,7 @@ function getFullMatchInfo() {
       "t.name team_name",
       "cap.ffe_id captain_ffe_id",
       "cap.fide_id captain_fide_id",
+      "cap.role captain_role",
       "cap.email captain_email",
       "cap.phone captain_phone",
       "cap.last_name captain_last_name",
@@ -46,7 +47,7 @@ function getFullMatchInfo() {
     .on("cap.ffe_id = t.captain_ffe_id");
 }
 
-function convertSearch(search: MySqlEntities.FullMatchInfo): DbEntities.Match {
+function convertSearch(search: MySqlEntities.FullMatchInfo): PublicEntities.Match {
   return {
     id: search.id,
     season: search.season,
@@ -61,6 +62,7 @@ function convertSearch(search: MySqlEntities.FullMatchInfo): DbEntities.Match {
         ffe_id: search.captain_ffe_id,
         fide_id: search.captain_fide_id,
         email: search.captain_email,
+        role: search.captain_role,
         first_name: search.captain_first_name,
         last_name: search.captain_last_name,
         phone: search.captain_phone,
@@ -93,6 +95,7 @@ function getRawLineUp(matchId: number) {
       "p.ffe_id ffe_id",
       "p.fide_id fide_id",
       "p.email email",
+      "p.role role",
       "p.first_name first_name",
       "p.last_name last_name",
       "p.phone phone",
@@ -107,14 +110,14 @@ function getRawLineUp(matchId: number) {
     .on("t.id = lm.team_id")
     .where({ "l.match_id": matchId })
     .orderBy("board")
-    .run() as Promise<({ board: number; color: BoardColor; } & DbEntities.Player)[]>;
+    .run() as Promise<({ board: number; color: BoardColor; } & PublicEntities.Player)[]>;
 }
 
 // ===== ===== ===== ===== =====
 // CRUD
 // ===== ===== ===== ===== =====
 
-async function getMatch({ season, round, teamName }: MySqlEntities.ShortMatchInfo): Promise<DbEntities.Match | null> {
+async function getMatch({ season, round, teamName }: MySqlEntities.ShortMatchInfo): Promise<PublicEntities.Match | null> {
   const [match] = await getFullMatchInfo()
     .where({
       $and: {
@@ -129,7 +132,7 @@ async function getMatch({ season, round, teamName }: MySqlEntities.ShortMatchInf
     : null;
 }
 
-async function getMatchesOfSeason(season: number): Promise<DbEntities.Match[]> {
+async function getMatchesOfSeason(season: number): Promise<PublicEntities.Match[]> {
   const search = await getFullMatchInfo().where({ season }).run() as unknown as MySqlEntities.FullMatchInfo[];
   return search.map(convertSearch);
 }
@@ -144,8 +147,8 @@ async function getSeasons(): Promise<number[]> {
 }
 
 async function getLineUp({ season, round, teamName }: MySqlEntities.ShortMatchInfo): Promise<{
-  match: DbEntities.Match;
-  lineUp: DbEntities.LineUp;
+  match: PublicEntities.Match;
+  lineUp: PublicEntities.LineUp;
 } | null> {
   const match = await getMatch({ season, round, teamName });
 
@@ -155,7 +158,7 @@ async function getLineUp({ season, round, teamName }: MySqlEntities.ShortMatchIn
   const rawLineUp = await getRawLineUp(match.id);
   const boardMap = rawLineUp.reduce((acc, { board, color, ...player }) => {
     return acc.set(board, { color, player });
-  }, new Map<number, { color: BoardColor; player: DbEntities.Player; }>());
+  }, new Map<number, { color: BoardColor; player: PublicEntities.Player; }>());
 
   return {
     match,

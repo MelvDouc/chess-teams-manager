@@ -1,7 +1,7 @@
 export type WithoutId<TEntity, TId extends string = "id"> = Omit<TEntity, TId>;
 export type UserRole = "ADMIN" | "CAPTAIN" | "USER";
-export type UserCredentials = Pick<DbEntities.User, "email" | "password">;
-export type UserData = Pick<DbEntities.User, "email" | "role">;
+export type UserCredentials = Pick<PublicEntities.Player, "email">;
+export type UserData = Pick<PublicEntities.Player, "email" | "role">;
 export type BoardColor = "B" | "N";
 
 export namespace MySqlEntities {
@@ -10,6 +10,9 @@ export namespace MySqlEntities {
     ffe_id: string;
     fide_id: number | null;
     email: string;
+    role: UserRole;
+    pwd: string;
+    pwd_reset_id: string | null;
     phone: string | null;
     first_name: string;
     last_name: string;
@@ -60,7 +63,7 @@ export namespace MySqlEntities {
       team_name: Team["name"];
     }
     & {
-      [K in keyof Player as `captain_${K}`]: Player[K]
+      [K in keyof Omit<Player, "pwd" | "pwd_reset_id"> as `captain_${K}`]: Player[K]
     }
     & {
       [K in keyof Club as `opponent_${K}`]: Club[K]
@@ -75,18 +78,10 @@ export namespace MySqlEntities {
     match_id: Match["id"];
     player_rating: Player["rating"];
   }
-
-  export interface User {
-    /** @primaryKey */
-    email: string;
-    role: UserRole;
-    password: string;
-    password_reset_id: string | null;
-  }
 }
 
-export namespace DbEntities {
-  export type Player = MySqlEntities.Player;
+export namespace PublicEntities {
+  export type Player = Omit<MySqlEntities.Player, "pwd" | "pwd_reset_id">;
 
   export type Team = Omit<MySqlEntities.Team, "captain_ffe_id"> & {
     captain: Player;
@@ -111,6 +106,4 @@ export namespace DbEntities {
     color: BoardColor;
     player: Player | null;
   }[];
-
-  export type User = MySqlEntities.User;
 }

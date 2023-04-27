@@ -1,8 +1,8 @@
 import db from "../database/db.js";
-import { DbEntities, MySqlEntities, WithoutId } from "../types.js";
+import { PublicEntities, MySqlEntities, SqlRecord, WithoutId } from "../types.js";
 
-function getPlayer(ffeId: string): Promise<MySqlEntities.Player | null> {
-  return db.findOne("player", { ffe_id: ffeId });
+function getPlayer(filter: SqlRecord): Promise<MySqlEntities.Player | null> {
+  return db.findOne("player", filter);
 }
 
 function getPlayers(): Promise<MySqlEntities.Player[]> {
@@ -18,12 +18,12 @@ function createPlayer(data: MySqlEntities.Player) {
   return db.insert("player", data);
 }
 
-function updatePlayer(ffe_id: DbEntities.Player["ffe_id"], updates: Partial<WithoutId<MySqlEntities.Player, "ffe_id">>) {
-  return db.update<DbEntities.Player>("player", { ffe_id }, updates);
+function updatePlayer(filter: SqlRecord, updates: Partial<WithoutId<MySqlEntities.Player, "ffe_id">>) {
+  return db.update<PublicEntities.Player>("player", filter, updates);
 }
 
-function deletePlayer(ffe_id: DbEntities.Player["ffe_id"]) {
-  return db.delete("player", { ffe_id });
+function deletePlayer(filter: SqlRecord) {
+  return db.delete("player", filter);
 }
 
 export default {

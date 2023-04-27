@@ -1,5 +1,5 @@
 import db from "../database/db.js";
-import { DbEntities, MySqlEntities, WithoutId } from "../types.js";
+import { PublicEntities, MySqlEntities, WithoutId } from "../types.js";
 
 // ===== ===== ===== ===== =====
 // HELPERS
@@ -8,13 +8,24 @@ import { DbEntities, MySqlEntities, WithoutId } from "../types.js";
 function getRawTeam() {
   return db
     .createQueryBuilder()
-    .select("*")
+    .select(
+      "t.id id",
+      "t.name name",
+      "cap.ffe_id ffe_id",
+      "cap.fide fide_id",
+      "cap.role role",
+      "cap.email email",
+      "cap.phone phone",
+      "cap.first_name first_name",
+      "cap.last_name last_name",
+      "cap.rating rating",
+    )
     .from("team t")
     .join("left", "player cap")
     .on("cap.ffe_id = t.captain_ffe_id");
 }
 
-function convertSearch({ id, name, captain_ffe_id, ...captain }: MySqlEntities.Team & MySqlEntities.Player): DbEntities.Team {
+function convertSearch({ id, name, captain_ffe_id, ...captain }: MySqlEntities.Team & MySqlEntities.Player): PublicEntities.Team {
   return ({
     id,
     name,
@@ -26,14 +37,14 @@ function convertSearch({ id, name, captain_ffe_id, ...captain }: MySqlEntities.T
 // CRUD
 // ===== ===== ===== ===== =====
 
-async function getTeam(name: string): Promise<DbEntities.Team | null> {
+async function getTeam(name: string): Promise<PublicEntities.Team | null> {
   const [team] = await getRawTeam().where({ "t.name": name }).run() as unknown as MySqlEntities.TeamWithCaptain[];
   return (team)
     ? convertSearch(team)
     : null;
 }
 
-async function getTeams(): Promise<DbEntities.Team[]> {
+async function getTeams(): Promise<PublicEntities.Team[]> {
   const teams = await getRawTeam().run() as unknown as MySqlEntities.TeamWithCaptain[];
   return teams.map(convertSearch);
 }
@@ -42,11 +53,11 @@ function createTeam({ name, captain_ffe_id }: WithoutId<MySqlEntities.Team>) {
   return db.insert("team", { name, captain_ffe_id });
 }
 
-function updateTeam(id: DbEntities.Team["id"], updates: Partial<WithoutId<MySqlEntities.Team>>) {
-  return db.update<DbEntities.Team>("team", { id }, updates);
+function updateTeam(id: PublicEntities.Team["id"], updates: Partial<WithoutId<MySqlEntities.Team>>) {
+  return db.update<PublicEntities.Team>("team", { id }, updates);
 }
 
-function deleteTeam(id: DbEntities.Team["id"]) {
+function deleteTeam(id: PublicEntities.Team["id"]) {
   return db.delete("team", { id });
 }
 

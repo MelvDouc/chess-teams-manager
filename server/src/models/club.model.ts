@@ -1,6 +1,6 @@
 import { z } from "zod";
 import db from "../database/db.js";
-import { DbEntities, WithoutId } from "../types.js";
+import { PublicEntities, WithoutId } from "../types.js";
 
 const createClubSchema = z.object({
   name: z.string().min(1).max(50),
@@ -20,11 +20,11 @@ const getClub = (id: number) => db.findOne("club", { id });
 
 const getClubs = () => db.findAll("club");
 
-const createClub = (data: DbEntities.Club) => {
+const createClub = (data: PublicEntities.Club) => {
   return db.insert("club", createClubSchema.parse(data));
 };
 
-const updateClub = (id: number, updates: Partial<WithoutId<DbEntities.Club>>) => {
+const updateClub = (id: number, updates: Partial<WithoutId<PublicEntities.Club>>) => {
   return db.update("club", { id }, updateClubSchema.parse(updates));
 };
 

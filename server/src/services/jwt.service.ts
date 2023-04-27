@@ -1,10 +1,10 @@
 import { default as jwt } from "jsonwebtoken";
 import config from "../config/config.js";
-import { DbEntities, UserData, UserRole } from "../types.js";
+import { UserData, UserRole } from "../types.js";
 
 const Roles = ["ADMIN", "CAPTAIN", "USER"] as const;
 
-function createToken({ email, role }: DbEntities.User): string {
+function createToken({ email, role }: UserData): string {
   return jwt.sign({ email, role }, config.JWT_SECRET, {
     expiresIn: "1y"
   });
