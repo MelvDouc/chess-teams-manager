@@ -1,7 +1,7 @@
 export type WithoutId<TEntity, TId extends string = "id"> = Omit<TEntity, TId>;
 export type UserRole = "ADMIN" | "CAPTAIN" | "USER";
-export type UserCredentials = Pick<PublicEntities.Player, "email">;
-export type UserData = Pick<PublicEntities.Player, "email" | "role">;
+export type UserCredentials = Pick<MySqlEntities.Player, "ffe_id" | "pwd">;
+export type UserData = Pick<PublicEntities.Player, "ffe_id" | "role">;
 export type BoardColor = "B" | "N";
 
 export namespace MySqlEntities {
