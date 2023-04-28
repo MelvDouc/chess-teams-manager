@@ -1,4 +1,3 @@
-import { z } from "zod";
 import { collections } from "../database/db.js";
 import {
   DeleteResult,
@@ -11,26 +10,12 @@ import {
 
 type PlayerFilter = Partial<Player>;
 
-// const createPlayerSchema = z.object({
-//   ffeId: z.string(),
-//   fideId: z.number().or(z.null()),
-//   email: z.string(),
-//   role: z.enum(["ADMIN", "CAPTAIN", "USER"]),
-//   pwd: z.string(),
-//   phone: z.string().or(z.null()),
-//   firstName: z.string(),
-//   lastName: z.string(),
-//   rating: z.number().or(z.null())
-// });
-
-// const updatePlayerSchema = createPlayerSchema.partial();
-
 function getPlayer(filter: PlayerFilter): Promise<WithId<Player> | null> {
   return collections.players.findOne(filter);
 }
 
 function getPlayers(): Promise<WithId<Player>[]> {
-  return collections.players.find().toArray();
+  return collections.players.find().sort({ rating: 1 }).toArray();
 }
 
 function createPlayer(data: Omit<Player, "pwdResetId">): Promise<InsertOneResult<Player>> {

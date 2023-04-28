@@ -1,6 +1,5 @@
 import { randomBytes } from "node:crypto";
 import { default as bcryptjs } from "bcryptjs";
-import config from "../config/config.js";
 import asyncWrapper from "../middleware/async-wrapper.js";
 import playerModel from "../models/player.model.js";
 import emailService from "../services/email.service.js";
@@ -25,7 +24,7 @@ const decodeToken = asyncWrapper(async (req, res) => {
 });
 
 const passwordForgotten: RouteHandler = async (req, res) => {
-  const { ffeId } = req.body as { ffeId: string; };
+  const { ffeId, baseUrl } = req.body as { ffeId: string; baseUrl: string; };
   const player = await playerModel.getPlayer({ ffeId });
 
   if (!player)
@@ -42,7 +41,7 @@ const passwordForgotten: RouteHandler = async (req, res) => {
     to: player.email,
     subject: "Réinitialisation du mot de passe",
     context: {
-      link: `${config.CLIENT_URL}/nouveau-mot-de-passe/${pwdResetId}`
+      link: baseUrl + pwdResetId
     }
   });
   res.json({ success: !!sendResult });
@@ -75,15 +74,9 @@ const passwordReset: RouteHandler = async (req, res) => {
   res.json({ success: true });
 };
 
-const logout: RouteHandler = (req, res) => {
-  // state.session.delete("user");
-  res.json({ success: true });
-};
-
 
 export default {
   login,
-  logout,
   decodeToken,
   passwordForgotten,
   passwordReset

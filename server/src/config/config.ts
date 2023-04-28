@@ -1,20 +1,17 @@
-import { z } from "zod";
-
 if (process.env.NODE_ENV !== "production") {
   const { config } = await import("dotenv");
   config();
 }
 
-const configSchema = z.object({
-  NODE_ENV: z.literal("development").or(z.literal("production")),
-  ADMIN_EMAIL_ADDRESS: z.string(),
-  ADMIN_EMAIL_APP_PASSWORD: z.string(),
-  ADMIN_EMAIL_HOST: z.string(),
-  ADMIN_EMAIL_PORT: z.string(),
-  CLIENT_URL: z.string(),
-  JWT_SECRET: z.string(),
-  MONGODB_URI: z.string(),
-  PORT: z.string()
-});
+const config = {
+  NODE_ENV: process.env.NODE_ENV!,
+  ADMIN_EMAIL_ADDRESS: process.env.ADMIN_EMAIL_ADDRESS!,
+  ADMIN_EMAIL_APP_PASSWORD: process.env.ADMIN_EMAIL_APP_PASSWORD!,
+  ADMIN_EMAIL_HOST: process.env.ADMIN_EMAIL_HOST!,
+  ADMIN_EMAIL_PORT: process.env.ADMIN_EMAIL_PORT!,
+  JWT_SECRET: process.env.JWT_SECRET!,
+  MONGODB_URI: process.env.MONGODB_URI!,
+  PORT: +process.env.PORT!
+} as const;
 
-export default configSchema.parse(process.env);
+export default config;

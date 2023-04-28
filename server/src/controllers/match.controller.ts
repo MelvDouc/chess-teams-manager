@@ -25,7 +25,9 @@ const createMatch = asyncWrapper(async (req, res) => {
 
 const updateMatch = asyncWrapper(async (req, res) => {
   const _id = new ObjectId(req.params._id);
-  const { acknowledged, modifiedCount } = await matchModel.updateMatch({ _id }, req.body);
+  const { acknowledged, modifiedCount } = await matchModel.updateMatch({ _id }, {
+    $set: req.body
+  });
   res.json({ success: acknowledged && modifiedCount > 0 });
 });
 

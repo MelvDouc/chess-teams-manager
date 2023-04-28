@@ -14,7 +14,7 @@ apiRouter
 
 apiRouter
   .get("/matches/seasons", matchController.getSeasons)
-  .get("/matches/:season", matchController.getSeasons)
+  .get("/matches/:season", matchController.getMatches)
   .get("/matches/:season/:round/:teamName", matchController.getMatch)
   .post("/matches/create", matchController.createMatch)
   .put("/matches/:_id/update", matchController.updateMatch)
@@ -24,7 +24,6 @@ apiRouter
   .post("/auth/login", authController.login)
   .post("/auth/decode-token", authController.decodeToken)
   .post("/auth/password-forgotten", authController.passwordForgotten)
-  .post("/auth/password-reset/:pwdResetId", authController.passwordReset)
-  .delete("/auth/logout", authController.logout);
+  .post("/auth/password-reset/:pwdResetId", authController.passwordReset);
 
 export default apiRouter;
