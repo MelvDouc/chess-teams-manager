@@ -25,8 +25,8 @@ export function get<TData>(path: Path) {
   });
 }
 
-export function post<TData>(path: Path, data: TData) {
-  return fetchFromApi<number>(path, {
+export function post<TData, TReturnValue = number>(path: Path, data: TData) {
+  return fetchFromApi<TReturnValue>(path, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

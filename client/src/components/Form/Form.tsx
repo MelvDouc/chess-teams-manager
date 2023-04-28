@@ -61,6 +61,8 @@ Form.Group = ({ nameAndId, labelText, required, type, min, max, placeholder, val
       case "number":
         control.addEventListener("input", () => updateValue((control as HTMLInputElement).valueAsNumber));
         break;
+      case "date":
+      case "time":
       case "datetime-local":
         control.addEventListener("input", () => updateValue((control as HTMLInputElement).valueAsDate));
         break;

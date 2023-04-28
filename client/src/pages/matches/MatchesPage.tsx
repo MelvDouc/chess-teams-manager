@@ -1,16 +1,18 @@
 import Table from "@src/components/Table/Table.jsx";
 import RouterLink from "@src/routing/RouterLink.jsx";
-import { getMatches } from "@src/utils/api.js";
-import { PublicEntities } from "@src/types.js";
+import { get } from "@src/utils/api.js";
+import { formatDate } from "@src/utils/date-formatter.js";
+import { Match } from "@src/types.js";
 
 export default async function MatchesPage({ season }: {
   season: number;
 }) {
-  const matches = (await getMatches(season) ?? []).reduce((acc, match) => {
-    acc[match.team.name] ??= [];
-    acc[match.team.name].push(match);
+  const matches = await get<Match[]>(`/matches/${season}`);
+  const matchesByTeamName = (matches ?? []).reduce((acc, match) => {
+    acc[match.teamName] ??= [];
+    acc[match.teamName].push(match);
     return acc;
-  }, {} as Record<string, PublicEntities.Match[]>);
+  }, {} as Record<string, Match[]>);
 
   return (
     <>
@@ -25,24 +27,23 @@ export default async function MatchesPage({ season }: {
             <th>Actions</th>
           </tr>
         </thead>
-        {Object.entries(matches).map(([teamName, matches]) => (
+        {Object.entries(matchesByTeamName).map(([teamName, matches]) => (
           <>
             <Table.SubtitleRow title={teamName} colSpan={5} />
             <tbody>
-              {matches.map(({ round, opponent, home_club, date, time }) => (
+              {matches.map(({ round, opponent, address, date }) => (
                 <tr>
                   <td>{round}</td>
-                  <td>{opponent.name}</td>
+                  <td>{opponent}</td>
                   <td>
-                    <address>{home_club.address}</address>
+                    <address>{address}</address>
                   </td>
-                  <td>{date.slice(0, 10)} à {time.slice(0, 5)}</td>
+                  <td>{formatDate(new Date(date))}</td>
                   <td>
                     <Table.Actions>
                       <RouterLink className="btn btn-primary" href={`/matchs/${season}/${round}/${teamName}/modifier`}>
                         <i className={"bi bi-pen-fill"}></i>
                       </RouterLink>
-                      <RouterLink className="btn btn-warning" href={`/matchs/${season}/${round}/${teamName}/composition`}>Compo</RouterLink>
                     </Table.Actions>
                   </td>
                 </tr>

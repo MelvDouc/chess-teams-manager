@@ -33,6 +33,9 @@ function getLinks(role: PlayerRole) {
   return (
     <>
       <li>
+        <RouterLink href="/">Accueil</RouterLink>
+      </li>
+      <li>
         <RouterLink href="/matchs">Matchs</RouterLink>
       </li>
       {

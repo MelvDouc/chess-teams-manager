@@ -5,7 +5,7 @@ import auth from "@src/utils/auth.js";
 
 export default async function LoginPage() {
   const credentials = {
-    ffe_id: "",
+    ffeId: "",
     pwd: ""
   };
 
@@ -26,9 +26,9 @@ export default async function LoginPage() {
           <Form.Row>
             <Form.Group
               type="text"
-              nameAndId="ffe_id"
+              nameAndId="ffeId"
               labelText="N° FFE"
-              updateValue={(ffe_id) => credentials.ffe_id = ffe_id}
+              updateValue={(ffeId) => credentials.ffeId = ffeId}
               required
             />
           </Form.Row>

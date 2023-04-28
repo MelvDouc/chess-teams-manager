@@ -2,11 +2,11 @@ import Table from "@src/components/Table/Table.jsx";
 import RouterLink from "@src/routing/RouterLink.jsx";
 import { get, deleteOne } from "@src/utils/api.js";
 import auth, { RoleIndex } from "@src/utils/auth.js";
-import { PublicEntities } from "@src/types.js";
+import { Player } from "@src/types.js";
 
 export default async function PlayersPage() {
-  const players = await get<PublicEntities.Player[]>("/players");
-  const { role: currentUserRole, ffe_id: currentUserFfeId } = auth.getUser()!;
+  const players = await get<Player[]>("/players");
+  const { role: currentUserRole, ffeId: currentUserFfeId } = auth.getUser()!;
 
   return (
     <>
@@ -25,24 +25,24 @@ export default async function PlayersPage() {
           </tr>
         </thead>
         <tbody>
-          {(players ?? []).map(({ ffe_id, fide_id, email, first_name, last_name, phone, rating, role }) => (
+          {(players ?? []).map(({ ffeId, fideId, email, firstName, lastName, phone, rating, role }) => (
             <tr>
-              <td>{ffe_id}</td>
-              <td>{fide_id}</td>
-              <td>{last_name}</td>
-              <td>{first_name}</td>
+              <td>{ffeId}</td>
+              <td>{fideId}</td>
+              <td>{lastName}</td>
+              <td>{firstName}</td>
               <td>{email}</td>
               <td>{phone ?? ""}</td>
               <td>{rating ?? 1199}</td>
               <td>
                 <Table.Actions>
-                  {(RoleIndex[currentUserRole] > RoleIndex[role] || currentUserFfeId === ffe_id)
-                    ? (<RouterLink href={`/joueurs/${ffe_id}/modifier`} className="btn btn-primary">
+                  {(RoleIndex[currentUserRole] > RoleIndex[role] || currentUserFfeId === ffeId)
+                    ? (<RouterLink href={`/joueurs/${ffeId}/modifier`} className="btn btn-primary">
                       <i className="bi bi-pencil-fill"></i>
                     </RouterLink>)
                     : null}
                   {(RoleIndex[currentUserRole] > RoleIndex[role])
-                    ? (<button className="btn btn-danger" onclick={(e) => delPlayer(e, ffe_id)}>
+                    ? (<button className="btn btn-danger" onclick={(e) => delPlayer(e, ffeId)}>
                       <i className="bi bi-trash-fill"></i>
                     </button>)
                     : null}

@@ -1,5 +1,5 @@
 import { RoleIndex } from "@src/utils/auth.js";
-import { Match } from "../../global.js";
+import { Match as DbMatch } from "../../global.js";
 
 export type {
   BoardColor,
@@ -10,7 +10,7 @@ export type {
   PlayerRole
 } from "../../global.js";
 
-export type { Match };
+export type Match = Omit<DbMatch, "date"> & { _id: string; date: string; };
 export type ShortMatchInfo = Pick<Match, "season" | "round" | "teamName">;
 
 export interface Route<Params = Record<string, string>> {

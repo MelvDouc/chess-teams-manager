@@ -1,6 +1,8 @@
 import HomePage from "@src/pages/HomePage.js";
 import $404Page from "@src/pages/404Page.jsx";
 import LoginPage from "@src/pages/auth/LoginPage.jsx";
+import PasswordForgottenPage from "@src/pages/auth/PasswordForgottenPage.jsx";
+import PasswordResetPage from "@src/pages/auth/PasswordResetPage.jsx";
 import MatchesPage from "@src/pages/matches/MatchesPage.jsx";
 import MatchCreatePage from "@src/pages/matches/MatchCreatePage.jsx";
 import MatchUpdatePage from "@src/pages/matches/MatchUpdatePage.jsx";
@@ -37,13 +39,11 @@ class Router {
   }
 
   public updateUrl(url: string): void {
-    if (url !== "/auth/connexion" && !auth.getUser()) {
+    if (!url.startsWith("/auth/") && !auth.getUser())
       return this.navigate("/auth/connexion");
-    }
 
-    if (url === "/auth/connexion" && auth.getUser()) {
-      return this.navigate("/matchs");
-    }
+    if (url.startsWith("/auth/") && auth.getUser())
+      return this.navigate("/");
 
     for (const [key, route] of this.routes) {
       if (key.test(url)) {
@@ -86,6 +86,14 @@ router
   .addRoute("/auth/connexion", {
     getTitle: () => "Connexion",
     component: LoginPage
+  })
+  .addRoute("/auth/oubli-mot-de-passe", {
+    getTitle: () => "Demande de réinitialisation de de mot de passe",
+    component: PasswordForgottenPage
+  })
+  .addRoute("/auth/nouveau-mot-de-passe/:pwdResetId", {
+    getTitle: () => "Réinitialisation de de mot de passe",
+    component: PasswordResetPage
   })
   .addRoute("/joueurs", {
     minRole: RoleIndex.CAPTAIN,

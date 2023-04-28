@@ -1,12 +1,8 @@
-export function formatMatchDate(date: Date): string {
-  const month = addLeadingZero(date.getMonth()),
-    monthDay = addLeadingZero(date.getDate()),
-    hours = addLeadingZero(date.getHours()),
-    minutes = addLeadingZero(date.getMinutes());
+const dateFormatter = new Intl.DateTimeFormat("fr-FR", {
+  dateStyle: "full",
+  timeStyle: "short"
+});
 
-  return `${date.getFullYear()}-${month}-${monthDay} ${hours}:${minutes}`;
-}
-
-function addLeadingZero(input: string | number) {
-  return String(input).padStart(2, "0");
+export function formatDate(date: Date) {
+  return dateFormatter.format(date);
 }
