@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { createTransport } from "nodemailer";
 import config from "../config/config.js";
+import { compileTemplate } from "./templates.service.js";
 
 const transport = createTransport({
   host: config.ADMIN_EMAIL_HOST,
@@ -19,30 +20,18 @@ async function sendEmail({ to, subject, templateName, context }: {
   context: Record<string, any>;
 }) {
   try {
-    const fileContents = await readFile(
-      join(process.cwd(), "server", "email-templates", `${templateName}.html`),
-      "utf-8"
-    );
-    const htmlMessage = addContext(fileContents, context);
+    const { html, text } = await compileTemplate(templateName, context);
     return transport.sendMail({
       from: config.ADMIN_EMAIL_ADDRESS,
       to,
       subject,
-      html: htmlMessage,
-      text: stripTags(htmlMessage)
+      html,
+      text
     });
   } catch (error) {
     console.log(error);
     return null;
   }
-}
-
-function addContext(fileContents: string, ctx: Record<string, any>): string {
-  return fileContents.replace(/\{\{\s*([^\s]+)\s*\}\}/g, (_, key) => ctx[key] ?? "");
-}
-
-function stripTags(html: string): string {
-  return html.replace(/<[^>]+>/g, "");
 }
 
 export default {
