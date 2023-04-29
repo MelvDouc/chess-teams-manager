@@ -1,8 +1,12 @@
 export type BoardColor = "B" | "N";
-export type LineUpRow = [player: Player | null, rating: number, isCaptain?: true];
 export type PlayerCredentials = Pick<Player, "ffeId" | "pwd">;
 export type PlayerData = Pick<Player, "ffeId" | "role">;
 export type PlayerRole = "ADMIN" | "CAPTAIN" | "USER";
+
+export type LineUpItem = {
+  ffeId: Player["ffeId"] | null;
+  rating: number | null;
+};
 
 export interface Player {
   ffeId: string;
@@ -25,5 +29,6 @@ export interface Match {
   opponent: string;
   address: string;
   date: Date;
-  lineUp: LineUpRow[];
+  lineUp: Record<number, LineUpItem>;
+  captainFfeId: Player["ffeId"];
 }
