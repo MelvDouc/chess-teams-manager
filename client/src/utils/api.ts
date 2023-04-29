@@ -1,13 +1,15 @@
 import auth from "./auth.js";
 import { PlayerCredentials, PlayerData } from "@src/types.js";
 
+const API_BASE_URL = "http://localhost:10010/api/v1";
+
 const jsonHeaders = {
   "Content-Type": "application/json"
 };
 
 async function fetchFromApi<T>(path: Path, init?: RequestInit): Promise<T | null> {
   try {
-    const response = await fetch(`http://localhost:8080/api/v1${path}`, init);
+    const response = await fetch(API_BASE_URL + path, init);
     const data = await response.json();
     return data as T;
   } catch (error) {
@@ -54,6 +56,10 @@ export function deleteOne(path: Path) {
       "Authorization": auth.getToken() ?? ""
     }
   });
+}
+
+export function createLink(path: Path) {
+  return API_BASE_URL + path;
 }
 
 // ===== ===== ===== ===== =====

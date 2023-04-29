@@ -1,6 +1,6 @@
 import Table from "@src/components/Table/Table.jsx";
 import RouterLink from "@src/routing/RouterLink.jsx";
-import { get } from "@src/utils/api.js";
+import { get, createLink } from "@src/utils/api.js";
 import { formatDate } from "@src/utils/date-formatter.js";
 import { MatchesByTeamName } from "@src/types.js";
 
@@ -39,6 +39,12 @@ export default async function MatchesPage({ season }: {
                       <RouterLink className="btn btn-primary" href={`/matchs/${season}/${round}/${teamName}/modifier`}>
                         <i className={"bi bi-pen-fill"}></i>
                       </RouterLink>
+                      <button
+                        className="btn btn-warning"
+                        onclick={() => {
+                          window.open(createLink(`/matches/${season}/${round}/${teamName}/score-sheet`));
+                        }}
+                      >Feuille de match</button>
                     </Table.Actions>
                   </td>
                 </tr>

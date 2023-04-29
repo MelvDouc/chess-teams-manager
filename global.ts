@@ -3,9 +3,8 @@ export type PlayerCredentials = Pick<Player, "ffeId" | "pwd">;
 export type PlayerData = Pick<Player, "ffeId" | "role">;
 export type PlayerRole = "ADMIN" | "CAPTAIN" | "USER";
 
-export type LineUpItem = {
-  ffeId: Player["ffeId"] | null;
-  rating: number | null;
+export type LineUpItem = Pick<Player, "ffeId" | "rating"> & {
+  name: string;
 };
 
 export interface Player {
@@ -29,6 +28,6 @@ export interface Match {
   opponent: string;
   address: string;
   date: Date;
-  lineUp: Record<number, LineUpItem>;
+  lineUp: Record<number, LineUpItem | null>;
   captainFfeId: Player["ffeId"];
 }

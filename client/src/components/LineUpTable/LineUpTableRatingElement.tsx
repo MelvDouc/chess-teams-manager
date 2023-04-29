@@ -1,24 +1,25 @@
 import { Match } from "@src/types.js";
+import cssClasses from "./styles.module.scss";
 
 export default function LineUpTableRatingElement({ board, lineUpObs }: {
   board: number;
   lineUpObs: Obs<Match["lineUp"]>;
 }) {
   return (
-    <div
-      contentEditable="true"
+    <input
+      type="number"
+      className={cssClasses.ratingElement}
+      value={lineUpObs.value[board]?.rating ?? ""}
+      oninput={({ target }) => {
+        const rating = (target as HTMLInputElement).valueAsNumber;
+        if (!isNaN(rating) && lineUpObs.value[board])
+          lineUpObs.value[board]!.rating = rating;
+      }}
       $init={(element) => {
-        element.addEventListener("input", () => {
-          const rating = Number(element.innerText);
-          if (isNaN(rating))
-            return;
-          lineUpObs.value[board].rating = rating;
-          lineUpObs.notify();
-        });
-        lineUpObs.subscribe((value) => {
-          element.innerText = String(value[board].rating ?? "");
+        lineUpObs.subscribe((lineUp) => {
+          element.value = String(lineUp[board]?.rating ?? "");;
         });
       }}
-    >{lineUpObs.value[board].rating}</div>
+    />
   );
 }

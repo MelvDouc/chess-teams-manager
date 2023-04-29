@@ -8,7 +8,7 @@ export default function LineUpTablePlayerSelect({ board, lineUpObs, players }: {
   lineUpObs: Obs<Match["lineUp"]>;
 }) {
   const getPlayerByName = createGetPlayerByNameFn(players);
-  const initialPlayer = players.find(({ ffeId }) => ffeId === lineUpObs.value[board].ffeId);
+  const initialPlayer = players.find(({ ffeId }) => ffeId === lineUpObs.value[board]?.ffeId);
 
   return (
     <>
@@ -16,18 +16,18 @@ export default function LineUpTablePlayerSelect({ board, lineUpObs, players }: {
         type="text"
         oninput={({ target }) => {
           const player = getPlayerByName((target as HTMLInputElement).value.toLowerCase());
-          lineUpObs.value[board].ffeId = player?.ffeId ?? null;
-          lineUpObs.value[board].rating = player?.rating ?? null;
+          lineUpObs.value[board] = (player)
+            ? {
+              ffeId: player.ffeId,
+              rating: player.rating,
+              name: getPlayerFullName(player)
+            }
+            : null;
           lineUpObs.notify();
         }}
         value={initialPlayer ? getPlayerFullName(initialPlayer) : ""}
-        $init={(element) => element.setAttribute("list", `board${board}`)}
+        $init={(element) => element.setAttribute("list", `players-datalist`)}
       />
-      <datalist id={`board${board}`} onclick={console.log}>
-        {players.map(({ firstName, lastName }) => (
-          <option value={`${firstName} ${lastName}`}>{firstName} {lastName}</option>
-        ))}
-      </datalist>
     </>
   );
 }

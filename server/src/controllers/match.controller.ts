@@ -1,9 +1,7 @@
 import { ObjectId } from "../database/db.js";
 import matchModel from "../models/match.model.js";
-import playerModel from "../models/player.model.js";
 import asyncWrapper from "../middleware/async-wrapper.js";
 import { compileTemplate } from "../services/templates.service.js";
-import { Player } from "../types.js";
 
 const getMatch = asyncWrapper(async (req, res) => {
   res.json(await matchModel.getMatch({
@@ -25,32 +23,32 @@ const downloadScoreSheet = asyncWrapper(async (req, res) => {
 
   const parity = (match.whiteOnOdds) ? "odd" : "even";
   const inverseParity = (parity === "odd") ? "even" : "odd";
-  const players = await playerModel.getPlayers();
-  const playersMap = players.reduce((acc, p) => {
-    return acc.set(p.ffeId, p);
-  }, new Map<string, Player>());
-  const ps = {} as any;
+  const lineUp = Object.entries(match.lineUp).reduce((acc, [board, player]) => {
+    acc[`${parity}.p${board}.name`] = player?.name ?? "";
+    acc[`${parity}.p${board}.ffeId`] = player?.ffeId ?? "";
+    acc[`${parity}.p${board}.rating`] = player?.rating ?? "";
 
-  for (const key in match.lineUp) {
-    const { ffeId, rating } = match.lineUp[key];
-    const player = (ffeId) ? playersMap.get(ffeId) : null;
-    ps[`${parity}.p${key}.name`] = (player) ? `${player.firstName} ${player.lastName}` : "";
-    ps[`${parity}.p${key}.ffeId`] = player?.ffeId ?? "";
-    ps[`${parity}.p${key}.rating`] = rating ?? player?.rating ?? "";
-  }
+    if (match.captainFfeId && match.captainFfeId === player?.ffeId)
+      acc[`${parity}.cap`] = player.name;
+
+    return acc;
+  }, {} as Record<string, string | number>);
+
+
 
   const { html } = await compileTemplate("score-sheet", {
-    season: match.season,
+    season: `${match.season - 1}-${match.season}`,
     round: match.round,
     date: new Date(match.date).toISOString().slice(0, 10),
     place: match.address.split(/\s+/).at(-1),
     [`${parity}.club`]: "Thionville",
     [`${inverseParity}.club`]: match.opponent,
-    ...ps
+    ...lineUp
   });
   res.setHeader("Content-disposition", "attachment; filename=feuille-de-match.html");
   res.set("Content-Type", "text/html");
   res.send(html);
+  res.end();
 });
 
 const getMatches = asyncWrapper(async (req, res) => {

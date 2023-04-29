@@ -11,11 +11,7 @@ export default function LineUpTable({ whiteOnOddsObs, lineUpAccessors, captainFf
   captainFfeIdAccessors: PropertyAccessors<Match, "captainFfeId">;
   players: Player[];
 }) {
-  const playersByFfeIdMap = players.reduce((acc, player) => {
-    return acc.set(player.ffeId, player);
-  }, new Map<Player["ffeId"], Player>());
-
-  const lineUpObs = new Observable(getLineUpObsValue(lineUpAccessors.get(), playersByFfeIdMap));
+  const lineUpObs = new Observable(lineUpAccessors.get());
   lineUpObs.subscribe(lineUpAccessors.set);
 
   return (
@@ -30,7 +26,7 @@ export default function LineUpTable({ whiteOnOddsObs, lineUpAccessors, captainFf
         </tr>
       </thead>
       <tbody>
-        {Object.entries(lineUpObs.value).map(([board, { ffeId }]) => (
+        {Object.entries(lineUpObs.value).map(([board, player]) => (
           <tr>
             <td>{board}{whiteOnOddsObs.map((value) => ((+board % 2 === 1) === value) ? "B" : "N")}</td>
             <td>
@@ -43,39 +39,29 @@ export default function LineUpTable({ whiteOnOddsObs, lineUpAccessors, captainFf
                 {players.map((p) => (
                   <option
                     value={p.ffeId}
-                    selected={p.ffeId === ffeId}
+                    selected={p.ffeId === player?.ffeId}
                   >{p.firstName} {p.lastName}</option>
                 ))}
               </LineUpTablePlayerSelect>
             </td>
-            <td>{lineUpObs.map((lineUp) => lineUp[+board].ffeId ?? "")}</td>
+            <td>{lineUpObs.map((lineUp) => lineUp[+board]?.ffeId ?? "")}</td>
             <td>
               <LineUpTableRatingElement board={+board} lineUpObs={lineUpObs} />
             </td>
             <td>
               <LineUpTableCaptainFfeIdInput
-                getFfeId={() => lineUpObs.value[+board].ffeId}
+                getFfeId={() => lineUpObs.value[+board]?.ffeId ?? null}
                 captainFfeIdAccessors={captainFfeIdAccessors}
               />
             </td>
           </tr>
         ))}
+        <datalist id="players-datalist" onclick={console.log}>
+          {players.map(({ firstName, lastName }) => (
+            <option value={`${firstName} ${lastName}`}>{firstName} {lastName}</option>
+          ))}
+        </datalist>
       </tbody>
     </table>
   );
-}
-
-function getLineUpObsValue(lineUp: Match["lineUp"], playerMap: Map<Player["ffeId"], Player>) {
-  const value = {} as Match["lineUp"];
-
-  for (let board = 1; board <= 8; board++) {
-    const row = lineUp[board];
-    const rating = (row?.rating != null) ? row.rating : (playerMap.get(row.ffeId!)?.rating ?? null);
-    value[board] = {
-      ffeId: row.ffeId ?? null,
-      rating
-    };
-  }
-
-  return value;
 }
