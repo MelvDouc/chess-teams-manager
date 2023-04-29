@@ -8,7 +8,7 @@ export type {
   WithoutId
 } from "mongodb";
 export type {
-  LineUpRow,
+  LineUpItem as LineUpRow,
   Match,
   Player,
   PlayerCredentials,

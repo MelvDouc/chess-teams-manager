@@ -8,14 +8,48 @@ import {
   WithId
 } from "../types.js";
 
-type MatchFilter = Partial<WithId<Match>>;
+const matchesPipeline = [
+  {
+    $sort: {
+      date: 1
+    }
+  },
+  {
+    $group: {
+      _id: "$teamName",
+      matches: {
+        $push: "$$ROOT"
+      }
+    }
+  },
+  {
+    $project: {
+      teamName: "$_id",
+      matches: 1,
+      _id: 0
+    }
+  },
+  {
+    $sort: {
+      teamName: 1
+    }
+  }
+];
 
 function getMatch(filter: MatchFilter): Promise<WithId<Match> | null> {
   return collections.matches.findOne(filter);
 }
 
-function getMatches(): Promise<WithId<Match>[]> {
-  return collections.matches.find().toArray();
+function getMatches(season: number): Promise<MatchesByTeamName[]> {
+  return collections
+    .matches
+    .aggregate([
+      {
+        $match: { season }
+      },
+      ...matchesPipeline
+    ])
+    .toArray() as Promise<MatchesByTeamName[]>;
 }
 
 function getSeasons(): Promise<number[]> {
@@ -41,4 +75,9 @@ export default {
   createMatch,
   updateMatch,
   deleteMatch
+};
+
+type MatchFilter = Partial<WithId<Match>>;
+type MatchesByTeamName = Pick<Match, "teamName"> & {
+  matches: WithId<Match>[];
 };
