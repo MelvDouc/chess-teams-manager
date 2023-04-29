@@ -1,15 +1,17 @@
 import MatchForm from "@src/components/forms/MatchForm.jsx";
 import { get, update } from "@src/utils/api.js";
-import { Match, ShortMatchInfo } from "@src/types.js";
+import { Match, Player, ShortMatchInfo } from "@src/types.js";
 
 export default async function MatchCreatePage({ season, round, teamName }: ShortMatchInfo) {
   const match = await get<Match>(`/matches/${season}/${round}/${teamName}`);
+  const players = await get<Player[]>("/players");
 
   return (
     <>
       <h2>Modifier un match</h2>
       <MatchForm
         match={match}
+        players={players ?? []}
         handleSubmit={async ({ _id, ...updates }) => {
           const updateResult = await update(`/matches/${_id}/update`, updates);
 
@@ -18,7 +20,7 @@ export default async function MatchCreatePage({ season, round, teamName }: Short
             return;
           }
 
-          location.assign("/matchs");
+          location.assign(`/matchs/${updates.season ?? 2023}`);
         }}
       />
     </>

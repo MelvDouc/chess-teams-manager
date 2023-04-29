@@ -21,7 +21,7 @@ Form.Row = ({ children }: { children?: ComponentChildren; }) => {
   if (Array.isArray(children))
     children.forEach((child) => {
       row.append(
-        <div className="col">{child}</div>
+        <div className={`col-sm-${12 / children.length}`}>{child}</div>
       );
     });
 

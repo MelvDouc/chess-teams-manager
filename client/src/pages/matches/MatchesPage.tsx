@@ -2,17 +2,12 @@ import Table from "@src/components/Table/Table.jsx";
 import RouterLink from "@src/routing/RouterLink.jsx";
 import { get } from "@src/utils/api.js";
 import { formatDate } from "@src/utils/date-formatter.js";
-import { Match } from "@src/types.js";
+import { MatchesByTeamName } from "@src/types.js";
 
 export default async function MatchesPage({ season }: {
   season: number;
 }) {
-  const matches = await get<Match[]>(`/matches/${season}`);
-  const matchesByTeamName = (matches ?? []).reduce((acc, match) => {
-    acc[match.teamName] ??= [];
-    acc[match.teamName].push(match);
-    return acc;
-  }, {} as Record<string, Match[]>);
+  const matchesByTeamName = await get<MatchesByTeamName[]>(`/matches/${season}`);
 
   return (
     <>
@@ -27,7 +22,7 @@ export default async function MatchesPage({ season }: {
             <th>Actions</th>
           </tr>
         </thead>
-        {Object.entries(matchesByTeamName).map(([teamName, matches]) => (
+        {(matchesByTeamName ?? []).map(({ teamName, matches }) => (
           <>
             <Table.SubtitleRow title={teamName} colSpan={5} />
             <tbody>
