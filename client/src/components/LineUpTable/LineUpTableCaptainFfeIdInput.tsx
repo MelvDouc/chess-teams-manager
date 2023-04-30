@@ -10,17 +10,18 @@ export default function LineUpTableCaptainFfeIdInput({ getFfeId, captainFfeIdAcc
       type="radio"
       name="captain"
       checked={captainFfeIdAccessors.get() === getFfeId()}
-      onchange={(e) => {
-        if ((e.target as HTMLInputElement).checked) {
+      $init={(element) => {
+        element.addEventListener("change", () => {
+          if (!element.checked)
+            return;
+
           const ffeId = getFfeId();
 
-          if (!ffeId) {
-            (e.target as HTMLInputElement).checked = false;
-            return;
-          }
-
-          captainFfeIdAccessors.set(ffeId);
-        }
+          if (ffeId)
+            captainFfeIdAccessors.set(ffeId);
+          else
+            element.checked = false;
+        });
       }}
     />
   );

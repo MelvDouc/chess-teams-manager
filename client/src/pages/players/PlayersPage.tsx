@@ -37,12 +37,16 @@ export default async function PlayersPage() {
               <td>
                 <Table.Actions>
                   {(RoleIndex[currentUserRole] > RoleIndex[role] || currentUserFfeId === ffeId)
-                    ? (<RouterLink href={`/joueurs/${ffeId}/modifier`} className="btn btn-primary">
+                    ? (<RouterLink
+                      href={`/joueurs/${ffeId}/modifier`}
+                      className="btn btn-primary"
+                      title="Modifier"
+                    >
                       <i className="bi bi-pencil-fill"></i>
                     </RouterLink>)
                     : null}
                   {(RoleIndex[currentUserRole] > RoleIndex[role])
-                    ? (<button className="btn btn-danger" onclick={(e) => delPlayer(e, ffeId)}>
+                    ? (<button className="btn btn-danger" title="supprimer" onclick={(e) => delPlayer(e, ffeId)}>
                       <i className="bi bi-trash-fill"></i>
                     </button>)
                     : null}

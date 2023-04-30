@@ -1,8 +1,9 @@
 import Router from "@src/routing/Router.js";
 
-export default function RouterLink({ href, className, children }: {
+export default function RouterLink({ href, className, title, children }: {
   href: string;
   className?: string;
+  title?: string;
   children?: FreeJSX.ComponentChildren;
 }) {
   return (
@@ -10,6 +11,7 @@ export default function RouterLink({ href, className, children }: {
       href={href}
       $init={(element) => {
         className && (element.className = className);
+        title && (element.title = title);
         element.addEventListener("click", (e) => {
           e.preventDefault();
           Router.navigate(href);

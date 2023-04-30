@@ -6,20 +6,21 @@ export default function LineUpTableRatingElement({ board, lineUpObs }: {
   lineUpObs: Obs<Match["lineUp"]>;
 }) {
   return (
-    <input
-      type="number"
+    <div
+      contentEditable="true"
       className={cssClasses.ratingElement}
-      value={lineUpObs.value[board]?.rating ?? ""}
       oninput={({ target }) => {
-        const rating = (target as HTMLInputElement).valueAsNumber;
+        const rating = +(target as HTMLElement).innerText;
         if (!isNaN(rating) && lineUpObs.value[board])
           lineUpObs.value[board]!.rating = rating;
       }}
       $init={(element) => {
         lineUpObs.subscribe((lineUp) => {
-          element.value = String(lineUp[board]?.rating ?? "");;
+          element.innerText = String(lineUp[board]?.rating ?? "");
         });
       }}
-    />
+    >
+      {lineUpObs.value[board]?.rating ?? ""}
+    </div>
   );
 }

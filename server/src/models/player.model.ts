@@ -15,7 +15,7 @@ function getPlayer(filter: PlayerFilter): Promise<WithId<Player> | null> {
 }
 
 function getPlayers(): Promise<WithId<Player>[]> {
-  return collections.players.find().sort({ rating: -1 }).toArray();
+  return collections.players.find().sort({ lastName: 1, firstName: 1 }).toArray();
 }
 
 function createPlayer(data: Omit<Player, "pwdResetId">): Promise<InsertOneResult<Player>> {

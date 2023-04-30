@@ -77,7 +77,6 @@ export default function MatchForm({ match, players, handleSubmit }: {
             nameAndId="date"
             value={new Date(m.date).toISOString().slice(0, 10)}
             updateValue={(date: Date | null) => {
-              console.log({ date });
               if (date)
                 m.date = date.toISOString();
             }}
@@ -102,15 +101,17 @@ export default function MatchForm({ match, players, handleSubmit }: {
           />
         </Form.Row>
         <Form.Row>
-          <Form.Group
-            type="textarea"
-            nameAndId="address"
-            labelText="Adresse"
-            value={m.address}
-            updateValue={(address) => m.address = address.trim()}
-            required
-          />
-          <div className="d-flex flex-column gap-2">
+          <div className="h-100 d-flex flex-column">
+            <label htmlFor="address" className="form-label">Adresse</label>
+            <textarea
+              name="address"
+              id="address"
+              className="form-control h-100"
+              required
+              oninput={({ target }) => m.address = (target as HTMLTextAreaElement).value}
+            >{m.address}</textarea>
+          </div>
+          <div className="h-100 d-flex flex-column gap-2">
             <Form.Group
               type="text"
               nameAndId="city"

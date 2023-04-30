@@ -39,14 +39,21 @@ export default async function MatchesPage({ season }: {
                   <td>{formatDate(new Date(date))}</td>
                   <td>
                     <Table.Actions>
-                      <RouterLink className="btn btn-primary" href={`/matchs/${season}/${round}/${teamName}/modifier`}>
+                      <RouterLink
+                        href={`/matchs/${season}/${round}/${teamName}/modifier`}
+                        className="btn btn-primary"
+                        title="Modifier"
+                      >
                         <i className={"bi bi-pen-fill"}></i>
                       </RouterLink>
                       <a
-                        className="btn btn-warning"
                         href={`${SERVER_URL}/matchs/${season}/${round}/${teamName}/feuille-de-match`}
                         target="_blank"
-                      >Feuille de match</a>
+                        className="btn btn-warning"
+                        title="Feuille de match"
+                      >
+                        <i className="bi bi-table"></i>
+                      </a>
                     </Table.Actions>
                   </td>
                 </tr>

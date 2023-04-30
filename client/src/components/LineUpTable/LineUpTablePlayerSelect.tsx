@@ -26,7 +26,7 @@ export default function LineUpTablePlayerSelect({ board, lineUpObs, players }: {
           lineUpObs.notify();
         }}
         value={initialPlayer ? getPlayerFullName(initialPlayer) : ""}
-        $init={(element) => element.setAttribute("list", `players-datalist`)}
+        $init={(element) => element.setAttribute("list", "players-datalist")}
       />
     </>
   );

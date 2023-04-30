@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Feuille de match</title>
+    <title>Feuille de match | {{ date }} | ronde {{ round }} | {{ odd.club }} &mdash; {{ even.club }}</title>
     <style>
     :root {
       --table-border: 1px solid black;
@@ -48,55 +48,73 @@
     /* ----- ----- ----- ----- ----- */
 
     table {
-      border: var(--table-border);
-      border-collapse: collapse;
-    }
-
-    table tr + tr {
       border-top: var(--table-border);
-    }
-
-    table th+ th,
-    table td+ td {
       border-left: var(--table-border);
+      border-right: var(--table-border);
+      border-collapse: collapse;
+      width: 100%;
     }
 
-    table th,
-    table td {
+    tr {
+      border-bottom: var(--table-border);
+      display: grid;
+    }
+
+    th,
+    td {
       padding: 0.33em;
+      text-align: center;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
 
+    th+ th,
+    td+ td {
+      border-left: var(--table-border);
+    }
+
     /* ----- ----- ----- ----- ----- */
-    /* MISC INFO                     */
+    /* MATCH INFO TABLE              */
     /* ----- ----- ----- ----- ----- */
 
-    #misc-info {
+    #match-info {
       width: 100%;
       margin-bottom: 0.75em;
     }
 
-    #misc-info th, #misc-info td {
-      text-align: center;
+    #match-info tr {
+      grid-template-columns: 1fr 3fr 3fr 1fr;
     }
 
-    #misc-info th:nth-child(1),
-    #misc-info th:nth-child(4),
-    #misc-info td:nth-child(1),
-    #misc-info td:nth-child(4) {
-      width: calc(100% / 2 * 0.25);
+    #match-info th {
+      text-transform: uppercase;
     }
 
-    #misc-info th:nth-child(2),
-    #misc-info th:nth-child(3),
-    #misc-info td:nth-child(2),
-    #misc-info td:nth-child(3) {
-      width: calc(100% / 2 * 0.75);
+    /* ----- ----- ----- ----- ----- */
+    /* CLUB TABLES                   */
+    /* ----- ----- ----- ----- ----- */
+
+    #club-tables {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5em;
+      margin-bottom: 1em;
     }
 
-    #misc-info th {
+    /* ----- ----- ----- ----- ----- */
+    /* CLUB TABLE                    */
+    /* ----- ----- ----- ----- ----- */
+
+    .club-table tr {
+      grid-template-columns: 11fr 1fr;
+    }
+
+    .club-table tbody tr {
+      border-bottom: 0;
+    }
+
+    .club-table th {
       text-transform: uppercase;
     }
 
@@ -104,53 +122,16 @@
     /* PAIRING TABLE                 */
     /* ----- ----- ----- ----- ----- */
 
-    #pairing-tables {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.5em;
-      margin-bottom: 1em;
-    }
-
-    .pairing-table, .pairing-table tbody {
-      display: block;
-    }
-
     .pairing-table tr {
-      display: grid;
-      grid-template-columns: calc(100% / 12) calc(100% * 5 / 12) calc(100% * 2 / 12) calc(100% * 2 / 12) calc(100% / 12) calc(100% / 12);
+      grid-template-columns: 1fr 5fr 2fr 2fr 1fr 1fr;
     }
 
-    .pairing-table tr.pairing-table-top-row {
-      grid-template-columns: calc(100% * 11 / 12) calc(100% / 12);
-    }
-
-    .pairing-table tr.pairing-table-top-row th {
-      text-transform: uppercase;
-    }
-
-    .pairing-table tr.pairing-table-top-row td {
-      justify-content: center;
-    }
-
-    .pairing-table th,
-    .pairing-table td {
-      display: flex;
-      align-items: center;
-      text-align: center;
-    }
-
-    .pairing-table th {
-      justify-content: center;
+    .pairing-table td:not(td.board-no) {
+      text-align: start;
     }
 
     .pairing-table .board-no {
-      justify-content: center;
       font-weight: bold;
-    }
-
-    .pairing-table .player-name {
-      justify-content: left;
-      text-align: left;
     }
 
     /* ----- ----- ----- ----- ----- */
@@ -162,10 +143,9 @@
     }
 
     #mentions article {
+      width: 100%;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      justify-content: space-evenly;
-      width: 100%;
     }
 
     #mentions p {
@@ -173,9 +153,10 @@
     }
 
     #mentions .signatures {
-      align-items: center;
-      height: 4em;
+      font-size: 0.95em;
+      height: 4rem;
       opacity: 0.33;
+      align-items: center;
     }
     </style>
   </head>
@@ -183,187 +164,217 @@
   <body>
     <h1>Fédération française des échecs</br>Feuille de match</h1>
 
-    <table id="misc-info">
-      <tr>
-        <th>Date</th>
-        <th>Lieu</th>
-        <th>Compétition</th>
-        <th>Ronde</th>
-      </tr>
-      <tr>
-        <td>{{ date }}</td>
-        <td>{{ city }}</td>
-        <td>Interclubs Adultes</td>
-        <td>{{ round }}</td>
-      </tr>
+    <table id="match-info">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Lieu</th>
+          <th>Compétition</th>
+          <th>Ronde</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{ date }}</td>
+          <td>{{ city }}</td>
+          <td>Interclubs Adultes</td>
+          <td>{{ round }}</td>
+        </tr>
+      </tbody>
     </table>
 
-    <div id="pairing-tables">
-      <table class="pairing-table">
-        <tr class="pairing-table-top-row">
-          <th>Club ayant les blancs sur les échiquiers impairs</th>
-          <th>S</th>
-        </tr>
-        <tr class="pairing-table-top-row">
-          <td>{{ odd.club }}</td>
-          <td></td>
-        </tr>
-        <tr>
-          <th></th>
-          <th>Nom et Prénom</th>
-          <th class="player-ffe-id">Code FFE</th>
-          <th class="player-rating">Elo</th>
-          <th>C*</th>
-          <th>R</th>
-        </tr>
-        <tr>
-          <td class="board-no">1B</td>
-          <td class="player-name">{{ odd.p1.name }}</td>
-          <td class="player-ffe-id">{{ odd.p1.ffeId }}</td>
-          <td class="player-rating">{{ odd.p1.rating }}</td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td class="board-no">2N</td>
-          <td class="player-name">{{ odd.p2.name }}</td>
-          <td class="player-ffe-id">{{ odd.p2.ffeId }}</td>
-          <td class="player-rating">{{ odd.p2.rating }}</td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td class="board-no">3B</td>
-          <td class="player-name">{{ odd.p3.name }}</td>
-          <td class="player-ffe-id">{{ odd.p3.ffeId }}</td>
-          <td class="player-rating">{{ odd.p3.rating }}</td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td class="board-no">4N</td>
-          <td class="player-name">{{ odd.p4.name }}</td>
-          <td class="player-ffe-id">{{ odd.p4.ffeId }}</td>
-          <td class="player-rating">{{ odd.p4.rating }}</td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td class="board-no">5B</td>
-          <td class="player-name">{{ odd.p5.name }}</td>
-          <td class="player-ffe-id">{{ odd.p5.ffeId }}</td>
-          <td class="player-rating">{{ odd.p5.rating }}</td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td class="board-no">6N</td>
-          <td class="player-name">{{ odd.p6.name }}</td>
-          <td class="player-ffe-id">{{ odd.p6.ffeId }}</td>
-          <td class="player-rating">{{ odd.p6.rating }}</td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td class="board-no">7B</td>
-          <td class="player-name">{{ odd.p7.name }}</td>
-          <td class="player-ffe-id">{{ odd.p7.ffeId }}</td>
-          <td class="player-rating">{{ odd.p7.rating }}</td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td class="board-no">8N</td>
-          <td class="player-name">{{ odd.p8.name }}</td>
-          <td class="player-ffe-id">{{ odd.p8.ffeId }}</td>
-          <td class="player-rating">{{ odd.p8.rating }}</td>
-          <td></td>
-          <td></td>
-        </tr>
-      </table>
+    <div id="club-tables">
+      <section>
+        <table class="club-table">
+          <thead>
+            <tr>
+              <th>Club ayant les blancs sur les échiquiers impairs</th>
+              <th>S</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{ odd.club }}</td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
 
-      <table class="pairing-table">
-        <tr class="pairing-table-top-row">
-          <th>Club ayant les blancs sur les échiquiers pairs</th>
-          <th>S</th>
-        </tr>
-        <tr class="pairing-table-top-row">
-          <td>{{ even.club }}</td>
-          <td></td>
-        </tr>
-        <tr>
-          <th></th>
-          <th>Nom et Prénom</th>
-          <th class="player-ffe-id">Code FFE</th>
-          <th class="player-rating">Elo</th>
-          <th>C*</th>
-          <th>R</th>
-        </tr>
-        <tr>
-          <td class="board-no">1N</td>
-          <td class="player-name">{{ even.p1.name }}</td>
-          <td class="player-ffe-id">{{ even.p1.ffeId }}</td>
-          <td class="player-rating">{{ even.p1.rating }}</td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td class="board-no">2B</td>
-          <td class="player-name">{{ even.p2.name }}</td>
-          <td class="player-ffe-id">{{ even.p2.ffeId }}</td>
-          <td class="player-rating">{{ even.p2.rating }}</td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td class="board-no">3N</td>
-          <td class="player-name">{{ even.p3.name }}</td>
-          <td class="player-ffe-id">{{ even.p3.ffeId }}</td>
-          <td class="player-rating">{{ even.p3.rating }}</td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td class="board-no">4B</td>
-          <td class="player-name">{{ even.p4.name }}</td>
-          <td class="player-ffe-id">{{ even.p4.ffeId }}</td>
-          <td class="player-rating">{{ even.p4.rating }}</td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td class="board-no">5N</td>
-          <td class="player-name">{{ even.p5.name }}</td>
-          <td class="player-ffe-id">{{ even.p5.ffeId }}</td>
-          <td class="player-rating">{{ even.p5.rating }}</td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td class="board-no">6B</td>
-          <td class="player-name">{{ even.p6.name }}</td>
-          <td class="player-ffe-id">{{ even.p6.ffeId }}</td>
-          <td class="player-rating">{{ even.p6.rating }}</td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td class="board-no">7N</td>
-          <td class="player-name">{{ even.p7.name }}</td>
-          <td class="player-ffe-id">{{ even.p7.ffeId }}</td>
-          <td class="player-rating">{{ even.p7.rating }}</td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td class="board-no">8B</td>
-          <td class="player-name">{{ even.p8.name }}</td>
-          <td class="player-ffe-id">{{ even.p8.ffeId }}</td>
-          <td class="player-rating">{{ even.p8.rating }}</td>
-          <td></td>
-          <td></td>
-        </tr>
-      </table>
+        <table class="pairing-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Nom et Prénom</th>
+              <th class="player-ffe-id">Code FFE</th>
+              <th class="player-rating">Elo</th>
+              <th>C*</th>
+              <th>R</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="board-no">1B</td>
+              <td class="player-name">{{ odd.p1.name }}</td>
+              <td class="player-ffe-id">{{ odd.p1.ffeId }}</td>
+              <td class="player-rating">{{ odd.p1.rating }}</td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="board-no">2N</td>
+              <td class="player-name">{{ odd.p2.name }}</td>
+              <td class="player-ffe-id">{{ odd.p2.ffeId }}</td>
+              <td class="player-rating">{{ odd.p2.rating }}</td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="board-no">3B</td>
+              <td class="player-name">{{ odd.p3.name }}</td>
+              <td class="player-ffe-id">{{ odd.p3.ffeId }}</td>
+              <td class="player-rating">{{ odd.p3.rating }}</td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="board-no">4N</td>
+              <td class="player-name">{{ odd.p4.name }}</td>
+              <td class="player-ffe-id">{{ odd.p4.ffeId }}</td>
+              <td class="player-rating">{{ odd.p4.rating }}</td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="board-no">5B</td>
+              <td class="player-name">{{ odd.p5.name }}</td>
+              <td class="player-ffe-id">{{ odd.p5.ffeId }}</td>
+              <td class="player-rating">{{ odd.p5.rating }}</td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="board-no">6N</td>
+              <td class="player-name">{{ odd.p6.name }}</td>
+              <td class="player-ffe-id">{{ odd.p6.ffeId }}</td>
+              <td class="player-rating">{{ odd.p6.rating }}</td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="board-no">7B</td>
+              <td class="player-name">{{ odd.p7.name }}</td>
+              <td class="player-ffe-id">{{ odd.p7.ffeId }}</td>
+              <td class="player-rating">{{ odd.p7.rating }}</td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="board-no">8N</td>
+              <td class="player-name">{{ odd.p8.name }}</td>
+              <td class="player-ffe-id">{{ odd.p8.ffeId }}</td>
+              <td class="player-rating">{{ odd.p8.rating }}</td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <table class="club-table">
+          <thead>
+            <tr>
+              <th>Club ayant les blancs sur les échiquiers pairs</th>
+              <th>S</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{ even.club }}</td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <table class="pairing-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Nom et Prénom</th>
+              <th class="player-ffe-id">Code FFE</th>
+              <th class="player-rating">Elo</th>
+              <th>C*</th>
+              <th>R</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="board-no">1N</td>
+              <td class="player-name">{{ even.p1.name }}</td>
+              <td class="player-ffe-id">{{ even.p1.ffeId }}</td>
+              <td class="player-rating">{{ even.p1.rating }}</td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="board-no">2B</td>
+              <td class="player-name">{{ even.p2.name }}</td>
+              <td class="player-ffe-id">{{ even.p2.ffeId }}</td>
+              <td class="player-rating">{{ even.p2.rating }}</td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="board-no">3N</td>
+              <td class="player-name">{{ even.p3.name }}</td>
+              <td class="player-ffe-id">{{ even.p3.ffeId }}</td>
+              <td class="player-rating">{{ even.p3.rating }}</td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="board-no">4B</td>
+              <td class="player-name">{{ even.p4.name }}</td>
+              <td class="player-ffe-id">{{ even.p4.ffeId }}</td>
+              <td class="player-rating">{{ even.p4.rating }}</td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="board-no">5N</td>
+              <td class="player-name">{{ even.p5.name }}</td>
+              <td class="player-ffe-id">{{ even.p5.ffeId }}</td>
+              <td class="player-rating">{{ even.p5.rating }}</td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="board-no">6B</td>
+              <td class="player-name">{{ even.p6.name }}</td>
+              <td class="player-ffe-id">{{ even.p6.ffeId }}</td>
+              <td class="player-rating">{{ even.p6.rating }}</td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="board-no">7N</td>
+              <td class="player-name">{{ even.p7.name }}</td>
+              <td class="player-ffe-id">{{ even.p7.ffeId }}</td>
+              <td class="player-rating">{{ even.p7.rating }}</td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="board-no">8B</td>
+              <td class="player-name">{{ even.p8.name }}</td>
+              <td class="player-ffe-id">{{ even.p8.ffeId }}</td>
+              <td class="player-rating">{{ even.p8.rating }}</td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
     </div>
 
     <div id="mentions">

@@ -4,6 +4,7 @@ import LineUpTableRatingElement from "./LineUpTableRatingElement.jsx";
 import LineUpTableCaptainFfeIdInput from "./LineUpTableCaptainFfeIdInput.jsx";
 import { PropertyAccessors } from "@src/utils/create-accessors.js";
 import { Match, Player } from "@src/types.js";
+import cssClasses from "./styles.module.scss";
 
 export default function LineUpTable({ whiteOnOddsObs, lineUpAccessors, captainFfeIdAccessors, players }: {
   whiteOnOddsObs: Obs<Match["whiteOnOdds"]>;
@@ -44,7 +45,21 @@ export default function LineUpTable({ whiteOnOddsObs, lineUpAccessors, captainFf
                 ))}
               </LineUpTablePlayerSelect>
             </td>
-            <td>{lineUpObs.map((lineUp) => lineUp[+board]?.ffeId ?? "")}</td>
+            <td>
+              <div
+                className={cssClasses.ffeIdElement}
+                contentEditable="true"
+                oninput={({ target }) => {
+                  if (lineUpObs.value[+board])
+                    lineUpObs.value[+board]!.ffeId = (target as HTMLElement).innerText;
+                }}
+                $init={(element) => {
+                  lineUpObs.subscribe((value) => {
+                    element.innerText = value[+board]?.ffeId ?? "";
+                  });
+                }}
+              >{lineUpObs.value[+board]?.ffeId}</div>
+            </td>
             <td>
               <LineUpTableRatingElement board={+board} lineUpObs={lineUpObs} />
             </td>
