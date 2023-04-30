@@ -1,5 +1,5 @@
 import Form from "@src/components/Form/Form.jsx";
-import playerRoles from "@src/utils/player-roles.js";
+import playerRoles, { roleTranslations } from "@src/utils/player-roles.js";
 import { playersCache } from "@src/utils/local-storage.js";
 import { Player } from "@src/types.js";
 
@@ -76,7 +76,7 @@ export default function PlayerForm({ player, handleSubmit }: {
           nameAndId="role"
           required
           values={playerRoles.map((role) => ({
-            text: role,
+            text: roleTranslations[role],
             value: role,
             selected: p.role === role
           }))}
@@ -94,7 +94,7 @@ export default function PlayerForm({ player, handleSubmit }: {
           labelText="Elo"
           nameAndId="rating"
           value={p.rating}
-          updateValue={(rating) => (!isNaN(Number(rating))) && (p.rating = Number(rating))}
+          updateValue={(rating) => (!isNaN(+rating)) && (p.rating = +rating)}
         />
       </Form.Row>
       <Form.Row>

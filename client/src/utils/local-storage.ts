@@ -5,16 +5,24 @@ function createLocalStorageCache<TData, TArgs extends any[]>({ key, getData }: {
   key: string;
   getData: (...args: TArgs) => Promise<TData>;
 }) {
+  let data: TData | null = null;
+
   return {
     get: async (...args: TArgs): Promise<TData> => {
-      if (localStorage.getItem(key))
-        return JSON.parse(localStorage.getItem(key)!);
+      if (data !== null)
+        return data;
 
-      const data = await getData(...args);
+      if (localStorage.getItem(key))
+        return data = JSON.parse(localStorage.getItem(key)!);
+
+      data = await getData(...args);
       localStorage.setItem(key, JSON.stringify(data));
       return data;
     },
-    clear: () => localStorage.removeItem(key)
+    clear: () => {
+      data = null;
+      localStorage.removeItem(key);
+    }
   };
 }
 
