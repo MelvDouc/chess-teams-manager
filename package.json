@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "nodemon --ignore client server/src/app.ts",
     "start": "node server/dist/app.js",
-    "build": "tsc -p server"
+    "build": "tsc -p server && npm --prefix client run build"
   },
   "keywords": [],
   "author": "",
