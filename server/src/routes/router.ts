@@ -6,7 +6,7 @@ import matchController from "../controllers/match.controller.js";
 const router = Router();
 
 router.use("/api/v1", apiRouter);
-router.use("/matchs/:season/:round/:teamName/feuille-de-match", matchController.downloadScoreSheet);
+router.get("/matchs/:season/:round/:teamName/feuille-de-match", matchController.downloadScoreSheet);
 router.use((req, res) => {
   if (req.method === "GET")
     return clientController.home(req, res);

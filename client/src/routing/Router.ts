@@ -13,7 +13,7 @@ import PlayerUpdatePage from "@src/pages/players/PlayerUpdatePage.js";
 import auth, { RoleIndex } from "@src/utils/auth.js";
 import { Route, RouteInfo } from "@src/types.js";
 
-class Router {
+export class Router {
   private readonly routes: Map<RegExp, Route>;
   private readonly $404Route = {
     title: "Page non trouvée",
@@ -26,10 +26,8 @@ class Router {
   }
 
   public addRoute(url: string, route: Route<any>): this {
-    this.routes.set(
-      RegExp("^" + url.replace(/:([^\/]+)/g, (_, param) => `(?<${param}>[^\/]+)`) + "$"),
-      route
-    );
+    url = url.replace(/:([^\/]+)/g, (_, param) => `(?<${param}>[^\/]+)`);
+    this.routes.set(RegExp(`^${url}\$`), route);
     return this;
   }
 
@@ -39,18 +37,10 @@ class Router {
   }
 
   public updateUrl(url: string): void {
-    if (!url.startsWith("/auth/") && !auth.getUser())
-      return this.navigate("/auth/connexion");
-
-    if (url.startsWith("/auth/") && auth.getUser())
-      return this.navigate("/");
-
     for (const [key, route] of this.routes) {
       if (key.test(url)) {
-        if (route.minRole !== undefined) {
-          if (RoleIndex[auth.getUser()!.role] < route.minRole)
-            return this.notify(this.$404Route);
-        }
+        if (route.preCheck && !route.preCheck(this))
+          return;
 
         const params = url.match(key)?.groups ?? {};
         this.notify({
@@ -74,8 +64,36 @@ class Router {
 }
 
 const router = new Router();
-const homeRoute = {
-  minRole: RoleIndex.USER,
+
+const allowCaptainMinimum = (router: Router) => {
+  const user = auth.getUser();
+
+  if (!user || RoleIndex[user.role] < RoleIndex.CAPTAIN) {
+    router.navigate("/connexion");
+    return false;
+  }
+
+  return true;
+};
+
+const preventDoubleLogIn = (router: Router) => {
+  if (auth.getUser()) {
+    router.navigate("/");
+    return false;
+  }
+
+  return true;
+};
+
+const homeRoute: Route = {
+  preCheck: (router) => {
+    if (!auth.getUser()) {
+      router.navigate("/connexion");
+      return false;
+    }
+
+    return true;
+  },
   getTitle: () => "Accueil",
   component: HomePage
 };
@@ -83,57 +101,60 @@ const homeRoute = {
 router
   .addRoute("/", homeRoute)
   .addRoute("/accueil", homeRoute)
-  .addRoute("/auth/connexion", {
+  .addRoute("/connexion", {
+    preCheck: preventDoubleLogIn,
     getTitle: () => "Connexion",
     component: LoginPage
   })
-  .addRoute("/auth/oubli-mot-de-passe", {
+  .addRoute("/oubli-mot-de-passe", {
+    preCheck: preventDoubleLogIn,
     getTitle: () => "Demande de réinitialisation de de mot de passe",
     component: PasswordForgottenPage
   })
-  .addRoute("/auth/nouveau-mot-de-passe/:pwdResetId", {
+  .addRoute("/nouveau-mot-de-passe/:pwdResetId", {
+    preCheck: preventDoubleLogIn,
     getTitle: () => "Réinitialisation de de mot de passe",
     component: PasswordResetPage
   })
   .addRoute("/joueurs", {
-    minRole: RoleIndex.CAPTAIN,
+    preCheck: allowCaptainMinimum,
     getTitle: () => "Joueurs",
     component: PlayersPage
   })
   .addRoute("/joueurs/nouveau", {
-    minRole: RoleIndex.CAPTAIN,
+    preCheck: allowCaptainMinimum,
     getTitle: () => "Ajouter un joueur",
     component: PlayerCreatePage,
   })
   .addRoute("/joueurs/:ffeId/modifier", {
-    minRole: RoleIndex.CAPTAIN,
+    preCheck: allowCaptainMinimum,
     getTitle: ({ ffeId }: { ffeId: string; }) => `Modifier ${ffeId}`,
     component: PlayerUpdatePage
   })
   .addRoute("/matchs", {
-    minRole: RoleIndex.USER,
+    preCheck: allowCaptainMinimum,
     getTitle: () => "Matchs",
     component: MatchSeasonsPage
   })
   .addRoute("/matchs/nouveau", {
-    minRole: RoleIndex.USER,
+    preCheck: allowCaptainMinimum,
     getTitle: () => "Ajouter un match",
     component: MatchCreatePage
   })
   .addRoute("/matchs/:season", {
-    minRole: RoleIndex.USER,
+    preCheck: allowCaptainMinimum,
     getTitle: ({ season }: { season: number; }) => `Matchs ${season - 1}-${season}`,
     component: MatchesPage
   })
   .addRoute("/matchs/:season/:round/:teamName/modifier", {
-    minRole: RoleIndex.USER,
+    preCheck: allowCaptainMinimum,
     getTitle: () => "Modifier un match",
     component: MatchUpdatePage
   });
 
 auth.onUserSet((user) => {
   if (!user)
-    router.navigate("/auth/connexion");
+    router.navigate("/connexion");
 });
 
 export default router;

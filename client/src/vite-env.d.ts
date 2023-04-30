@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 
-import("reactfree-jsx");
+// import("reactfree-jsx");
 
 interface ImportMetaEnv {
   readonly VITE_SERVER_URL: string;

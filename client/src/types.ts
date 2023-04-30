@@ -1,4 +1,3 @@
-import { RoleIndex } from "@src/utils/auth.js";
 import { Match as DbMatch } from "../../global.js";
 
 export type {
@@ -17,9 +16,12 @@ export type MatchesByTeamName = Pick<Match, "teamName"> & {
 };
 
 export interface Route<Params = Record<string, string>> {
+  /**
+   * @returns Whether navigation to given url is allowed.
+   */
+  preCheck?: (router: import("@src/routing/Router.js").Router) => boolean;
   getTitle: (params?: Params) => string;
   component: (params?: Params) => string | Node | Promise<string | Node>;
-  minRole?: RoleIndex;
 }
 
 export type RouteInfo = {
