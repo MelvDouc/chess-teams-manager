@@ -5,7 +5,7 @@ import FormSubmit from "./FormSubmit.jsx";
 
 export default function Form({ handleSubmit, children }: {
   handleSubmit: (e: SubmitEvent) => any;
-  children?: ComponentChildren;
+  children?: FreeJSX.ComponentChildren;
 }) {
   return (
     <form
@@ -15,7 +15,7 @@ export default function Form({ handleSubmit, children }: {
   );
 }
 
-Form.Row = ({ children }: { children?: ComponentChildren; }) => {
+Form.Row = ({ children }: { children?: FreeJSX.ComponentChildren; }) => {
   const row = (
     <section className="row"></section>
   );

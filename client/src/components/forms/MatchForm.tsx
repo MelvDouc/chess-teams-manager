@@ -15,11 +15,17 @@ export default function MatchForm({ match, players, handleSubmit }: {
     address: "",
     city: "",
     zipCode: "",
-    date: "",
-    lineUp: Array(8).fill(null).reduce((acc, value, i) => {
-      acc[i + 1] = value;
-      return acc;
-    }, {} as Match["lineUp"]),
+    date: new Date().toISOString(),
+    lineUp: {
+      1: null,
+      2: null,
+      3: null,
+      4: null,
+      5: null,
+      6: null,
+      7: null,
+      8: null,
+    },
     opponent: "",
     teamName: "Thionville I",
     round: 1,
@@ -66,11 +72,12 @@ export default function MatchForm({ match, players, handleSubmit }: {
             required
           />
           <Form.Group
-            type="datetime-local"
+            type="date"
             labelText="Date"
             nameAndId="date"
-            value={m.date.slice(0, 16)}
+            value={new Date(m.date).toISOString().slice(0, 10)}
             updateValue={(date: Date | null) => {
+              console.log({ date });
               if (date)
                 m.date = date.toISOString();
             }}

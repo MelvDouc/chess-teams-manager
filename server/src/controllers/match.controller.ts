@@ -33,12 +33,14 @@ const downloadScoreSheet = asyncWrapper(async (req, res) => {
 
     return acc;
   }, {} as Record<string, string | number>);
+  lineUp[`${inverseParity}.cap`] = ".".repeat(20);
+  lineUp["referee"] = ".".repeat(20);
 
   const { html } = await compileTemplate("score-sheet", {
     season: `${match.season - 1}-${match.season}`,
     round: match.round,
     date: new Date(match.date).toISOString().slice(0, 10),
-    city: match.city,
+    city: match.city.toUpperCase(),
     [`${parity}.club`]: "Thionville",
     [`${inverseParity}.club`]: match.opponent,
     ...lineUp

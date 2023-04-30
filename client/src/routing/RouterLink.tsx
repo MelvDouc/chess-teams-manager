@@ -3,7 +3,7 @@ import Router from "@src/routing/Router.js";
 export default function RouterLink({ href, className, children }: {
   href: string;
   className?: string;
-  children?: ComponentChildren;
+  children?: FreeJSX.ComponentChildren;
 }) {
   return (
     <a

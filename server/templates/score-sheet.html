@@ -368,9 +368,9 @@
 
     <div id="mentions">
       <article>
-        <p>Nom du capitaine&nbsp;: {{ odd.cap }}</p>
-        <p>Nom de l'arbitre&nbsp;: ........................</p>
-        <p>Nom du capitaine&nbsp;: {{ even.cap }}</p>
+        <p>Nom du capitaine&nbsp;: <span contenteditable="">{{ odd.cap }}</span></p>
+        <p>Nom de l'arbitre&nbsp;: <span contenteditable="">{{ referee }}</span></p>
+        <p>Nom du capitaine&nbsp;: <span contenteditable="">{{ even.cap }}</span></p>
       </article>
       <article class="signatures">
         <p>Signature</p>
@@ -388,5 +388,10 @@
       <p>Fédération Française des Échecs Saison {{ season }}</p>
       <p>À renvoyer à : Maxence Bridoux</p>
     </footer>
+
+    <script>
+      const cells = document.querySelectorAll("td");
+      cells.forEach((cell) => cell.contentEditable = true);
+    </script>
   </body>
 </html>
