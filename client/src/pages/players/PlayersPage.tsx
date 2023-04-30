@@ -1,11 +1,11 @@
 import Table from "@src/components/Table/Table.jsx";
 import RouterLink from "@src/routing/RouterLink.jsx";
-import { get, deleteOne } from "@src/utils/api.js";
+import { deleteOne } from "@src/utils/api.js";
 import auth, { RoleIndex } from "@src/utils/auth.js";
-import { Player } from "@src/types.js";
+import { playersCache } from "@src/utils/local-storage.js";
 
 export default async function PlayersPage() {
-  const players = await get<Player[]>("/players");
+  const players = await playersCache.get();
   const { role: currentUserRole, ffeId: currentUserFfeId } = auth.getUser()!;
 
   return (

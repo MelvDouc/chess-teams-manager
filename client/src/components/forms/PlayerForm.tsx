@@ -1,10 +1,11 @@
 import Form from "@src/components/Form/Form.jsx";
 import playerRoles from "@src/utils/player-roles.js";
+import { playersCache } from "@src/utils/local-storage.js";
 import { Player } from "@src/types.js";
 
 export default function PlayerForm({ player, handleSubmit }: {
   player: Player | null;
-  handleSubmit: (player: Omit<Player, "pwd" | "pwdResetId">) => void;
+  handleSubmit: (player: Omit<Player, "pwd" | "pwdResetId">) => void | Promise<void>;
 }) {
   const p: Omit<Player, "pwd" | "pwdResetId"> = player ?? {
     ffeId: "",
@@ -18,8 +19,9 @@ export default function PlayerForm({ player, handleSubmit }: {
   };
 
   return (
-    <Form handleSubmit={async (e) => {
+    <Form handleSubmit={(e) => {
       e.preventDefault();
+      playersCache.clear();
       handleSubmit(p);
     }}>
       <Form.Row>

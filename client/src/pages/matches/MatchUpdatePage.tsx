@@ -1,10 +1,11 @@
 import MatchForm from "@src/components/forms/MatchForm.jsx";
 import { get, update } from "@src/utils/api.js";
-import { Match, Player, ShortMatchInfo } from "@src/types.js";
+import { Match, ShortMatchInfo } from "@src/types.js";
+import { playersCache } from "@src/utils/local-storage.js";
 
 export default async function MatchCreatePage({ season, round, teamName }: ShortMatchInfo) {
   const match = await get<Match>(`/matches/${season}/${round}/${teamName}`);
-  const players = await get<Player[]>("/players");
+  const players = await playersCache.get();
 
   return (
     <>

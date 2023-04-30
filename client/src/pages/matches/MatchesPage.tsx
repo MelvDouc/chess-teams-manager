@@ -1,13 +1,13 @@
 import Table from "@src/components/Table/Table.jsx";
 import RouterLink from "@src/routing/RouterLink.jsx";
-import { get, SERVER_URL } from "@src/utils/api.js";
+import { SERVER_URL } from "@src/utils/api.js";
 import { formatDate } from "@src/utils/date-formatter.js";
-import { MatchesByTeamName } from "@src/types.js";
+import { matchesByTeamNameCache } from "@src/utils/local-storage.js";
 
 export default async function MatchesPage({ season }: {
   season: number;
 }) {
-  const matchesByTeamName = await get<MatchesByTeamName[]>(`/matches/${season}`);
+  const matchesByTeamName = await matchesByTeamNameCache.get(season);
 
   return (
     <>

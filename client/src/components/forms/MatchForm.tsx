@@ -2,6 +2,7 @@ import { Observable } from "reactfree-jsx";
 import Form from "@src/components/Form/Form.jsx";
 import LineUpTable from "@src/components/LineUpTable/LineUpTable.jsx";
 import createAccessors from "@src/utils/create-accessors.js";
+import { matchesByTeamNameCache } from "@src/utils/local-storage.js";
 import { Match, Player } from "@src/types.js";
 
 export default function MatchForm({ match, players, handleSubmit }: {
@@ -41,6 +42,7 @@ export default function MatchForm({ match, players, handleSubmit }: {
     <>
       <Form handleSubmit={(e) => {
         e.preventDefault();
+        matchesByTeamNameCache.clear();
         handleSubmit(m);
       }}>
         <Form.Row>

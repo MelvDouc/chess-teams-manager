@@ -1,9 +1,9 @@
 import MatchForm from "@src/components/forms/MatchForm.jsx";
-import { get, post } from "@src/utils/api.js";
-import { Player } from "@src/types.js";
+import { post } from "@src/utils/api.js";
+import { playersCache } from "@src/utils/local-storage.js";
 
 export default async function MatchCreatePage() {
-  const players = await get<Player[]>("/players");
+  const players = await playersCache.get();
 
   return (
     <>
