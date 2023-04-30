@@ -1,7 +1,10 @@
 import auth from "./auth.js";
 import { PlayerCredentials, PlayerData } from "@src/types.js";
 
-const API_BASE_URL = "http://localhost:10010/api/v1";
+export const SERVER_URL = (import.meta.env.DEV)
+  ? import.meta.env.VITE_SERVER_URL
+  : window.location.origin;
+const API_BASE_URL = SERVER_URL + "/api/v1";
 
 const jsonHeaders = {
   "Content-Type": "application/json"

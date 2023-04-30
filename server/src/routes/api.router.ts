@@ -16,7 +16,6 @@ apiRouter
   .get("/matches/seasons", matchController.getSeasons)
   .get("/matches/:season", matchController.getMatches)
   .get("/matches/:season/:round/:teamName", matchController.getMatch)
-  .get("/matches/:season/:round/:teamName/score-sheet", matchController.downloadScoreSheet)
   .post("/matches/create", matchController.createMatch)
   .put("/matches/:_id/update", matchController.updateMatch)
   .delete("/matches/:_id/delete", matchController.deleteMatch);

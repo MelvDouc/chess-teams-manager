@@ -27,6 +27,8 @@ export interface Match {
   whiteOnOdds: boolean;
   opponent: string;
   address: string;
+  city: string;
+  zipCode: string;
   date: Date;
   lineUp: Record<number, LineUpItem | null>;
   captainFfeId: Player["ffeId"];

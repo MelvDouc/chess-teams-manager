@@ -41,7 +41,9 @@ export default async function LoginPage() {
               required
             />
           </Form.Row>
-          <Form.Submit text="Se connecter" />
+          <Form.Row>
+            <Form.Submit text="Se connecter" />
+          </Form.Row>
         </Form>
       </section>
       <section>

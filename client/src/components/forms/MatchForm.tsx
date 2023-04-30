@@ -13,8 +13,13 @@ export default function MatchForm({ match, players, handleSubmit }: {
   const m: Match = match ?? {
     _id: "",
     address: "",
+    city: "",
+    zipCode: "",
     date: "",
-    lineUp: {},
+    lineUp: Array(8).fill(null).reduce((acc, value, i) => {
+      acc[i + 1] = value;
+      return acc;
+    }, {} as Match["lineUp"]),
     opponent: "",
     teamName: "Thionville I",
     round: 1,
@@ -84,7 +89,7 @@ export default function MatchForm({ match, players, handleSubmit }: {
           />
           <Form.Checkbox
             nameAndId="whiteOnOdds"
-            labelText="Blancs aux premiers"
+            labelText="Blancs aux échiquiers impairs"
             checked={m.whiteOnOdds}
             updateValue={(whiteOnOdds) => whiteOnOddsObs.value = whiteOnOdds}
           />
@@ -98,6 +103,24 @@ export default function MatchForm({ match, players, handleSubmit }: {
             updateValue={(address) => m.address = address.trim()}
             required
           />
+          <div className="d-flex flex-column gap-2">
+            <Form.Group
+              type="text"
+              nameAndId="city"
+              labelText="Ville"
+              value={m.city}
+              updateValue={(city) => m.city = city.trim()}
+              required
+            />
+            <Form.Group
+              type="text"
+              nameAndId="zipCode"
+              labelText="Code postal"
+              value={m.zipCode}
+              updateValue={(zipCode) => m.zipCode = zipCode.trim()}
+              required
+            />
+          </div>
         </Form.Row>
         <Form.Row>
           <div>
@@ -112,7 +135,9 @@ export default function MatchForm({ match, players, handleSubmit }: {
             </div>
           </div>
         </Form.Row>
-        <Form.Submit backLink={`/matchs/${season}`} text="Valider" />
+        <Form.Row>
+          <Form.Submit backLink={`/matchs/${season}`} text="Valider" />
+        </Form.Row>
       </Form>
     </>
   );

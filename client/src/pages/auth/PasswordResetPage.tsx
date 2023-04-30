@@ -40,7 +40,9 @@ export default function PasswordResetPage({ pwdResetId }: {
             labelText="Confirmer"
             required
           />
-          <Form.Submit text="Valider" />
+          <Form.Row>
+            <Form.Submit text="Valider" />
+          </Form.Row>
         </Form>
       </section>
       {messageElement}

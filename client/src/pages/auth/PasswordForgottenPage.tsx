@@ -29,7 +29,9 @@ export default function PasswordForgottenPage() {
             labelText="N° FFE"
             required
           />
-          <Form.Submit text="Valider" />
+          <Form.Row>
+            <Form.Submit text="Valider" />
+          </Form.Row>
         </Form>
       </section>
       {messageElement}

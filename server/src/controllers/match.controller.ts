@@ -19,7 +19,7 @@ const downloadScoreSheet = asyncWrapper(async (req, res) => {
   });
 
   if (!match)
-    throw "err";
+    return res.send("<h1>Feuille de match indisponible.</h1>");
 
   const parity = (match.whiteOnOdds) ? "odd" : "even";
   const inverseParity = (parity === "odd") ? "even" : "odd";
@@ -34,21 +34,16 @@ const downloadScoreSheet = asyncWrapper(async (req, res) => {
     return acc;
   }, {} as Record<string, string | number>);
 
-
-
   const { html } = await compileTemplate("score-sheet", {
     season: `${match.season - 1}-${match.season}`,
     round: match.round,
     date: new Date(match.date).toISOString().slice(0, 10),
-    place: match.address.split(/\s+/).at(-1),
+    city: match.city,
     [`${parity}.club`]: "Thionville",
     [`${inverseParity}.club`]: match.opponent,
     ...lineUp
   });
-  res.setHeader("Content-disposition", "attachment; filename=feuille-de-match.html");
-  res.set("Content-Type", "text/html");
-  res.send(html);
-  res.end();
+  res.contentType("html").send(html);
 });
 
 const getMatches = asyncWrapper(async (req, res) => {
@@ -77,7 +72,6 @@ const deleteMatch = asyncWrapper(async (req, res) => {
   const { acknowledged, deletedCount } = await matchModel.deleteMatch({ _id });
   res.json({ success: acknowledged && deletedCount > 0 });
 });
-
 
 export default {
   getMatch,

@@ -1,6 +1,6 @@
 import Table from "@src/components/Table/Table.jsx";
 import RouterLink from "@src/routing/RouterLink.jsx";
-import { get, createLink } from "@src/utils/api.js";
+import { get, SERVER_URL } from "@src/utils/api.js";
 import { formatDate } from "@src/utils/date-formatter.js";
 import { MatchesByTeamName } from "@src/types.js";
 
@@ -26,12 +26,15 @@ export default async function MatchesPage({ season }: {
           <>
             <Table.SubtitleRow title={teamName} colSpan={5} />
             <tbody>
-              {matches.map(({ round, opponent, address, date }) => (
+              {matches.map(({ round, opponent, address, city, zipCode, date }) => (
                 <tr>
                   <td>{round}</td>
                   <td>{opponent}</td>
                   <td>
-                    <address>{address}</address>
+                    <address className="m-0">
+                      <p className="m-0">{address}</p>
+                      <p className="m-0">{zipCode} {city}</p>
+                    </address>
                   </td>
                   <td>{formatDate(new Date(date))}</td>
                   <td>
@@ -39,12 +42,11 @@ export default async function MatchesPage({ season }: {
                       <RouterLink className="btn btn-primary" href={`/matchs/${season}/${round}/${teamName}/modifier`}>
                         <i className={"bi bi-pen-fill"}></i>
                       </RouterLink>
-                      <button
+                      <a
                         className="btn btn-warning"
-                        onclick={() => {
-                          window.open(createLink(`/matches/${season}/${round}/${teamName}/score-sheet`));
-                        }}
-                      >Feuille de match</button>
+                        href={`${SERVER_URL}/matchs/${season}/${round}/${teamName}/feuille-de-match`}
+                        target="_blank"
+                      >Feuille de match</a>
                     </Table.Actions>
                   </td>
                 </tr>

@@ -95,7 +95,9 @@ export default function PlayerForm({ player, handleSubmit }: {
           updateValue={(rating) => (!isNaN(Number(rating))) && (p.rating = Number(rating))}
         />
       </Form.Row>
-      <Form.Submit text="Valider" backLink="/joueurs" />
+      <Form.Row>
+        <Form.Submit text="Valider" backLink="/joueurs" />
+      </Form.Row>
     </Form>
   );
 }

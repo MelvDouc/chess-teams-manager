@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Feuille de match</title>
     <style>
     :root {
       --table-border: 1px solid black;
@@ -21,40 +22,20 @@
     body {
       width: 29.7cm;
       height: 21cm;
-      padding: 0.5em;
     }
 
     body {
       font-family: Arial, Verdana, Calibri, Geneva, Tahoma, 'Source Sans Pro', sans-serif;
+      padding: 1em;
       font-size: 0.9em;
-      display: flex;
-      flex-flow: column nowrap;
-      justify-content: space-between;
-      gap: 1em;
-    }
-
-    h1,
-    h2 {
-      text-align: center;
-      text-transform: uppercase;
     }
 
     h1 {
+      text-transform: uppercase;
+      text-align: center;
       font-size: 1.75rem;
       letter-spacing: 0.33em;
-    }
-
-    header,
-    main {
-      width: 100%;
-      display: flex;
-      flex-flow: column nowrap;
-      align-items: center;
-      gap: 1em;
-    }
-
-    main>* {
-      width: 100%;
+      margin-bottom: 1em;
     }
 
     footer {
@@ -63,43 +44,60 @@
     }
 
     /* ----- ----- ----- ----- ----- */
-    /* SIMPLE TABLE                  */
+    /* TABLE                         */
     /* ----- ----- ----- ----- ----- */
 
-    .simple-table {
+    table {
       border: var(--table-border);
+      border-collapse: collapse;
     }
 
-    .simple-table .top,
-    .simple-table .bottom {
-      display: grid;
+    table tr + tr {
+      border-top: var(--table-border);
     }
 
-    .simple-table .top {
-      border-bottom: var(--table-border);
-    }
-
-    .simple-table .top>div,
-    .simple-table .bottom>div {
-      padding: 0.5em;
-      text-align: center;
-      display: grid;
-      place-items: center;
-    }
-
-    .simple-table .top>div+div,
-    .simple-table .bottom>div+div {
+    table th+ th,
+    table td+ td {
       border-left: var(--table-border);
     }
 
-    .simple-table .top>div {
-      text-transform: uppercase;
-      font-weight: 700;
+    table th,
+    table td {
+      padding: 0.33em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
-    #misc-info-table .top,
-    #misc-info-table .bottom {
-      grid-template-columns: 12.5% 37.5% 37.5% 12.5%;
+    /* ----- ----- ----- ----- ----- */
+    /* MISC INFO                     */
+    /* ----- ----- ----- ----- ----- */
+
+    #misc-info {
+      width: 100%;
+      margin-bottom: 0.75em;
+    }
+
+    #misc-info th, #misc-info td {
+      text-align: center;
+    }
+
+    #misc-info th:nth-child(1),
+    #misc-info th:nth-child(4),
+    #misc-info td:nth-child(1),
+    #misc-info td:nth-child(4) {
+      width: calc(100% / 2 * 0.25);
+    }
+
+    #misc-info th:nth-child(2),
+    #misc-info th:nth-child(3),
+    #misc-info td:nth-child(2),
+    #misc-info td:nth-child(3) {
+      width: calc(100% / 2 * 0.75);
+    }
+
+    #misc-info th {
+      text-transform: uppercase;
     }
 
     /* ----- ----- ----- ----- ----- */
@@ -109,57 +107,50 @@
     #pairing-tables {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 1em;
+      gap: 0.5em;
+      margin-bottom: 1em;
     }
 
-    .pairing-table .simple-table .top,
-    .pairing-table .simple-table .bottom {
-      grid-template-columns: 92.5% 7.5%;
+    .pairing-table, .pairing-table tbody {
+      display: block;
     }
 
-    .lineup-table {
-      border-left: var(--table-border);
-      border-right: var(--table-border);
-    }
-
-    .lineup-table .top,
-    .lineup-table .bottom .row {
+    .pairing-table tr {
       display: grid;
-      grid-template-columns: 7.5% 42.5% 17.5% 17.5% 7.5% 7.5%;
+      grid-template-columns: calc(100% / 12) calc(100% * 5 / 12) calc(100% * 2 / 12) calc(100% * 2 / 12) calc(100% / 12) calc(100% / 12);
     }
 
-    .lineup-table .top,
-    .lineup-table .bottom .row {
-      border-bottom: var(--table-border);
+    .pairing-table tr.pairing-table-top-row {
+      grid-template-columns: calc(100% * 11 / 12) calc(100% / 12);
     }
 
-    .lineup-table .top>div,
-    .lineup-table .bottom .row>div {
-      padding: 0.33em;
-      text-align: center;
-      display: grid;
+    .pairing-table tr.pairing-table-top-row th {
+      text-transform: uppercase;
+    }
+
+    .pairing-table tr.pairing-table-top-row td {
+      justify-content: center;
+    }
+
+    .pairing-table th,
+    .pairing-table td {
+      display: flex;
       align-items: center;
+      text-align: center;
     }
 
-    .lineup-table .top>div {
+    .pairing-table th {
+      justify-content: center;
+    }
+
+    .pairing-table .board-no {
+      justify-content: center;
       font-weight: bold;
     }
 
-    .lineup-table .bottom .row>div {
-      word-break: break-all;
-    }
-
-    .lineup-table .bottom .row>div:first-child {
-      font-weight: 700;
-    }
-
-    .lineup-table .top>div+div,
-    .lineup-table .bottom .row>div+div {
-      border-left: var(--table-border);
-    }
-
-    .player-name {
-      text-align: left !important;
+    .pairing-table .player-name {
+      justify-content: left;
+      text-align: left;
     }
 
     /* ----- ----- ----- ----- ----- */
@@ -167,244 +158,232 @@
     /* ----- ----- ----- ----- ----- */
 
     #mentions {
-      display: grid;
-      grid-template-rows: repeat(3, 1fr);
-      row-gap: 0.4em;
+      margin-bottom: 2.5em;
     }
 
     #mentions article {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
+      justify-content: space-evenly;
+      width: 100%;
+    }
+
+    #mentions p {
+      text-align: center;
     }
 
     #mentions .signatures {
-      color: #868585;
-    }
-
-    #mentions article p {
-      text-align: center;
+      align-items: center;
+      height: 4em;
+      opacity: 0.33;
     }
     </style>
-    <title>Feuille de match</title>
   </head>
+
   <body>
-    <header>
-      <h1>
-        <div>Fédération française des échecs</div>
-        <div>Feuille de match</div>
-      </h1>
-    </header>
-    <main>
-      <div class="simple-table" id="misc-info-table">
-        <section class="top">
-          <div>Date</div>
-          <div>Lieu</div>
-          <div>Compétition</div>
-          <div>Ronde</div>
-        </section>
-        <section class="bottom">
-          <div>{{ date }}</div>
-          <div>{{ place }}</div>
-          <div>Interclubs Adultes</div>
-          <div>{{ round }}</div>
-        </section>
-      </div>
-      <section id="pairing-tables">
-        <div class="pairing-table">
-          <div class="simple-table">
-            <section class="top">
-              <div>Club ayant les blancs sur les échiquiers impairs</div>
-              <div>S</div>
-            </section>
-            <section class="bottom">
-              <div>{{ odd.club }}</div>
-              <div></div>
-            </section>
-          </div>
-          <div class="lineup-table">
-            <section class="top">
-              <div></div>
-              <div>Nom et Prénom</div>
-              <div>Code FFE</div>
-              <div>Elo</div>
-              <div>C*</div>
-              <div>R</div>
-            </section>
-            <section class="bottom">
-              <article class="row">
-                <div>1B</div>
-                <div class="player-name">{{ odd.p1.name }}</div>
-                <div>{{ odd.p1.ffeId }}</div>
-                <div>{{ odd.p1.rating }}</div>
-                <div></div>
-                <div></div>
-              </article>
-              <article class="row">
-                <div>2N</div>
-                <div class="player-name">{{ odd.p2.name }}</div>
-                <div>{{ odd.p2.ffeId }}</div>
-                <div>{{ odd.p2.rating }}</div>
-                <div></div>
-                <div></div>
-              </article>
-              <article class="row">
-                <div>3B</div>
-                <div class="player-name">{{ odd.p3.name }}</div>
-                <div>{{ odd.p3.ffeId }}</div>
-                <div>{{ odd.p3.rating }}</div>
-                <div></div>
-                <div></div>
-              </article>
-              <article class="row">
-                <div>4N</div>
-                <div class="player-name">{{ odd.p4.name }}</div>
-                <div>{{ odd.p4.ffeId }}</div>
-                <div>{{ odd.p4.rating }}</div>
-                <div></div>
-                <div></div>
-              </article>
-              <article class="row">
-                <div>5B</div>
-                <div class="player-name">{{ odd.p5.name }}</div>
-                <div>{{ odd.p5.ffeId }}</div>
-                <div>{{ odd.p5.rating }}</div>
-                <div></div>
-                <div></div>
-              </article>
-              <article class="row">
-                <div>6N</div>
-                <div class="player-name">{{ odd.p6.name }}</div>
-                <div>{{ odd.p6.ffeId }}</div>
-                <div>{{ odd.p6.rating }}</div>
-                <div></div>
-                <div></div>
-              </article>
-              <article class="row">
-                <div>7B</div>
-                <div class="player-name">{{ odd.p7.name }}</div>
-                <div>{{ odd.p7.ffeId }}</div>
-                <div>{{ odd.p7.rating }}</div>
-                <div></div>
-                <div></div>
-              </article>
-              <article class="row">
-                <div>8N</div>
-                <div class="player-name">{{ odd.p8.name }}</div>
-                <div>{{ odd.p8.ffeId }}</div>
-                <div>{{ odd.p8.rating }}</div>
-                <div></div>
-                <div></div>
-              </article>
-            </section>
-          </div>
-        </div>
-        <div class="pairing-table">
-          <div class="simple-table">
-            <section class="top">
-              <div>Club ayant les blancs sur les échiquiers pairs</div>
-              <div>S</div>
-            </section>
-            <section class="bottom">
-              <div>{{ even.club }}</div>
-              <div></div>
-            </section>
-          </div>
-          <div class="lineup-table">
-            <section class="top">
-              <div></div>
-              <div>Nom et Prénom</div>
-              <div>Code FFE</div>
-              <div>Elo</div>
-              <div>C*</div>
-              <div>R</div>
-            </section>
-            <section class="bottom">
-              <article class="row">
-                <div>1N</div>
-                <div class="player-name">{{ even.p1.name }}</div>
-                <div>{{ even.p1.ffeId }}</div>
-                <div>{{ even.p1.rating }}</div>
-                <div></div>
-                <div></div>
-              </article>
-              <article class="row">
-                <div>2B</div>
-                <div class="player-name">{{ even.p2.name }}</div>
-                <div>{{ even.p2.ffeId }}</div>
-                <div>{{ even.p2.rating }}</div>
-                <div></div>
-                <div></div>
-              </article>
-              <article class="row">
-                <div>3N</div>
-                <div class="player-name">{{ even.p3.name }}</div>
-                <div>{{ even.p3.ffeId }}</div>
-                <div>{{ even.p3.rating }}</div>
-                <div></div>
-                <div></div>
-              </article>
-              <article class="row">
-                <div>4B</div>
-                <div class="player-name">{{ even.p4.name }}</div>
-                <div>{{ even.p4.ffeId }}</div>
-                <div>{{ even.p4.rating }}</div>
-                <div></div>
-                <div></div>
-              </article>
-              <article class="row">
-                <div>5N</div>
-                <div class="player-name">{{ even.p5.name }}</div>
-                <div>{{ even.p5.ffeId }}</div>
-                <div>{{ even.p5.rating }}</div>
-                <div></div>
-                <div></div>
-              </article>
-              <article class="row">
-                <div>6B</div>
-                <div class="player-name">{{ even.p6.name }}</div>
-                <div>{{ even.p6.ffeId }}</div>
-                <div>{{ even.p6.rating }}</div>
-                <div></div>
-                <div></div>
-              </article>
-              <article class="row">
-                <div>7N</div>
-                <div class="player-name">{{ even.p7.name }}</div>
-                <div>{{ even.p7.ffeId }}</div>
-                <div>{{ even.p7.rating }}</div>
-                <div></div>
-                <div></div>
-              </article>
-              <article class="row">
-                <div>8B</div>
-                <div class="player-name">{{ even.p8.name }}</div>
-                <div>{{ even.p8.ffeId }}</div>
-                <div>{{ even.p8.rating }}</div>
-                <div></div>
-                <div></div>
-              </article>
-            </section>
-          </div>
-        </div>
-      </section>
-      <section id="mentions">
-        <article>
-          <p>Nom du capitaine&nbsp;: {{ odd.cap }}</p>
-          <p>Nom de l'arbitre&nbsp;: ........................</p>
-          <p>Nom du capitaine&nbsp;: {{ even.cap }}</p>
-        </article>
-        <article class="signatures">
-          <p>Signature</p>
-          <p>Signature</p>
-          <p>Signature</p>
-        </article>
-        <article>
-          <p>Le nom de l'arbitre doit être inscrit avant le début du match.</p>
-          <p>C*&nbsp;: Contrôle des licences</p>
-          <p>L'arbitre doit cocher cette case afin d'attester le contrôle.</p>
-        </article>
-      </section>
-    </main>
+    <h1>Fédération française des échecs</br>Feuille de match</h1>
+
+    <table id="misc-info">
+      <tr>
+        <th>Date</th>
+        <th>Lieu</th>
+        <th>Compétition</th>
+        <th>Ronde</th>
+      </tr>
+      <tr>
+        <td>{{ date }}</td>
+        <td>{{ city }}</td>
+        <td>Interclubs Adultes</td>
+        <td>{{ round }}</td>
+      </tr>
+    </table>
+
+    <div id="pairing-tables">
+      <table class="pairing-table">
+        <tr class="pairing-table-top-row">
+          <th>Club ayant les blancs sur les échiquiers impairs</th>
+          <th>S</th>
+        </tr>
+        <tr class="pairing-table-top-row">
+          <td>{{ odd.club }}</td>
+          <td></td>
+        </tr>
+        <tr>
+          <th></th>
+          <th>Nom et Prénom</th>
+          <th class="player-ffe-id">Code FFE</th>
+          <th class="player-rating">Elo</th>
+          <th>C*</th>
+          <th>R</th>
+        </tr>
+        <tr>
+          <td class="board-no">1B</td>
+          <td class="player-name">{{ odd.p1.name }}</td>
+          <td class="player-ffe-id">{{ odd.p1.ffeId }}</td>
+          <td class="player-rating">{{ odd.p1.rating }}</td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="board-no">2N</td>
+          <td class="player-name">{{ odd.p2.name }}</td>
+          <td class="player-ffe-id">{{ odd.p2.ffeId }}</td>
+          <td class="player-rating">{{ odd.p2.rating }}</td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="board-no">3B</td>
+          <td class="player-name">{{ odd.p3.name }}</td>
+          <td class="player-ffe-id">{{ odd.p3.ffeId }}</td>
+          <td class="player-rating">{{ odd.p3.rating }}</td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="board-no">4N</td>
+          <td class="player-name">{{ odd.p4.name }}</td>
+          <td class="player-ffe-id">{{ odd.p4.ffeId }}</td>
+          <td class="player-rating">{{ odd.p4.rating }}</td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="board-no">5B</td>
+          <td class="player-name">{{ odd.p5.name }}</td>
+          <td class="player-ffe-id">{{ odd.p5.ffeId }}</td>
+          <td class="player-rating">{{ odd.p5.rating }}</td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="board-no">6N</td>
+          <td class="player-name">{{ odd.p6.name }}</td>
+          <td class="player-ffe-id">{{ odd.p6.ffeId }}</td>
+          <td class="player-rating">{{ odd.p6.rating }}</td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="board-no">7B</td>
+          <td class="player-name">{{ odd.p7.name }}</td>
+          <td class="player-ffe-id">{{ odd.p7.ffeId }}</td>
+          <td class="player-rating">{{ odd.p7.rating }}</td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="board-no">8N</td>
+          <td class="player-name">{{ odd.p8.name }}</td>
+          <td class="player-ffe-id">{{ odd.p8.ffeId }}</td>
+          <td class="player-rating">{{ odd.p8.rating }}</td>
+          <td></td>
+          <td></td>
+        </tr>
+      </table>
+
+      <table class="pairing-table">
+        <tr class="pairing-table-top-row">
+          <th>Club ayant les blancs sur les échiquiers pairs</th>
+          <th>S</th>
+        </tr>
+        <tr class="pairing-table-top-row">
+          <td>{{ even.club }}</td>
+          <td></td>
+        </tr>
+        <tr>
+          <th></th>
+          <th>Nom et Prénom</th>
+          <th class="player-ffe-id">Code FFE</th>
+          <th class="player-rating">Elo</th>
+          <th>C*</th>
+          <th>R</th>
+        </tr>
+        <tr>
+          <td class="board-no">1N</td>
+          <td class="player-name">{{ even.p1.name }}</td>
+          <td class="player-ffe-id">{{ even.p1.ffeId }}</td>
+          <td class="player-rating">{{ even.p1.rating }}</td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="board-no">2B</td>
+          <td class="player-name">{{ even.p2.name }}</td>
+          <td class="player-ffe-id">{{ even.p2.ffeId }}</td>
+          <td class="player-rating">{{ even.p2.rating }}</td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="board-no">3N</td>
+          <td class="player-name">{{ even.p3.name }}</td>
+          <td class="player-ffe-id">{{ even.p3.ffeId }}</td>
+          <td class="player-rating">{{ even.p3.rating }}</td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="board-no">4B</td>
+          <td class="player-name">{{ even.p4.name }}</td>
+          <td class="player-ffe-id">{{ even.p4.ffeId }}</td>
+          <td class="player-rating">{{ even.p4.rating }}</td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="board-no">5N</td>
+          <td class="player-name">{{ even.p5.name }}</td>
+          <td class="player-ffe-id">{{ even.p5.ffeId }}</td>
+          <td class="player-rating">{{ even.p5.rating }}</td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="board-no">6B</td>
+          <td class="player-name">{{ even.p6.name }}</td>
+          <td class="player-ffe-id">{{ even.p6.ffeId }}</td>
+          <td class="player-rating">{{ even.p6.rating }}</td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="board-no">7N</td>
+          <td class="player-name">{{ even.p7.name }}</td>
+          <td class="player-ffe-id">{{ even.p7.ffeId }}</td>
+          <td class="player-rating">{{ even.p7.rating }}</td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="board-no">8B</td>
+          <td class="player-name">{{ even.p8.name }}</td>
+          <td class="player-ffe-id">{{ even.p8.ffeId }}</td>
+          <td class="player-rating">{{ even.p8.rating }}</td>
+          <td></td>
+          <td></td>
+        </tr>
+      </table>
+    </div>
+
+    <div id="mentions">
+      <article>
+        <p>Nom du capitaine&nbsp;: {{ odd.cap }}</p>
+        <p>Nom de l'arbitre&nbsp;: ........................</p>
+        <p>Nom du capitaine&nbsp;: {{ even.cap }}</p>
+      </article>
+      <article class="signatures">
+        <p>Signature</p>
+        <p>Signature</p>
+        <p>Signature</p>
+      </article>
+      <article>
+        <p>Le nom de l'arbitre doit être inscrit avant le début du match.</p>
+        <p>C*&nbsp;: Contrôle des licences</p>
+        <p>L'arbitre doit cocher cette case afin d'attester le contrôle.</p>
+      </article>
+    </div>
+
     <footer>
       <p>Fédération Française des Échecs Saison {{ season }}</p>
       <p>À renvoyer à : Maxence Bridoux</p>

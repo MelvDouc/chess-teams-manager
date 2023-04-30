@@ -18,7 +18,11 @@ const createPlayer = asyncWrapper(async (req, res) => {
 });
 
 const updatePlayer = asyncWrapper(async (req, res) => {
-  const { acknowledged, modifiedCount } = await playerModel.updatePlayer({ ffeId: req.params.ffeId }, req.body);
+  delete req.body._id;
+  delete req.body.ffeId;
+  const { acknowledged, modifiedCount } = await playerModel.updatePlayer({ ffeId: req.params.ffeId }, {
+    $set: req.body
+  });
   res.json({ success: acknowledged && modifiedCount > 0 });
 });
 

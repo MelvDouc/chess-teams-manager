@@ -1,11 +1,13 @@
 import { Router } from "express";
 import apiRouter from "../routes/api.router.js";
 import clientController from "../controllers/client.controller.js";
+import matchController from "../controllers/match.controller.js";
 
 const router = Router();
 
 router.use("/api/v1", apiRouter);
-router.all("/(.*)", (req, res) => {
+router.use("/matchs/:season/:round/:teamName/feuille-de-match", matchController.downloadScoreSheet);
+router.use((req, res) => {
   if (req.method === "GET")
     return clientController.home(req, res);
 
