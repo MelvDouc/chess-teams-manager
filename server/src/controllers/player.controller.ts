@@ -14,7 +14,7 @@ const getPlayers = asyncWrapper(async (req, res) => {
 
 const createPlayer = asyncWrapper(async (req, res) => {
   const { acknowledged, insertedId } = await playerModel.createPlayer(req.body);
-  res.json({ success: acknowledged && !!insertedId });
+  res.json({ acknowledged, insertedId });
 });
 
 const updatePlayer = asyncWrapper(async (req, res) => {
@@ -23,12 +23,12 @@ const updatePlayer = asyncWrapper(async (req, res) => {
   const { acknowledged, modifiedCount } = await playerModel.updatePlayer({ ffeId: req.params.ffeId }, {
     $set: req.body
   });
-  res.json({ success: acknowledged && modifiedCount > 0 });
+  res.json({ acknowledged, modifiedCount });
 });
 
 const deletePlayer = asyncWrapper(async (req, res) => {
   const { acknowledged, deletedCount } = await playerModel.deletePlayer({ ffeId: req.params.ffeId });
-  res.json({ success: acknowledged && deletedCount > 0 });
+  res.json({ acknowledged, deletedCount });
 });
 
 

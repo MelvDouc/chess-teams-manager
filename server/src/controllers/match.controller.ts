@@ -63,21 +63,21 @@ const getSeasons = asyncWrapper(async (req, res) => {
 
 const createMatch = asyncWrapper(async (req, res) => {
   const { acknowledged, insertedId } = await matchModel.createMatch(req.body);
-  res.json({ success: acknowledged && !!insertedId });
+  res.json({ acknowledged, insertedId });
 });
 
 const updateMatch = asyncWrapper(async (req, res) => {
   const _id = new ObjectId(req.params._id);
-  const { acknowledged } = await matchModel.updateMatch({ _id }, {
+  const { acknowledged, modifiedCount } = await matchModel.updateMatch({ _id }, {
     $set: req.body
   });
-  res.json({ success: acknowledged });
+  res.json({ acknowledged, modifiedCount });
 });
 
 const deleteMatch = asyncWrapper(async (req, res) => {
   const _id = new ObjectId(req.params._id);
   const { acknowledged, deletedCount } = await matchModel.deleteMatch({ _id });
-  res.json({ success: acknowledged && deletedCount > 0 });
+  res.json({ acknowledged, deletedCount });
 });
 
 export default {
