@@ -1,6 +1,4 @@
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
-import { createTransport } from "nodemailer";
+import { SentMessageInfo, createTransport } from "nodemailer";
 import config from "../config/config.js";
 import { compileTemplate } from "./templates.service.js";
 
@@ -18,19 +16,19 @@ async function sendEmail({ to, subject, templateName, context }: {
   subject: string;
   templateName: string;
   context: Record<string, any>;
-}) {
+}): Promise<[SentMessageInfo, null] | [null, Error]> {
   try {
     const { html, text } = await compileTemplate(templateName, context);
-    return transport.sendMail({
+    const sendInfo = await transport.sendMail({
       from: config.ADMIN_EMAIL_ADDRESS,
       to,
       subject,
       html,
       text
     });
+    return [sendInfo, null];
   } catch (error) {
-    console.log(error);
-    return null;
+    return [null, error as Error];
   }
 }
 
