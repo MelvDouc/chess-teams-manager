@@ -1,3 +1,4 @@
+import { FreeJSX } from "reactfree-jsx";
 import { Match, Player } from "@src/types.js";
 
 const playersByFullName = new Map<string, Player>();
@@ -5,7 +6,7 @@ const playersByFullName = new Map<string, Player>();
 export default function LineUpTablePlayerSelect({ board, lineUpObs, players }: {
   board: number;
   players: Player[];
-  lineUpObs: Obs<Match["lineUp"]>;
+  lineUpObs: FreeJSX.Obs<Match["lineUp"]>;
 }) {
   const getPlayerByName = createGetPlayerByNameFn(players);
   const initialPlayer = players.find(({ ffeId }) => ffeId === lineUpObs.value[board]?.ffeId);

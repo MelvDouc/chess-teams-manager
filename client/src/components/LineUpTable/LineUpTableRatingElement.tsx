@@ -1,9 +1,10 @@
+import { FreeJSX } from "reactfree-jsx";
 import { Match } from "@src/types.js";
 import cssClasses from "./styles.module.scss";
 
 export default function LineUpTableRatingElement({ board, lineUpObs }: {
   board: number;
-  lineUpObs: Obs<Match["lineUp"]>;
+  lineUpObs: FreeJSX.Obs<Match["lineUp"]>;
 }) {
   return (
     <div

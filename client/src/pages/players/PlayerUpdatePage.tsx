@@ -1,9 +1,9 @@
 import PlayerForm from "@src/components/forms/PlayerForm.jsx";
 import { get, update } from "@src/utils/api.js";
-import { PublicEntities } from "@src/types.js";
+import { Player } from "@src/types.js";
 
 export default async function PlayerUpdatePage({ ffeId }: { ffeId: string; }) {
-  const player = await get<PublicEntities.Player>(`/players/${ffeId}`);
+  const player = await get<Player>(`/players/${ffeId}`);
 
   if (!player)
     return (

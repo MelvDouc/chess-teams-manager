@@ -1,3 +1,4 @@
+import { FreeJSX } from "reactfree-jsx";
 import FormCheckbox from "./FormCheckbox.jsx";
 import FormGroup from "./FormGroup.jsx";
 import FormSelect from "./FormSelect.jsx";

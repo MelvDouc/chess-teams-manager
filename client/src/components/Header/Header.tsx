@@ -1,6 +1,6 @@
 import { Observable } from "reactfree-jsx";
 import LogOutButton from "@src/components/LogOutButton/LogOutButton.jsx";
-import RouterLink from "@src/routing/RouterLink.jsx";
+import router from "@src/router.jsx";
 import auth, { RoleIndex } from "@src/utils/auth.js";
 import cssClasses from "./Header.module.scss";
 
@@ -17,10 +17,7 @@ export default function Header() {
         <nav className="h-100">
           <ul className="m-0 p-0 d-flex flex-wrap justify-content-end align-items-center gap-3 list-style-none">
             <li classes={{ "d-none": hideLinksObs }}>
-              <RouterLink href="/">Accueil</RouterLink>
-            </li>
-            <li classes={{ "d-none": hideLinksObs }}>
-              <RouterLink href="/matchs">Matchs</RouterLink>
+              <router.link to="/matchs">Matchs</router.link>
             </li>
             <li
               className="d-none"
@@ -32,7 +29,7 @@ export default function Header() {
                 });
               }}
             >
-              <RouterLink href="/joueurs">Joueurs</RouterLink>
+              <router.link to="/joueurs">Joueurs</router.link>
             </li>
             <li>
               <div classes={{

@@ -3,7 +3,7 @@ import { get, update } from "@src/utils/api.js";
 import { Match, ShortMatchInfo } from "@src/types.js";
 import { playersCache } from "@src/utils/local-storage.js";
 
-export default async function MatchCreatePage({ season, round, teamName }: ShortMatchInfo) {
+export default async function MatchCreatePage({ season, round, teamName }: Record<keyof ShortMatchInfo, string>) {
   const match = await get<Match>(`/matches/${season}/${round}/${teamName}`);
   const players = await playersCache.get();
 

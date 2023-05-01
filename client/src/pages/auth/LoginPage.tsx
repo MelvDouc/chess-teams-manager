@@ -1,6 +1,5 @@
 import Form from "@src/components/Form/Form.jsx";
-import Router from "@src/routing/Router.js";
-import RouterLink from "@src/routing/RouterLink.jsx";
+import router from "@src/router.jsx";
 import auth from "@src/utils/auth.js";
 
 export default async function LoginPage() {
@@ -20,7 +19,7 @@ export default async function LoginPage() {
 
             if (!isValidCredentials)
               return alert("Identifiants invalides.");
-            Router.navigate("/");
+            router.navigate("/");
           }}
         >
           <Form.Row>
@@ -48,7 +47,7 @@ export default async function LoginPage() {
       </section>
       <section>
         <p>
-          <RouterLink href="/auth/oubli-mot-de-passe">Mot de passe oublié ?</RouterLink>
+          <router.link to="/auth/oubli-mot-de-passe">Mot de passe oublié ?</router.link>
         </p>
       </section>
     </div>

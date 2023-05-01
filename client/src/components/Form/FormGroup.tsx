@@ -1,3 +1,5 @@
+import { FreeJSX } from "reactfree-jsx";
+
 const FormGroup = <Type extends FreeJSX.Input["type"] | "textarea">({
   type,
   nameAndId,

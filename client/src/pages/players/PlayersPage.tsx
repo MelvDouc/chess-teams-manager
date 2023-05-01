@@ -1,5 +1,4 @@
-import Table from "@src/components/Table/Table.jsx";
-import RouterLink from "@src/routing/RouterLink.jsx";
+import router from "@src/router.jsx";
 import { deleteOne } from "@src/utils/api.js";
 import auth, { RoleIndex } from "@src/utils/auth.js";
 import { playersCache } from "@src/utils/local-storage.js";
@@ -11,9 +10,9 @@ export default async function PlayersPage() {
   return (
     <>
       <h2>Joueurs</h2>
-      <Table large={true}>
+      <table className="table table-striped table-bordered table-hover">
         <thead>
-          <tr>
+          <tr className="bg-primary text-light">
             <th>N° FFE</th>
             <th>N° FIDE</th>
             <th>NOM</th>
@@ -35,29 +34,29 @@ export default async function PlayersPage() {
               <td>{phone ?? ""}</td>
               <td>{rating ?? 1199}</td>
               <td>
-                <Table.Actions>
+                <div className="d-flex justify-content-center align-items-center gap-2">
                   {(RoleIndex[currentUserRole] > RoleIndex[role] || currentUserFfeId === ffeId)
-                    ? (<RouterLink
-                      href={`/joueurs/${ffeId}/modifier`}
+                    ? (<router.link
+                      to={`/joueurs/${ffeId}/modifier`}
                       className="btn btn-primary"
                       title="Modifier"
                     >
                       <i className="bi bi-pencil-fill"></i>
-                    </RouterLink>)
+                    </router.link>)
                     : null}
                   {(RoleIndex[currentUserRole] > RoleIndex[role])
                     ? (<button className="btn btn-danger" title="supprimer" onclick={(e) => delPlayer(e, ffeId)}>
                       <i className="bi bi-trash-fill"></i>
                     </button>)
                     : null}
-                </Table.Actions>
+                </div>
               </td>
             </tr>
           ))}
         </tbody>
-      </Table>
+      </table>
       <div className="mt-5">
-        <RouterLink href="/joueurs/nouveau" className="btn btn-success">Ajouter un joueur</RouterLink>
+        <router.link to="/joueurs/nouveau" className="btn btn-success">Ajouter un joueur</router.link>
       </div>
     </>
   );

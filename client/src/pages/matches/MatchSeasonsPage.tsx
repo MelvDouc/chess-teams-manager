@@ -1,4 +1,4 @@
-import RouterLink from "@src/routing/RouterLink.jsx";
+import router from "@src/router.jsx";
 import { get } from "@src/utils/api.js";
 
 export default async function MatchSeasonsPage() {
@@ -11,13 +11,13 @@ export default async function MatchSeasonsPage() {
         <ul>
           {(seasons ?? []).map((season) => (
             <li>
-              <RouterLink href={`/matchs/${season}`}>{season - 1}-{season}</RouterLink>
+              <router.link to={`/matchs/${season}`}>{season - 1}-{season}</router.link>
             </li>
           ))}
         </ul>
       </section>
       <section>
-        <RouterLink href="/matchs/nouveau" className="btn btn-success">Ajouter un match</RouterLink>
+        <router.link to="/matchs/nouveau" className="btn btn-success">Ajouter un match</router.link>
       </section>
     </>
   );
