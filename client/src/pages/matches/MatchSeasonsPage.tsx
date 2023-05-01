@@ -7,7 +7,7 @@ export default async function MatchSeasonsPage() {
   return (
     <>
       <section>
-        <h2>Par saison</h2>
+        <h2>Matchs par saison</h2>
         <ul>
           {(seasons ?? []).map((season) => (
             <li>

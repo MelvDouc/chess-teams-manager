@@ -1,0 +1,24 @@
+.alertBoxContainer {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  display: grid;
+  place-items: center;
+  background-color: rgba(0, 219, 255, 0.21);
+
+  .alertBox {
+    width: min(80%, 500px);
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    border-radius: 5px;
+    padding: 0.5em;
+    gap: 1em;
+    background-color: white;
+    filter: drop-shadow(4px 4px 8px lightgray);
+
+    p {
+      text-align: center;
+    }
+  }
+}

@@ -1,15 +1,25 @@
-import auth from "@src/utils/auth.js";
+import AlertBox from "@src/components/AlertBox/AlertBox.jsx";
 
-export default function LogOutButton() {
+export default function LogOutButton({ logOut, children }: {
+  logOut: VoidFunction;
+  children?: any;
+}) {
   return (
     <button
       className="btn btn-danger"
-      onclick={() => {
-        if (confirm("Êtes-vous sûr(e) de vouloir vous déconnecter ?"))
-          auth.logOut();
+      title="Déconnexion"
+      style={{
+        transform: "scale(0.75)"
       }}
-    >
-      <i className="bi bi-power"></i>
-    </button>
+      onclick={(e) => {
+        e.preventDefault();
+        AlertBox({
+          type: "success",
+          message: "Êtes-vous sûr(e) de vouloir vous déconnecter ?",
+          onCancel: (closeFn) => closeFn(),
+          postClose: logOut
+        });
+      }}
+    >{children}</button>
   );
 }

@@ -47,7 +47,7 @@ export default async function LoginPage() {
       </section>
       <section>
         <p>
-          <router.link to="/auth/oubli-mot-de-passe">Mot de passe oublié ?</router.link>
+          <router.link to="/oubli-mot-de-passe">Mot de passe oublié ?</router.link>
         </p>
       </section>
     </div>

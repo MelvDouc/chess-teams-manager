@@ -9,7 +9,6 @@ import MatchUpdatePage from "@src/pages/matches/MatchUpdatePage.jsx";
 import MatchSeasonsPage from "@src/pages/matches/MatchSeasonsPage.js";
 import PlayersPage from "@src/pages/players/PlayersPage.js";
 import PlayerCreatePage from "@src/pages/players/PlayerCreatePage.js";
-import PlayerUpdatePage from "@src/pages/players/PlayerUpdatePage.js";
 import auth /*, { RoleIndex }*/ from "@src/utils/auth.js";
 
 const router = new Router({
@@ -45,11 +44,6 @@ router
     // preCheck: allowCaptainMinimum,
     getPageTitle: () => "Ajouter un joueur",
     component: PlayerCreatePage,
-  })
-  .addRoute("/joueurs/:ffeId/modifier", {
-    // preCheck: allowCaptainMinimum,
-    getPageTitle: ({ ffeId }) => `Modifier ${ffeId}`,
-    component: PlayerUpdatePage
   })
   .addRoute("/", {
     // preCheck: allowCaptainMinimum,

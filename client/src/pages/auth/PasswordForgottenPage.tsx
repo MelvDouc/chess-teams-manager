@@ -1,8 +1,8 @@
+import AlertBox from "@src/components/AlertBox/AlertBox.jsx";
 import Form from "@src/components/Form/Form.jsx";
 import { post } from "@src/utils/api.js";
 
 export default function PasswordForgottenPage() {
-  const messageElement: HTMLParagraphElement = (<p></p>);
 
   return (
     <>
@@ -20,7 +20,10 @@ export default function PasswordForgottenPage() {
             if (postResult?.errors)
               return alert(postResult.errors.join("\n"));
 
-            messageElement.innerText = "Un lien de réinitialisation vous a été envoyé par email.";
+            AlertBox({
+              message: "Un lien de réinitialisation vous a été envoyé par email.",
+              type: "success",
+            });
           }}
         >
           <Form.Group
@@ -34,7 +37,6 @@ export default function PasswordForgottenPage() {
           </Form.Row>
         </Form>
       </section>
-      {messageElement}
     </>
   );
 }

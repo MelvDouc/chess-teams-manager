@@ -1,4 +1,6 @@
+import AlertBox from "@src/components/AlertBox/AlertBox.jsx";
 import PlayerForm from "@src/components/forms/PlayerForm.jsx";
+import router from "@src/router.jsx";
 import { post } from "@src/utils/api.js";
 
 export default function PlayerCreatePage() {
@@ -9,7 +11,12 @@ export default function PlayerCreatePage() {
 
       if (!insertedId)
         return alert("Le joueur n'a pas pu être créé.");
-      location.assign("/joueurs");
+
+      AlertBox({
+        type: "success",
+        message: "Le joueur a bien été créé.",
+        postClose: () => router.navigate("/joueurs")
+      });
     }
   });
 

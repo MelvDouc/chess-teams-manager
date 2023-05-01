@@ -22,19 +22,16 @@ h4 {
   margin-bottom: 1em;
 }
 
-h2 {
-  padding: 0.2em;
-  background-color: rgb(8, 8, 223);
-  background-image: linear-gradient(to right, rgb(8, 8, 223), rgb(2, 2, 255));
-  color: white;
-}
-
 a {
   color: inherit;
 }
 
 ul {
   list-style-position: inside;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }
 
 .list-style-none {

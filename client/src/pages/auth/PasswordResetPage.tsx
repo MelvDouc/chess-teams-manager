@@ -23,7 +23,7 @@ export default function PasswordResetPage({ pwdResetId }: {
               return alert(postResult.errors.join("\n"));
 
             messageElement.innerText = "Votre mot de passe a bien été mis à jour";
-            setTimeout(() => location.assign("/auth/connexion"), 3000);
+            setTimeout(() => location.assign("/connexion"), 3000);
           }}
         >
           <Form.Group

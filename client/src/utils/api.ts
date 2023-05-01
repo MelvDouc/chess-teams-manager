@@ -30,7 +30,7 @@ export function get<TData>(path: Path) {
   });
 }
 
-export function post<TData, TReturnValue = number>(path: Path, data: TData) {
+export function post<TData, TReturnValue = Acknowlegeable & { insertId: string; }>(path: Path, data: TData) {
   return fetchFromApi<TReturnValue>(path, {
     method: "POST",
     headers: {
@@ -42,7 +42,7 @@ export function post<TData, TReturnValue = number>(path: Path, data: TData) {
 }
 
 export function update<TData>(path: Path, data: TData) {
-  return fetchFromApi<SuccessResponse>(path, {
+  return fetchFromApi<Acknowlegeable & { modifiedCount: number; }>(path, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -53,7 +53,7 @@ export function update<TData>(path: Path, data: TData) {
 }
 
 export function deleteOne(path: Path) {
-  return fetchFromApi<SuccessResponse>(path, {
+  return fetchFromApi<Acknowlegeable & { deletedCount: number; }>(path, {
     method: "DELETE",
     headers: {
       "Authorization": auth.getToken() ?? ""
@@ -89,9 +89,8 @@ export function decodeToken(auth_token: string) {
 // TYPES
 // ===== ===== ===== ===== =====
 
-type SuccessResponse = {
-  errors?: string[];
-  success?: boolean;
-};
+interface Acknowlegeable {
+  acknowledged: boolean;
+}
 
 type Path = `/${string}`;
