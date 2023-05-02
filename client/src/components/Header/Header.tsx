@@ -57,14 +57,18 @@ export default function Header() {
               <span
                 $init={(element) => auth.onUserSet((user) => {
                   element.innerText = user?.ffeId ?? "";
-                  (user)
-                    ? element.nextElementSibling!.classList.remove("d-none")
-                    : element.nextElementSibling!.classList.add("d-none");
                 })}
               ></span>
-              <LogOutButton logOut={auth.logOut}>
-                <i className="bi bi-power"></i>
-              </LogOutButton>
+              <LogOutButton
+                logOut={auth.logOut}
+                $init={(button) => {
+                  auth.onUserSet((user) => {
+                    (user)
+                      ? button.classList.remove("d-none")
+                      : button.classList.add("d-none");
+                  });
+                }}
+              />
             </span>
           </div>
         </div>

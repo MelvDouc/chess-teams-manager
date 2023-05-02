@@ -1,25 +1,27 @@
-import AlertBox from "@src/components/AlertBox/AlertBox.jsx";
+import Modal from "@src/components/Modal/Modal.jsx";
 
-export default function LogOutButton({ logOut, children }: {
+export default function LogOutButton({ logOut, $init }: {
   logOut: VoidFunction;
-  children?: any;
+  $init: (button: HTMLButtonElement) => void;
 }) {
   return (
     <button
       className="btn btn-danger"
+      $init={$init}
       title="Déconnexion"
       style={{
         transform: "scale(0.75)"
       }}
-      onclick={(e) => {
-        e.preventDefault();
-        AlertBox({
-          type: "success",
-          message: "Êtes-vous sûr(e) de vouloir vous déconnecter ?",
-          onCancel: (closeFn) => closeFn(),
-          postClose: logOut
-        });
-      }}
-    >{children}</button>
+      onclick={() => Modal.setState({
+        type: "success",
+        message: "Êtes-vous sûr(e) de vouloir vous déconnecter ?",
+        onClose: (returnValue) => {
+          if (returnValue === "OK")
+            logOut();
+        }
+      })}
+    >
+      <i className="bi bi-power"></i>
+    </button>
   );
 }

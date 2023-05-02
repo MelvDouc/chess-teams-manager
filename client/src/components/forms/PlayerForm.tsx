@@ -6,7 +6,7 @@ import { Player } from "@src/types.js";
 export default function PlayerForm({ player, handleSubmit }: {
   player: Player | null;
   handleSubmit: (player: Omit<Player, "pwd" | "pwdResetId">) => void | Promise<void>;
-}) {
+}): HTMLFormElement {
   const p: Omit<Player, "pwd" | "pwdResetId"> = player ?? {
     ffeId: "",
     fideId: null,

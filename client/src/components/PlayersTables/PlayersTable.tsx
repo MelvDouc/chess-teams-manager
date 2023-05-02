@@ -1,11 +1,12 @@
 import { update } from "@src/utils/api.js";
-import PlayersTableRow from "./PlayersTableRow.jsx";
+import PlayersTableRow from "./PlayersTableRow.js";
 import { Player } from "@src/types.js";
 
 export default function PlayersTable({ players, clearCache }: {
   players: Player[];
   clearCache: VoidFunction;
 }) {
+
   return (
     <table className="table table-striped table-bordered table-hover">
       <thead>

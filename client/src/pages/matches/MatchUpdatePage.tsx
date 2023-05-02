@@ -1,4 +1,4 @@
-import AlertBox from "@src/components/AlertBox/AlertBox.jsx";
+import Modal from "@src/components/Modal/Modal.jsx";
 import MatchForm from "@src/components/forms/MatchForm.jsx";
 import { get, update } from "@src/utils/api.js";
 import { playersCache } from "@src/utils/local-storage.js";
@@ -19,15 +19,14 @@ export default async function MatchCreatePage({ season, round, teamName }: Recor
           const updateResult = await update(`/matches/${_id}/update`, updates);
 
           if (!updateResult?.acknowledged)
-            return AlertBox({
-              type: "danger",
-              message: "Le match n'a pas pu être mis à jour."
-            });
+            return alert("Le match n'a pas pu être mis à jour.");
 
-          AlertBox({
+          Modal.setState({
             type: "success",
             message: "Le match a bien été modifié.",
-            postClose: () => router.navigate(`/matchs/${updates.season}`)
+            onClose: () => {
+              router.navigate(`/matchs/${updates.season ?? season}`);
+            }
           });
         }}
       />

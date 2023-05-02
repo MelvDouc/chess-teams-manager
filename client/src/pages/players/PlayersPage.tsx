@@ -1,4 +1,4 @@
-import PlayersTable from "@src/components/PlayersTable/PlayersTable.jsx";
+import PlayersTables from "@src/components/PlayersTables/PlayersTables.jsx";
 import router from "@src/router.jsx";
 import { playersCache } from "@src/utils/local-storage.js";
 
@@ -9,13 +9,17 @@ export default async function PlayersPage() {
     <>
       <section className="mb-3">
         <h2>Joueurs</h2>
-        <PlayersTable
-          players={players ?? []}
-          clearCache={playersCache.clear}
-        />
+        <router.link to="/joueurs/nouveau" className="btn btn-success">Ajouter un joueur</router.link>
       </section>
       <section>
-        <router.link to="/joueurs/nouveau" className="btn btn-success">Ajouter un joueur</router.link>
+        <div>
+          {(Array.isArray(players) && players.length)
+            ? <PlayersTables
+              players={players}
+              clearCache={playersCache.clear}
+            />
+            : <p>Liste des joueurs indisponible.</p>}
+        </div>
       </section>
     </>
   );

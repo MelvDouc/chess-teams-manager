@@ -1,4 +1,5 @@
 import Header from "@src/components/Header/Header.jsx";
+import Modal from "@src/components/Modal/Modal.jsx";
 import router from "@src/router.jsx";
 import auth from "@src/utils/auth.js";
 
@@ -17,6 +18,7 @@ export default function App() {
                 });
               }}
             ></div>
+            {Modal.getModal()}
           </main>
         </>
       );

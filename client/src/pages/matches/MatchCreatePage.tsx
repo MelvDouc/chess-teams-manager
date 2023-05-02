@@ -1,4 +1,4 @@
-import AlertBox from "@src/components/AlertBox/AlertBox.jsx";
+import Modal from "@src/components/Modal/Modal.jsx";
 import MatchForm from "@src/components/forms/MatchForm.jsx";
 import router from "@src/router.jsx";
 import { post } from "@src/utils/api.js";
@@ -19,10 +19,10 @@ export default async function MatchCreatePage() {
           if (!postResult?.acknowledged)
             return alert("Le match n'a pu être créé.");
 
-          AlertBox({
+          Modal.setState({
             type: "success",
             message: "Le match a bien été créé.",
-            postClose: () => router.navigate(`/matchs/${match.season}`)
+            onClose: () => router.navigate(`/matchs/${match.season}`)
           });
         }}
       />
