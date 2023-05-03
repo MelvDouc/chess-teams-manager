@@ -1,10 +1,10 @@
 import { FreeJSX, Observable } from "reactfree-jsx";
-import LineUpTablePlayerSelect from "./LineUpTablePlayerSelect.jsx";
-import LineUpTableRatingElement from "./LineUpTableRatingElement.jsx";
+import LineUpTablePlayerNameCell from "./LineUpTablePlayerNameCell.jsx";
+import LineUpTableRatingCell from "./LineUpTableRatingCell.jsx";
 import LineUpTableCaptainFfeIdInput from "./LineUpTableCaptainFfeIdInput.jsx";
+import LineUpTableFfeIdCell from "./LineUpTableFfeIdCell.jsx";
 import { PropertyAccessors } from "@src/utils/create-accessors.js";
 import { Match, Player } from "@src/types.js";
-import cssClasses from "./styles.module.scss";
 
 export default function LineUpTable({ whiteOnOddsObs, lineUpAccessors, captainFfeIdAccessors, players }: {
   whiteOnOddsObs: FreeJSX.Obs<Match["whiteOnOdds"]>;
@@ -13,6 +13,42 @@ export default function LineUpTable({ whiteOnOddsObs, lineUpAccessors, captainFf
   players: Player[];
 }) {
   const lineUpObs = new Observable(lineUpAccessors.get());
+  const fullNamesByFfeId = new Map<string, string>();
+  const playersByFullName = players.reduce((acc, player) => {
+    const fullName = `${player.firstName} ${player.lastName}`;
+    fullNamesByFfeId.set(player.ffeId, fullName);
+    return acc.set(fullName, player);
+  }, new Map<string, Player>());
+
+  const setPlayerFullName = (name: string, board: number) => {
+    if (!name) {
+      lineUpObs.value[board] = null;
+      return lineUpObs.notify();
+    }
+
+    const player = playersByFullName.get(name);
+    lineUpObs.value[board] = {
+      ffeId: player?.ffeId ?? "",
+      name,
+      rating: player?.rating ?? 1199,
+    };
+    lineUpObs.notify();
+  };
+
+  const setFfeId = (ffeId: string, board: number) => {
+    if (lineUpObs.value[board])
+      lineUpObs.value[board]!.ffeId = ffeId;
+    else {
+      const name = fullNamesByFfeId.get(ffeId);
+      lineUpObs.value[board] = {
+        ffeId,
+        name: name ?? "",
+        rating: playersByFullName.get(name!)?.rating ?? 1199
+      };
+    }
+    lineUpObs.notify();
+  };
+
   lineUpObs.subscribe(lineUpAccessors.set);
 
   return (
@@ -31,37 +67,34 @@ export default function LineUpTable({ whiteOnOddsObs, lineUpAccessors, captainFf
           <tr>
             <td>{board}{whiteOnOddsObs.map((value) => ((+board % 2 === 1) === value) ? "B" : "N")}</td>
             <td>
-              <LineUpTablePlayerSelect
-                board={+board}
-                players={players}
-                lineUpObs={lineUpObs}
-              >
-                <option value="">--</option>
-                {players.map((p) => (
-                  <option
-                    value={p.ffeId}
-                    selected={p.ffeId === player?.ffeId}
-                  >{p.firstName} {p.lastName}</option>
-                ))}
-              </LineUpTablePlayerSelect>
+              <LineUpTablePlayerNameCell
+                playerFullName={player?.name ?? ""}
+                setPlayerFullName={(name) => setPlayerFullName(name, +board)}
+              />
             </td>
             <td>
-              <div
-                className={cssClasses.ffeIdElement}
-                contentEditable="true"
-                oninput={({ target }) => {
+              <LineUpTableFfeIdCell
+                ffeId={player?.ffeId ?? ""}
+                setFfeId={(ffeId) => setFfeId(ffeId, +board)}
+                onFfeIdChange={(subscription) => lineUpObs.subscribe((value) => {
+                  subscription(value[+board]?.ffeId ?? "");
+                })}
+              />
+            </td>
+            <td>
+              <LineUpTableRatingCell
+                rating={player?.rating || 0}
+                setRating={(rating) => {
                   if (lineUpObs.value[+board])
-                    lineUpObs.value[+board]!.ffeId = (target as HTMLElement).innerText;
+                    lineUpObs.value[+board]!.rating = rating;
+                  lineUpObs.notify();
                 }}
-                $init={(element) => {
+                onRatingChange={(subscription) => {
                   lineUpObs.subscribe((value) => {
-                    element.innerText = value[+board]?.ffeId ?? "";
+                    subscription(value[+board]?.rating || 0);
                   });
                 }}
-              >{lineUpObs.value[+board]?.ffeId}</div>
-            </td>
-            <td>
-              <LineUpTableRatingElement board={+board} lineUpObs={lineUpObs} />
+              />
             </td>
             <td>
               <LineUpTableCaptainFfeIdInput
@@ -71,7 +104,7 @@ export default function LineUpTable({ whiteOnOddsObs, lineUpAccessors, captainFf
             </td>
           </tr>
         ))}
-        <datalist id="players-datalist" onclick={console.log}>
+        <datalist id="players-datalist">
           {players.map(({ firstName, lastName }) => (
             <option value={`${firstName} ${lastName}`}>{firstName} {lastName}</option>
           ))}
