@@ -69,7 +69,7 @@ export function createLink(path: Path) {
 // AUTH
 // ===== ===== ===== ===== =====
 
-export function login(credentials: PlayerCredentials) {
+export function logIn(credentials: PlayerCredentials) {
   return fetchFromApi<string>("/auth/login", {
     method: "POST",
     headers: jsonHeaders,

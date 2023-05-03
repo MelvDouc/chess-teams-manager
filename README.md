@@ -7,3 +7,5 @@
 - [ ] add players team(s)
 - [ ] make players table sortable
 - [ ] check auth token on CRUD operation
+- [ ] use enum for player roles
+- [ ] validate date

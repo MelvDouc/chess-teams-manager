@@ -2,8 +2,6 @@ import { default as jwt } from "jsonwebtoken";
 import config from "../config/config.js";
 import { PlayerData, PlayerRole } from "../types.js";
 
-const Roles = ["ADMIN", "CAPTAIN", "USER"] as const;
-
 function createToken({ ffeId, role }: PlayerData): string {
   return jwt.sign({ ffeId, role }, config.JWT_SECRET, {
     expiresIn: "1y"
@@ -16,12 +14,15 @@ function decodeToken(token: string): Promise<PlayerData | null> {
       if (err)
         return resolve(null);
 
-      const { ffeId, role } = decoded as { ffeId: unknown; role: unknown; };
-
-      if (typeof ffeId !== "string" || !Roles.includes(role as PlayerRole))
+      if (
+        typeof decoded !== "object"
+        || decoded === null
+        || typeof decoded["ffeId"] !== "string"
+        || PlayerRole[decoded["role"]] === undefined
+      )
         return resolve(null);
 
-      resolve({ ffeId, role: role as PlayerRole });
+      resolve({ ffeId: decoded["ffeId"], role: decoded["role"] });
     });
   });
 }

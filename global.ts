@@ -1,7 +1,12 @@
+export enum PlayerRole {
+  ADMIN,
+  CAPTAIN,
+  USER
+}
+
 export type BoardColor = "B" | "N";
 export type PlayerCredentials = Pick<Player, "ffeId" | "pwd">;
 export type PlayerData = Pick<Player, "ffeId" | "role">;
-export type PlayerRole = "ADMIN" | "CAPTAIN" | "USER";
 
 export type LineUpItem = Pick<Player, "ffeId" | "rating"> & {
   name: string;

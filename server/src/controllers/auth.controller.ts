@@ -5,7 +5,7 @@ import playerModel from "../models/player.model.js";
 import emailService from "../services/email.service.js";
 import jwtService from "../services/jwt.service.js";
 
-const login = asyncWrapper(async (req, res) => {
+const logIn = asyncWrapper(async (req, res) => {
   const { ffeId, pwd } = req.body as { ffeId: string; pwd: string; };
   const player = await playerModel.getPlayer({ ffeId });
 
@@ -73,7 +73,7 @@ const passwordReset = asyncWrapper(async (req, res) => {
 
 
 export default {
-  login,
+  login: logIn,
   decodeToken,
   passwordForgotten,
   passwordReset

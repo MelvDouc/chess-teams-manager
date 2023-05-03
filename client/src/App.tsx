@@ -22,7 +22,9 @@ export default function App() {
           </main>
         </>
       );
-      auth.logBack().then(() => router.updateUrl(location.pathname));
+      auth.logBack().then((connected) => {
+        router.updateUrl((connected) ? location.pathname : "/connexion");
+      });
     }
   };
 }

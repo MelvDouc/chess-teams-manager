@@ -1,4 +1,4 @@
-import LogOutButton from "@src/components/LogOutButton/LogOutButton.jsx";
+import LogOutButton from "@src/components/Header/LogOutButton.jsx";
 import router from "@src/router.jsx";
 import { PlayerData } from "@src/types.js";
 

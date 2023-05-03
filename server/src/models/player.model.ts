@@ -22,7 +22,7 @@ function createPlayer(data: Omit<Player, "pwdResetId">): Promise<InsertOneResult
   return collections.players.insertOne(data);
 }
 
-function updatePlayer(filter: PlayerFilter, updates: UpdateFilter<Omit<Player, "ffe_id">>): Promise<UpdateResult<Player>> {
+function updatePlayer(filter: PlayerFilter, updates: UpdateFilter<Omit<Player, "ffeId">>): Promise<UpdateResult<Player>> {
   return collections.players.updateOne(filter, updates as any);
 }
 

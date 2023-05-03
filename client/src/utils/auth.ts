@@ -1,12 +1,8 @@
 import { Observable } from "reactfree-jsx";
-import { decodeToken, login } from "./api.js";
-import { PlayerCredentials, PlayerData } from "@src/types.js";
+import { decodeToken, logIn } from "./api.js";
+import { PlayerCredentials, PlayerData, PlayerRole } from "@src/types.js";
 
-export enum RoleIndex {
-  USER,
-  CAPTAIN,
-  ADMIN
-}
+export { PlayerRole };
 
 const localStorageKey = "auth_token";
 const userDataObs = new Observable<PlayerData | null>(null);
@@ -14,8 +10,8 @@ const userDataObs = new Observable<PlayerData | null>(null);
 export default {
   getUser: () => userDataObs.value,
   getToken: () => localStorage.getItem(localStorageKey),
-  logIn: async (credentials: PlayerCredentials): Promise<boolean> => {
-    const authToken = await login(credentials);
+  checkCredentials: async (credentials: PlayerCredentials): Promise<boolean> => {
+    const authToken = await logIn(credentials);
 
     if (!authToken)
       return false;
@@ -24,17 +20,20 @@ export default {
     userDataObs.value = await decodeToken(authToken);
     return true;
   },
-  logBack: async () => {
+  logBack: async (): Promise<boolean> => {
     const authToken = localStorage.getItem(localStorageKey);
 
     if (authToken) {
       const userData = await decodeToken(authToken);
       userDataObs.value = userData;
+      return userData !== null;
     }
+
+    return false;
   },
   logOut: () => {
     localStorage.removeItem(localStorageKey);
     userDataObs.value = null;
   },
-  onUserSet: (subscription: (user: PlayerData | null) => any) => userDataObs.subscribe(subscription)
+  onUserChange: (subscription: (user: PlayerData | null) => any) => userDataObs.subscribe(subscription)
 };

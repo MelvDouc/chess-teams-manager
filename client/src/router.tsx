@@ -9,7 +9,6 @@ import MatchUpdatePage from "@src/pages/matches/MatchUpdatePage.jsx";
 import MatchSeasonsPage from "@src/pages/matches/MatchSeasonsPage.js";
 import PlayersPage from "@src/pages/players/PlayersPage.js";
 import PlayerCreatePage from "@src/pages/players/PlayerCreatePage.js";
-import auth /*, { RoleIndex }*/ from "@src/utils/auth.js";
 
 const router = new Router({
   $404Route: {
@@ -70,10 +69,5 @@ router
     getPageTitle: () => "Modifier un match",
     component: MatchUpdatePage
   });
-
-auth.onUserSet((user) => {
-  if (!user)
-    router.navigate("/connexion");
-});
 
 export default router;

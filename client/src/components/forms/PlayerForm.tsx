@@ -1,7 +1,6 @@
 import Form from "@src/components/Form/Form.jsx";
-import playerRoles, { roleTranslations } from "@src/utils/player-roles.js";
 import { playersCache } from "@src/utils/local-storage.js";
-import { Player } from "@src/types.js";
+import { Player, PlayerRole } from "@src/types.js";
 
 export default function PlayerForm({ player, handleSubmit }: {
   player: Player | null;
@@ -13,7 +12,7 @@ export default function PlayerForm({ player, handleSubmit }: {
     firstName: "",
     lastName: "",
     email: "",
-    role: "USER",
+    role: PlayerRole.USER,
     phone: null,
     rating: 1199
   };
@@ -75,11 +74,13 @@ export default function PlayerForm({ player, handleSubmit }: {
           labelText="Rôle"
           nameAndId="role"
           required
-          values={playerRoles.map((role) => ({
-            text: roleTranslations[role],
-            value: role,
-            selected: p.role === role
-          }))}
+          values={Object.keys(PlayerRole).reduce((acc, key) => {
+            if (isNaN(+key) /* key: string; value: number */) {
+              const role = PlayerRole[key as unknown as number] as unknown as PlayerRole;
+              acc.push({ text: roleTranslations[role], value: String(role), selected: p.role === role });
+            }
+            return acc;
+          }, [] as { text: string; value: string; selected: boolean; }[])}
           updateValue={(role) => p.role = role}
         />
         <Form.Group
@@ -103,3 +104,9 @@ export default function PlayerForm({ player, handleSubmit }: {
     </Form>
   );
 }
+
+const roleTranslations = {
+  [PlayerRole.ADMIN]: "Admin",
+  [PlayerRole.CAPTAIN]: "Capitaine",
+  [PlayerRole.USER]: "Utilisateur",
+} as Readonly<Record<PlayerRole, string>>;

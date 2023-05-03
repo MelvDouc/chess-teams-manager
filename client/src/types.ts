@@ -1,4 +1,4 @@
-import { Match as DbMatch } from "../../global.js";
+import { Match as DbMatch, PlayerRole } from "../../global.js";
 
 export type {
   BoardColor,
@@ -6,8 +6,8 @@ export type {
   Player,
   PlayerCredentials,
   PlayerData,
-  PlayerRole
 } from "../../global.js";
+export { PlayerRole };
 
 export type Match = Omit<DbMatch, "date"> & { _id: string; date: string; };
 export type ShortMatchInfo = Pick<Match, "season" | "round" | "teamName">;

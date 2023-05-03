@@ -13,8 +13,8 @@ export type {
   Player,
   PlayerCredentials,
   PlayerData,
-  PlayerRole
 } from "../../global.js";
+export { PlayerRole } from "../../global.js";
 
 export type UpdateFilter<T> = {
   $set?: Partial<T>;

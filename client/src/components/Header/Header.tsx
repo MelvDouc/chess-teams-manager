@@ -1,11 +1,11 @@
 import { Observable } from "reactfree-jsx";
 import NavBarText from "./NavBarText.jsx";
 import router from "@src/router.jsx";
-import auth, { RoleIndex } from "@src/utils/auth.js";
+import auth, { PlayerRole } from "@src/utils/auth.js";
 
 export default function Header() {
   const hideLinksObs = new Observable(true);
-  auth.onUserSet((user) => hideLinksObs.value = !user);
+  auth.onUserChange((user) => hideLinksObs.value = !user);
 
   return (
     <header>
@@ -43,8 +43,8 @@ export default function Header() {
               <li
                 className="nav-item d-none"
                 $init={(element) => {
-                  auth.onUserSet((user) => {
-                    (user && RoleIndex[user.role] >= RoleIndex.CAPTAIN)
+                  auth.onUserChange((user) => {
+                    (user && user.role <= PlayerRole.CAPTAIN)
                       ? element.classList.remove("d-none")
                       : element.classList.add("d-none");
                   });
@@ -56,8 +56,11 @@ export default function Header() {
             <span className="navbar-text">
               <NavBarText
                 user={auth.getUser()}
-                onUserChange={auth.onUserSet}
-                logOut={auth.logOut}
+                onUserChange={auth.onUserChange}
+                logOut={() => {
+                  auth.logOut();
+                  router.navigate("/connexion");
+                }}
               />
             </span>
           </div>

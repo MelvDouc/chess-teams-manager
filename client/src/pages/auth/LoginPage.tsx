@@ -14,7 +14,7 @@ export default async function LoginPage() {
         className="w--500"
         handleSubmit={async (e) => {
           e.preventDefault();
-          const isValidCredentials = await auth.logIn(credentials);
+          const isValidCredentials = await auth.checkCredentials(credentials);
 
           if (!isValidCredentials)
             return alert("Identifiants invalides.");
