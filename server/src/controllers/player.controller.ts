@@ -13,13 +13,20 @@ const getPlayers = asyncWrapper(async (req, res) => {
 });
 
 const createPlayer = asyncWrapper(async (req, res) => {
+  if (!playerModel.isValidNewPlayer(req.body))
+    return res.json({ acknowledged: false });
+
   const { acknowledged, insertedId } = await playerModel.createPlayer(req.body);
   res.json({ acknowledged, insertedId });
 });
 
 const updatePlayer = asyncWrapper(async (req, res) => {
+  if (!playerModel.isValidPlayerUpdate(req.body))
+    return res.json({ acknowledged: false });
+
   delete req.body._id;
   delete req.body.ffeId;
+
   const { acknowledged, modifiedCount } = await playerModel.updatePlayer({ ffeId: req.params.ffeId }, {
     $set: req.body
   });
