@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "nodemon --ignore client server/src/app.ts",
+    "client:dev": "npm --prefix client run dev",
+    "server:dev": "nodemon --ignore client server/src/app.ts",
+    "dev": "npx concurrently \"npm run server:dev\" \"npm run client:dev\"",
     "start": "node server/dist/app.js",
     "build": "tsc -p server && npm --prefix client run build"
   },
@@ -17,6 +19,7 @@
     "@types/jsonwebtoken": "^9.0.1",
     "@types/node": "^18.16.0",
     "@types/nodemailer": "^6.4.7",
+    "concurrently": "^8.0.1",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "nodemon": "^2.0.22",
