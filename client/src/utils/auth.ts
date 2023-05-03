@@ -1,8 +1,8 @@
 import { Observable } from "reactfree-jsx";
 import { decodeToken, logIn } from "./api.js";
-import { PlayerCredentials, PlayerData, PlayerRole } from "@src/types.js";
+import { PlayerCredentials, PlayerData } from "@src/types.js";
 
-export { PlayerRole };
+export { PlayerRole } from "../../../global.js";
 
 const localStorageKey = "auth_token";
 const userDataObs = new Observable<PlayerData | null>(null);

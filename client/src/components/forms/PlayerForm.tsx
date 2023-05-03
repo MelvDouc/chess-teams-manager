@@ -1,6 +1,7 @@
 import Form from "@src/components/Form/Form.jsx";
 import { playersCache } from "@src/utils/local-storage.js";
-import { Player, PlayerRole } from "@src/types.js";
+import { PlayerRole } from "@src/utils/auth.js";
+import { Player } from "@src/types.js";
 
 export default function PlayerForm({ player, handleSubmit }: {
   player: Player | null;
