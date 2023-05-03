@@ -11,7 +11,7 @@ export default function LineUpTable({ whiteOnOddsObs, lineUpAccessors, captainFf
   lineUpAccessors: PropertyAccessors<Match, "lineUp">;
   captainFfeIdAccessors: PropertyAccessors<Match, "captainFfeId">;
   players: Player[];
-}) {
+}): HTMLTableElement {
   const lineUpObs = new Observable(lineUpAccessors.get());
   const fullNamesByFfeId = new Map<string, string>();
   const playersByFullName = players.reduce((acc, player) => {
@@ -105,8 +105,8 @@ export default function LineUpTable({ whiteOnOddsObs, lineUpAccessors, captainFf
           </tr>
         ))}
         <datalist id="players-datalist">
-          {players.map(({ firstName, lastName }) => (
-            <option value={`${firstName} ${lastName}`}>{firstName} {lastName}</option>
+          {[...fullNamesByFfeId.values()].map((fullName) => (
+            <option value={fullName}>{fullName}</option>
           ))}
         </datalist>
       </tbody>

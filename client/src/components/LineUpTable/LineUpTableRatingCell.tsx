@@ -16,7 +16,8 @@ export default function LineUpTableRatingCell({ rating, setRating, onRatingChang
       }}
       $init={(element) => {
         onRatingChange((rating) => {
-          element.innerText = rating ? String(rating) : "";
+          if (rating !== +element.innerText)
+            element.innerText = rating ? String(rating) : "";
         });
       }}
     >{rating ? String(rating) : ""}</div>

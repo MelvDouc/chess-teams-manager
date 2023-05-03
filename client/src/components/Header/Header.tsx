@@ -1,5 +1,5 @@
 import { Observable } from "reactfree-jsx";
-import LogOutButton from "@src/components/LogOutButton/LogOutButton.jsx";
+import NavBarText from "./NavBarText.jsx";
 import router from "@src/router.jsx";
 import auth, { RoleIndex } from "@src/utils/auth.js";
 
@@ -53,21 +53,11 @@ export default function Header() {
                 <router.link to="/joueurs" className="nav-link">Joueurs</router.link>
               </li>
             </ul>
-            <span className="navbar-text d-flex align-items-center gap-2">
-              <span
-                $init={(element) => auth.onUserSet((user) => {
-                  element.innerText = user?.ffeId ?? "";
-                })}
-              ></span>
-              <LogOutButton
+            <span className="navbar-text">
+              <NavBarText
+                user={auth.getUser()}
+                onUserChange={auth.onUserSet}
                 logOut={auth.logOut}
-                $init={(button) => {
-                  auth.onUserSet((user) => {
-                    (user)
-                      ? button.classList.remove("d-none")
-                      : button.classList.add("d-none");
-                  });
-                }}
               />
             </span>
           </div>

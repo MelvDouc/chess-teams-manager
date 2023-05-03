@@ -11,7 +11,7 @@ export default function App() {
           <Header />
           <main className="p-4 overflow-y-auto">
             <div
-              className="container-sm"
+              className="container-sm h-100"
               $init={(element) => {
                 router.onUrlChange(async ({ component }) => {
                   element.replaceChildren(await component());

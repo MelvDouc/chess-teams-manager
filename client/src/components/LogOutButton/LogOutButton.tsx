@@ -1,13 +1,11 @@
 import Modal from "@src/components/Modal/Modal.jsx";
 
-export default function LogOutButton({ logOut, $init }: {
+export default function LogOutButton({ logOut }: {
   logOut: VoidFunction;
-  $init: (button: HTMLButtonElement) => void;
 }) {
   return (
     <button
       className="btn btn-danger"
-      $init={$init}
       title="Déconnexion"
       style={{
         transform: "scale(0.75)"

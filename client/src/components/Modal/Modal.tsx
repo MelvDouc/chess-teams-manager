@@ -41,8 +41,11 @@ const Modal = (() => {
             }}
           >{state.map(({ buttonText }) => buttonText ?? "OK")}</button>
           <button
-            className="btn btn-danger"
-            hidden={state.map(({ cancellable }) => cancellable === true)}
+            classes={{
+              btn: true,
+              "btn-danger": true,
+              "d-none": state.map(({ cancellable }) => cancellable === true)
+            }}
             onclick={() => modal.close()}
           >Annuler</button>
         </div>

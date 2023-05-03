@@ -50,28 +50,28 @@ export default function PlayersTableRow({ player, update }: {
       <td
         contentEditable={editMode}
         oninput={({ target }) => {
-          updates.lastName = (target as HTMLElement).innerText.toUpperCase();
+          updates.lastName = (target as HTMLElement).innerText.trim().toUpperCase();
         }}
         data-key="lastName"
       >{player.lastName}</td>
       <td
         contentEditable={editMode}
         oninput={({ target }) => {
-          updates.firstName = (target as HTMLElement).innerText;
+          updates.firstName = (target as HTMLElement).innerText.trim();
         }}
         data-key="firstName"
       >{player.firstName}</td>
       <td
         contentEditable={editMode}
         oninput={({ target }) => {
-          updates.email = (target as HTMLElement).innerText;
+          updates.email = (target as HTMLElement).innerText.trim();
         }}
         data-key="email"
       >{player.email}</td>
       <td
         contentEditable={editMode}
         oninput={({ target }) => {
-          updates.phone = (target as HTMLElement).innerText;
+          updates.phone = (target as HTMLElement).innerText.trim();
         }}
         data-key="phone"
       >{player.phone}</td>
@@ -79,7 +79,7 @@ export default function PlayersTableRow({ player, update }: {
         contentEditable={editMode}
         data-key="rating"
         oninput={({ target }) => {
-          const rating = +(target as HTMLElement).innerText;
+          const rating = +((target as HTMLElement).innerText.trim());
           updates.rating = rating || 0;
         }}
       >{player.rating}</td>

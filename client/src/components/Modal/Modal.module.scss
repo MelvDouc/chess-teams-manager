@@ -1,14 +1,13 @@
 .modal {
-  width: min(80%, 500px);
+  width: fit-content;
+  max-width: 500px;
   border-radius: 5px;
   border: 0;
-  padding: 0.5em;
+  padding: 1em;
   background-color: white;
-  filter: drop-shadow(8px 8px 10px lightgray);
+  filter: drop-shadow(8px 8px 5px lightgray);
 
   &::backdrop {
-    // background-color: rgba(0, 219, 255, 0.21);
-    // filter: sepia(100%);
     background-color: rgba(158, 121, 18, 0.192);
   }
 }

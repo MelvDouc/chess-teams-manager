@@ -1,3 +1,12 @@
+.form {
+  $bg-clr1: rgb(0, 0, 255);
+  $bg-clr2: lighten($bg-clr1, 5%);
+  $bg-clr3: lighten($bg-clr2, 2.5%);
+  display: flex;
+  background: $bg-clr1;
+  background: linear-gradient(to top, $bg-clr3, $bg-clr2, $bg-clr1);
+}
+
 .formSwitchInput {
   filter: hue-rotate(225deg);
 }

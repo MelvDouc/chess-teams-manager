@@ -34,6 +34,10 @@ ul {
   cursor: pointer;
 }
 
+.link-no-hover:hover {
+  color: currentColor;
+}
+
 .list-style-none {
   list-style: none;
 }
@@ -44,6 +48,10 @@ ul {
 
 .overflow-y-auto {
   overflow-y: auto;
+}
+
+.w--500 {
+  width: min(100%, 500px);
 }
 
 .white-space-pre-wrap {

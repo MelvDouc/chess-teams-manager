@@ -25,9 +25,8 @@ export default function PlayersTable({ players, clearCache }: {
         {players.map((player) => (
           <PlayersTableRow
             player={player}
-            update={async (player) => {
-              const updateResult = await update(`/players/${player.ffeId}/update`, player);
-              console.log(updateResult);
+            update={async (updates) => {
+              const updateResult = await update(`/players/${player.ffeId}/update`, updates);
               if (updateResult?.acknowledged === true)
                 clearCache();
               return updateResult?.acknowledged === true;
