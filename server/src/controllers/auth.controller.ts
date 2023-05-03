@@ -4,15 +4,12 @@ import asyncWrapper from "../middleware/async-wrapper.js";
 import playerModel from "../models/player.model.js";
 import emailService from "../services/email.service.js";
 import jwtService from "../services/jwt.service.js";
-import { RouteHandler } from "../types.js";
-
-// def user pwd: 'abc'
 
 const login = asyncWrapper(async (req, res) => {
   const { ffeId, pwd } = req.body as { ffeId: string; pwd: string; };
   const player = await playerModel.getPlayer({ ffeId });
 
-  if (!player || !bcryptjs.compareSync(pwd, player.pwd))
+  if (!player || !(await bcryptjs.compare(pwd, player.pwd ?? "")))
     return res.json(null);
 
   res.json(jwtService.createToken(player));
@@ -23,7 +20,7 @@ const decodeToken = asyncWrapper(async (req, res) => {
   res.json(await jwtService.decodeToken(auth_token));
 });
 
-const passwordForgotten: RouteHandler = async (req, res) => {
+const passwordForgotten = asyncWrapper(async (req, res) => {
   const { ffeId, baseUrl } = req.body as { ffeId: string; baseUrl: string; };
   const player = await playerModel.getPlayer({ ffeId });
 
@@ -45,9 +42,9 @@ const passwordForgotten: RouteHandler = async (req, res) => {
     }
   });
   res.json({ success: !!sendResult });
-};
+});
 
-const passwordReset: RouteHandler = async (req, res) => {
+const passwordReset = asyncWrapper(async (req, res) => {
   const player = await playerModel.getPlayer({ pwdResetId: req.params.pwdResetId });
 
   if (!player)
@@ -57,10 +54,10 @@ const passwordReset: RouteHandler = async (req, res) => {
 
   const { password1, password2 } = req.body;
 
-  if (!password2 || password1 !== password2)
-    return res.json({
-      errors: ["Mot de passe invalide."]
-    });
+  if (!password2)
+    return res.json({ errors: ["Veuillez confirmer le mot de passe."] });
+  if (password1 !== password2)
+    return res.json({ errors: ["Les mots de passe ne se correspondent pas."] });
 
   const salt = await bcryptjs.genSalt(10);
   await playerModel.updatePlayer({ ffeId: player.ffeId }, {
@@ -72,7 +69,7 @@ const passwordReset: RouteHandler = async (req, res) => {
     }
   });
   res.json({ success: true });
-};
+});
 
 
 export default {
