@@ -5,12 +5,12 @@
     "strict": true,
     "module": "ES2022",
     "moduleResolution": "Node16",
-    "rootDir": "../..",
+    "rootDir": "src",
     "outDir": "dist",
     "esModuleInterop": true,
     "skipLibCheck": true
   },
-  "include": ["../../global.ts", "src"],
+  "include": ["src"],
   "exclude": ["**/node_modules", "../../client"],
   "ts-node": { "esm": true }
 }

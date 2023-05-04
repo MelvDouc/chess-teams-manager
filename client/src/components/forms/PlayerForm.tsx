@@ -1,6 +1,5 @@
 import Form from "@src/components/Form/Form.jsx";
 import { playersCache } from "@src/utils/local-storage.js";
-import { PlayerRole } from "@src/utils/auth.js";
 import { Player } from "@src/types.js";
 
 export default function PlayerForm({ player, handleSubmit }: {
@@ -12,7 +11,6 @@ export default function PlayerForm({ player, handleSubmit }: {
     firstName: "",
     lastName: "",
     email: "",
-    role: PlayerRole.USER,
     teams: [],
     rating: 1199
   };
@@ -82,18 +80,19 @@ export default function PlayerForm({ player, handleSubmit }: {
         />
       </Form.Row>
       <Form.Row>
-        <Form.Select
-          labelText="Rôle"
-          nameAndId="role"
+        <Form.Checkbox
+          nameAndId="is-admin"
+          labelText="Admin"
+          checked={p.isAdmin}
+          updateValue={(checked) => p.isAdmin = checked}
           required
-          values={Object.keys(PlayerRole).reduce((acc, key) => {
-            if (isNaN(+key) /* key: string; value: number */) {
-              const role = PlayerRole[key as unknown as number] as unknown as PlayerRole;
-              acc.push({ text: roleTranslations[role], value: String(role), selected: p.role === role });
-            }
-            return acc;
-          }, [] as { text: string; value: string; selected: boolean; }[])}
-          updateValue={(role) => p.role = role}
+        />
+        <Form.Checkbox
+          nameAndId="is-captain"
+          labelText="Capitaine"
+          checked={p.isCaptain}
+          updateValue={(checked) => p.isCaptain = checked}
+          required
         />
         <Form.Group
           type="text"
@@ -116,9 +115,3 @@ export default function PlayerForm({ player, handleSubmit }: {
     </Form>
   );
 }
-
-const roleTranslations = {
-  [PlayerRole.ADMIN]: "admin",
-  [PlayerRole.CAPTAIN]: "capitaine",
-  [PlayerRole.USER]: "utilisateur",
-} as Readonly<Record<PlayerRole, string>>;

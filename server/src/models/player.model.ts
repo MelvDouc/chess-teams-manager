@@ -35,7 +35,6 @@ function isValidNewPlayer(data: Player) {
   return isObject(data)
     && isValidFfeId(data.ffeId)
     && isValidNumberOrNull(data.fideId)
-    && typeof data.role === "number"
     && isNonEmptyString(data.firstName)
     && isNonEmptyString(data.lastName)
     && isNonEmptyString(data.email)
@@ -45,7 +44,6 @@ function isValidNewPlayer(data: Player) {
 function isValidPlayerUpdate(data: Partial<Player>) {
   return isObject(data)
     && (!("fideId" in data) || isValidNumberOrNull(data.fideId))
-    && (!("role" in data) || typeof data.role === "number")
     && (!("firstName" in data) || isNonEmptyString(data.firstName))
     && (!("lastName" in data) || isNonEmptyString(data.lastName))
     && (!("email" in data) || isNonEmptyString(data.email))

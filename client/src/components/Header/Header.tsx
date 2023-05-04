@@ -44,7 +44,7 @@ export default function Header() {
                 className="nav-item d-none"
                 $init={(element) => {
                   auth.onUserChange((user) => {
-                    (user && user.role <= PlayerRole.CAPTAIN)
+                    (user?.isAdmin || user?.isCaptain)
                       ? element.classList.remove("d-none")
                       : element.classList.add("d-none");
                   });
