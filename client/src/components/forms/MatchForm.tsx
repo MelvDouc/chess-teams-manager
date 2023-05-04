@@ -2,6 +2,7 @@ import { Observable } from "reactfree-jsx";
 import Form from "@src/components/Form/Form.jsx";
 import LineUpTable from "@src/components/LineUpTable/LineUpTable.jsx";
 import createAccessors from "@src/utils/create-accessors.js";
+import { getDatePortion } from "@src/utils/date-formatter.js";
 import { matchesByTeamNameCache } from "@src/utils/local-storage.js";
 import { Match, Player } from "@src/types.js";
 
@@ -75,7 +76,7 @@ export default function MatchForm({ match, players, handleSubmit }: { match: Mat
             type="date"
             labelText="Date"
             nameAndId="date"
-            value={new Date(m.date).toISOString().slice(0, 10)}
+            value={getDatePortion(new Date(m.date))}
             updateValue={(date: Date | null) => {
               if (date) m.date = date.toISOString();
             }}

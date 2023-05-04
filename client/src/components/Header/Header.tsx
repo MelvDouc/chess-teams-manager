@@ -1,4 +1,5 @@
 import { Observable } from "reactfree-jsx";
+import Dropdown from "./Dropdown.jsx";
 import NavBarText from "./NavBarText.jsx";
 import router from "@src/router.jsx";
 import auth from "@src/utils/auth.js";
@@ -34,35 +35,20 @@ export default function Header() {
           </button>
           <div className="collapse navbar-collapse" id="navbarText">
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-              <li className="nav-item dropdown">
-                <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Matchs
-                </a>
-                <ul className="dropdown-menu">
-                  <li>
-                    <router.link to="/matchs" className="dropdown-item">
-                      Par saison
-                    </router.link>
-                  </li>
-                  <li>
-                    <router.link to="/matchs/nouveau" className="dropdown-item">
-                      Ajouter un match
-                    </router.link>
-                  </li>
-                </ul>
-              </li>
-              <li
-                className="nav-item d-none"
-                $init={(element) => {
-                  auth.onUserChange((user) => {
-                    user?.isAdmin || user?.isCaptain ? element.classList.remove("d-none") : element.classList.add("d-none");
-                  });
-                }}
-              >
-                <router.link to="/joueurs" className="nav-link">
-                  Joueurs
-                </router.link>
-              </li>
+              <Dropdown
+                mainText="Matchs"
+                links={[
+                  { to: "/matchs", text: "Saisons" },
+                  { to: "/matchs/nouveau", text: "Ajouter un match" },
+                ]}
+              />
+              <Dropdown
+                mainText="Joueurs"
+                links={[
+                  { to: "/joueurs", text: "Liste" },
+                  { to: "/joueurs/nouveau", text: "Ajouter un joueur" },
+                ]}
+              />
             </ul>
             <span className="navbar-text">
               <NavBarText

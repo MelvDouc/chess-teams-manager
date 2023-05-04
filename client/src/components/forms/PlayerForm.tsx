@@ -1,4 +1,5 @@
 import Form from "@src/components/Form/Form.jsx";
+import { getDatePortion } from "@src/utils/date-formatter.js";
 import { playersCache } from "@src/utils/local-storage.js";
 import { Player } from "@src/types.js";
 
@@ -68,7 +69,7 @@ export default function PlayerForm({
           type="date"
           nameAndId="birthDate"
           labelText="Date de naissance"
-          value={p.birthDate ? new Date(p.birthDate).toISOString() : new Date().toISOString()}
+          value={p.birthDate ? getDatePortion(new Date(p.birthDate)) : ""}
           updateValue={(birthDate: Date | null) => {
             if (birthDate) p.birthDate = birthDate.toISOString();
             else delete p.birthDate;
