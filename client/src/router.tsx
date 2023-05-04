@@ -9,6 +9,7 @@ import MatchUpdatePage from "@src/pages/matches/MatchUpdatePage.jsx";
 import MatchSeasonsPage from "@src/pages/matches/MatchSeasonsPage.js";
 import PlayersPage from "@src/pages/players/PlayersPage.js";
 import PlayerCreatePage from "@src/pages/players/PlayerCreatePage.js";
+import PlayerUpdatePage from "@src/pages/players/PlayerUpdatePage.jsx";
 
 const router = new Router({
   $404Route: {
@@ -38,6 +39,10 @@ router
   .addRoute("/joueurs/nouveau", {
     getPageTitle: () => "Ajouter un joueur",
     component: PlayerCreatePage,
+  })
+  .addRoute("/joueurs/:ffeId/modifier", {
+    getPageTitle: () => "Modifier un joueur",
+    component: PlayerUpdatePage,
   })
   .addRoute("/", {
     getPageTitle: () => "Matchs",
