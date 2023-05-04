@@ -2,9 +2,10 @@
 
 ## To-Do's
 
-- [ ] add players birth date
-- [ ] add players phone 2
-- [ ] add players team(s)
+- [X] add players birth date
+- [X] add players phone 2
+- [X] add players team(s)
+- [ ] add new player data to form
 - [ ] make players table searchable
 - [ ] make players table sortable
 - [ ] check auth token on CRUD operation

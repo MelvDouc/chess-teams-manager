@@ -5,16 +5,15 @@ import { Player } from "@src/types.js";
 
 export default function PlayerForm({ player, handleSubmit }: {
   player: Player | null;
-  handleSubmit: (player: Omit<Player, "pwd" | "pwdResetId">) => void | Promise<void>;
+  handleSubmit: (player: Player) => void | Promise<void>;
 }): HTMLFormElement {
-  const p: Omit<Player, "pwd" | "pwdResetId"> = player ?? {
+  const p: Player = player ?? {
     ffeId: "",
-    fideId: null,
     firstName: "",
     lastName: "",
     email: "",
     role: PlayerRole.USER,
-    phone: null,
+    teams: [],
     rating: 1199
   };
 
@@ -39,7 +38,7 @@ export default function PlayerForm({ player, handleSubmit }: {
           labelText="N° FIDE"
           nameAndId="fideId"
           value={p.fideId}
-          updateValue={(fideId) => p.fideId = Number(fideId) || null}
+          updateValue={(fideId: number) => isNaN(fideId) ? (delete p.fideId) : (p.fideId = fideId)}
         />
       </Form.Row>
       <Form.Row>
@@ -68,6 +67,18 @@ export default function PlayerForm({ player, handleSubmit }: {
           value={p.email}
           updateValue={(email) => p.email = email}
           required={true}
+        />
+        <Form.Group
+          type="date"
+          nameAndId="birthDate"
+          labelText="Date de naissance"
+          value={(p.birthDate) ? new Date(p.birthDate).toISOString() : new Date().toISOString()}
+          updateValue={(birthDate: Date | null) => {
+            if (birthDate)
+              p.birthDate = birthDate.toISOString();
+            else
+              delete p.birthDate;
+          }}
         />
       </Form.Row>
       <Form.Row>
@@ -107,7 +118,7 @@ export default function PlayerForm({ player, handleSubmit }: {
 }
 
 const roleTranslations = {
-  [PlayerRole.ADMIN]: "Admin",
-  [PlayerRole.CAPTAIN]: "Capitaine",
-  [PlayerRole.USER]: "Utilisateur",
+  [PlayerRole.ADMIN]: "admin",
+  [PlayerRole.CAPTAIN]: "capitaine",
+  [PlayerRole.USER]: "utilisateur",
 } as Readonly<Record<PlayerRole, string>>;

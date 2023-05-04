@@ -14,15 +14,18 @@ export type LineUpItem = Pick<Player, "ffeId" | "rating"> & {
 
 export interface Player {
   ffeId: string;
-  fideId: number | null;
   email: string;
   role: PlayerRole;
-  pwd: string;
-  pwdResetId?: string;
-  phone: string | null;
   firstName: string;
   lastName: string;
+  teams: string[];
   rating: number;
+  pwd: string;
+  fideId?: number;
+  phone?: string;
+  phone2?: string;
+  birthDate?: Date;
+  pwdResetId?: string;
 }
 
 export interface Match {
