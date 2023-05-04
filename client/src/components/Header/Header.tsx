@@ -1,7 +1,7 @@
 import { Observable } from "reactfree-jsx";
 import NavBarText from "./NavBarText.jsx";
 import router from "@src/router.jsx";
-import auth, { PlayerRole } from "@src/utils/auth.js";
+import auth from "@src/utils/auth.js";
 
 export default function Header() {
   const hideLinksObs = new Observable(true);

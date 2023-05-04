@@ -1,6 +1,6 @@
 import { default as jwt } from "jsonwebtoken";
 import config from "../config/config.js";
-import { PlayerData, PlayerRole } from "../types.js";
+import { PlayerData } from "../types.js";
 
 function createToken({ ffeId, role }: PlayerData): string {
   return jwt.sign({ ffeId, role }, config.JWT_SECRET, {
@@ -18,7 +18,7 @@ function decodeToken(token: string): Promise<PlayerData | null> {
         typeof decoded !== "object"
         || decoded === null
         || typeof decoded["ffeId"] !== "string"
-        || PlayerRole[decoded["role"]] === undefined
+        || typeof decoded["role"] !== "number"
       )
         return resolve(null);
 
