@@ -3,10 +3,7 @@ import PlayersTable from "./PlayersTable.js";
 import { Player } from "@src/types.js";
 import cssClasses from "./PlayersTable.module.scss";
 
-export default function PlayersTables({ players, clearCache }: {
-  players: Player[];
-  clearCache: VoidFunction;
-}) {
+export default function PlayersTables({ players, clearCache }: { players: Player[]; clearCache: VoidFunction }) {
   const playerSlices = players.reduce((acc, player, i) => {
     if (i % 25 === 0) acc.push([]);
     acc.at(-1)!.push(player);
@@ -23,13 +20,15 @@ export default function PlayersTables({ players, clearCache }: {
             <a
               href="#"
               classes={{
-                "fw-bold": pageObs.map((value) => value === i)
+                "fw-bold": pageObs.map((value) => value === i),
               }}
               onclick={(e) => {
                 e.preventDefault();
                 pageObs.value = i;
               }}
-            >{j + 1}-{(i === playerSlices.length - 1) ? players.length : (j + 25)}</a>
+            >
+              {j + 1}-{i === playerSlices.length - 1 ? players.length : j + 25}
+            </a>
           );
         })}
       </section>
@@ -38,10 +37,9 @@ export default function PlayersTables({ players, clearCache }: {
           <article
             className={cssClasses.tableContainer}
             $init={(element) => {
-              if (i === pageObs.value)
-                element.classList.add(cssClasses.visible);
+              if (i === pageObs.value) element.classList.add(cssClasses.visible);
               pageObs.subscribe((value) => {
-                (value === i)
+                value === i
                   ? element.classList.add(cssClasses.visible, cssClasses.fadeIn)
                   : element.classList.remove(cssClasses.visible, cssClasses.fadeIn);
               });

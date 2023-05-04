@@ -11,11 +11,10 @@ const FormGroup = <Type extends FreeJSX.Input["type"] | "textarea">({
   placeholder,
   pattern,
   value,
-  updateValue
+  updateValue,
 }: InputOrTextareaProps<Type>): Type extends "textarea" ? HTMLTextAreaElement : HTMLInputElement => {
-  const control: HTMLInputElement | HTMLTextAreaElement = (type === "textarea")
-    ? <textarea>{value ?? ""}</textarea>
-    : <input type={type} value={value ?? ""} />;
+  const control: HTMLInputElement | HTMLTextAreaElement =
+    type === "textarea" ? <textarea>{value ?? ""}</textarea> : <input type={type} value={value ?? ""} />;
 
   control.id = nameAndId;
   control.classList.add("form-control");
@@ -23,14 +22,10 @@ const FormGroup = <Type extends FreeJSX.Input["type"] | "textarea">({
   control.required = required === true;
   control.disabled = disabled === true;
 
-  if (min !== undefined)
-    control.setAttribute("min", String(min));
-  if (max !== undefined)
-    control.setAttribute("max", String(max));
-  if (placeholder)
-    control.placeholder = placeholder;
-  if (pattern)
-    (control as HTMLInputElement).pattern = pattern;
+  if (min !== undefined) control.setAttribute("min", String(min));
+  if (max !== undefined) control.setAttribute("max", String(max));
+  if (placeholder) control.placeholder = placeholder;
+  if (pattern) (control as HTMLInputElement).pattern = pattern;
 
   if (updateValue !== undefined) {
     switch (type) {
@@ -50,7 +45,9 @@ const FormGroup = <Type extends FreeJSX.Input["type"] | "textarea">({
 
   return (
     <div>
-      <label htmlFor={nameAndId} className="form-label">{labelText}</label>
+      <label htmlFor={nameAndId} className="form-label">
+        {labelText}
+      </label>
       {control}
     </div>
   );
@@ -58,7 +55,7 @@ const FormGroup = <Type extends FreeJSX.Input["type"] | "textarea">({
 
 export default FormGroup;
 
-type InputOrTextareaProps<Type extends (FreeJSX.Input["type"]) | "textarea"> = {
+type InputOrTextareaProps<Type extends FreeJSX.Input["type"] | "textarea"> = {
   type: Type;
   nameAndId: string;
   labelText: string;

@@ -1,7 +1,10 @@
 import { PropertyAccessors } from "@src/utils/create-accessors.js";
 import { Match } from "@src/types.js";
 
-export default function LineUpTableCaptainFfeIdInput({ getFfeId, captainFfeIdAccessors }: {
+export default function LineUpTableCaptainFfeIdInput({
+  getFfeId,
+  captainFfeIdAccessors,
+}: {
   getFfeId: () => string | null;
   captainFfeIdAccessors: PropertyAccessors<Match, "captainFfeId">;
 }) {
@@ -12,15 +15,12 @@ export default function LineUpTableCaptainFfeIdInput({ getFfeId, captainFfeIdAcc
       checked={captainFfeIdAccessors.get() === getFfeId()}
       $init={(element) => {
         element.addEventListener("change", () => {
-          if (!element.checked)
-            return;
+          if (!element.checked) return;
 
           const ffeId = getFfeId();
 
-          if (ffeId)
-            captainFfeIdAccessors.set(ffeId);
-          else
-            element.checked = false;
+          if (ffeId) captainFfeIdAccessors.set(ffeId);
+          else element.checked = false;
         });
       }}
     />

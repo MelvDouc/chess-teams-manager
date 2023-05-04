@@ -6,7 +6,12 @@ import LineUpTableFfeIdCell from "./LineUpTableFfeIdCell.jsx";
 import { PropertyAccessors } from "@src/utils/create-accessors.js";
 import { Match, Player } from "@src/types.js";
 
-export default function LineUpTable({ whiteOnOddsObs, lineUpAccessors, captainFfeIdAccessors, players }: {
+export default function LineUpTable({
+  whiteOnOddsObs,
+  lineUpAccessors,
+  captainFfeIdAccessors,
+  players,
+}: {
   whiteOnOddsObs: FreeJSX.Obs<Match["whiteOnOdds"]>;
   lineUpAccessors: PropertyAccessors<Match, "lineUp">;
   captainFfeIdAccessors: PropertyAccessors<Match, "captainFfeId">;
@@ -36,14 +41,13 @@ export default function LineUpTable({ whiteOnOddsObs, lineUpAccessors, captainFf
   };
 
   const setFfeId = (ffeId: string, board: number) => {
-    if (lineUpObs.value[board])
-      lineUpObs.value[board]!.ffeId = ffeId;
+    if (lineUpObs.value[board]) lineUpObs.value[board]!.ffeId = ffeId;
     else {
       const name = fullNamesByFfeId.get(ffeId);
       lineUpObs.value[board] = {
         ffeId,
         name: name ?? "",
-        rating: playersByFullName.get(name!)?.rating ?? 1199
+        rating: playersByFullName.get(name!)?.rating ?? 1199,
       };
     }
     lineUpObs.notify();
@@ -65,28 +69,29 @@ export default function LineUpTable({ whiteOnOddsObs, lineUpAccessors, captainFf
       <tbody>
         {Object.entries(lineUpObs.value).map(([board, player]) => (
           <tr>
-            <td>{board}{whiteOnOddsObs.map((value) => ((+board % 2 === 1) === value) ? "B" : "N")}</td>
             <td>
-              <LineUpTablePlayerNameCell
-                playerFullName={player?.name ?? ""}
-                setPlayerFullName={(name) => setPlayerFullName(name, +board)}
-              />
+              {board}
+              {whiteOnOddsObs.map((value) => ((+board % 2 === 1) === value ? "B" : "N"))}
+            </td>
+            <td>
+              <LineUpTablePlayerNameCell playerFullName={player?.name ?? ""} setPlayerFullName={(name) => setPlayerFullName(name, +board)} />
             </td>
             <td>
               <LineUpTableFfeIdCell
                 ffeId={player?.ffeId ?? ""}
                 setFfeId={(ffeId) => setFfeId(ffeId, +board)}
-                onFfeIdChange={(subscription) => lineUpObs.subscribe((value) => {
-                  subscription(value[+board]?.ffeId ?? "");
-                })}
+                onFfeIdChange={(subscription) =>
+                  lineUpObs.subscribe((value) => {
+                    subscription(value[+board]?.ffeId ?? "");
+                  })
+                }
               />
             </td>
             <td>
               <LineUpTableRatingCell
                 rating={player?.rating || 0}
                 setRating={(rating) => {
-                  if (lineUpObs.value[+board])
-                    lineUpObs.value[+board]!.rating = rating;
+                  if (lineUpObs.value[+board]) lineUpObs.value[+board]!.rating = rating;
                   lineUpObs.notify();
                 }}
                 onRatingChange={(subscription) => {
@@ -97,10 +102,7 @@ export default function LineUpTable({ whiteOnOddsObs, lineUpAccessors, captainFf
               />
             </td>
             <td>
-              <LineUpTableCaptainFfeIdInput
-                getFfeId={() => lineUpObs.value[+board]?.ffeId ?? null}
-                captainFfeIdAccessors={captainFfeIdAccessors}
-              />
+              <LineUpTableCaptainFfeIdInput getFfeId={() => lineUpObs.value[+board]?.ffeId ?? null} captainFfeIdAccessors={captainFfeIdAccessors} />
             </td>
           </tr>
         ))}

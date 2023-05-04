@@ -13,61 +13,51 @@ import PlayerCreatePage from "@src/pages/players/PlayerCreatePage.js";
 const router = new Router({
   $404Route: {
     title: "Page non trouvée",
-    component: $404Page
+    component: $404Page,
   },
-  pageTitleFormatter: (title) => `${title} | Thionville Échecs — Équipes`
+  pageTitleFormatter: (title) => `${title} | Thionville Échecs — Équipes`,
 });
 
 router
   .addRoute("/connexion", {
-    // preCheck: preventDoubleLogIn,
     getPageTitle: () => "Connexion",
-    component: LoginPage
+    component: LoginPage,
   })
   .addRoute("/oubli-mot-de-passe", {
-    // preCheck: preventDoubleLogIn,
     getPageTitle: () => "Demande de réinitialisation de de mot de passe",
-    component: PasswordForgottenPage
+    component: PasswordForgottenPage,
   })
   .addRoute("/nouveau-mot-de-passe/:pwdResetId", {
-    // preCheck: preventDoubleLogIn,
     getPageTitle: () => "Réinitialisation de de mot de passe",
-    component: PasswordResetPage
+    component: PasswordResetPage,
   })
   .addRoute("/joueurs", {
-    // preCheck: allowCaptainMinimum,
     getPageTitle: () => "Joueurs",
-    component: PlayersPage
+    component: PlayersPage,
   })
   .addRoute("/joueurs/nouveau", {
-    // preCheck: allowCaptainMinimum,
     getPageTitle: () => "Ajouter un joueur",
     component: PlayerCreatePage,
   })
   .addRoute("/", {
-    // preCheck: allowCaptainMinimum,
     getPageTitle: () => "Matchs",
-    component: MatchSeasonsPage
+    component: MatchSeasonsPage,
   })
   .addRoute("/matchs", {
-    // preCheck: allowCaptainMinimum,
     getPageTitle: () => "Matchs",
-    component: MatchSeasonsPage
+    component: MatchSeasonsPage,
   })
   .addRoute("/matchs/nouveau", {
-    // preCheck: allowCaptainMinimum,
     getPageTitle: () => "Ajouter un match",
-    component: MatchCreatePage
+    component: MatchCreatePage,
   })
   .addRoute("/matchs/:season", {
-    // preCheck: allowCaptainMinimum,
     getPageTitle: ({ season }) => `Matchs ${+season - 1}-${season}`,
-    component: MatchesPage
+    component: MatchesPage,
   })
   .addRoute("/matchs/:season/:round/:teamName/modifier", {
-    // preCheck: allowCaptainMinimum,
     getPageTitle: () => "Modifier un match",
-    component: MatchUpdatePage
+    component: MatchUpdatePage,
   });
 
 export default router;

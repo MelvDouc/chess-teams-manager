@@ -1,6 +1,10 @@
 import cssClasses from "./LineUpTable.module.scss";
 
-export default function LineUpTableFfeIdCell({ ffeId, setFfeId, onFfeIdChange }: {
+export default function LineUpTableFfeIdCell({
+  ffeId,
+  setFfeId,
+  onFfeIdChange,
+}: {
   ffeId: string;
   setFfeId: (ffeId: string) => void;
   onFfeIdChange: (subscription: (ffeId: string) => void) => void;
@@ -15,6 +19,8 @@ export default function LineUpTableFfeIdCell({ ffeId, setFfeId, onFfeIdChange }:
           element.innerText = ffeId;
         });
       }}
-    >{ffeId}</div>
+    >
+      {ffeId}
+    </div>
   );
 }

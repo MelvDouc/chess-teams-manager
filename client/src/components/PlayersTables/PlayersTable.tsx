@@ -2,11 +2,7 @@ import { update } from "@src/utils/api.js";
 import PlayersTableRow from "./PlayersTableRow.js";
 import { Player } from "@src/types.js";
 
-export default function PlayersTable({ players, clearCache }: {
-  players: Player[];
-  clearCache: VoidFunction;
-}) {
-
+export default function PlayersTable({ players, clearCache }: { players: Player[]; clearCache: VoidFunction }) {
   return (
     <table className="table table-striped table-bordered table-hover">
       <thead>
@@ -27,8 +23,7 @@ export default function PlayersTable({ players, clearCache }: {
             player={player}
             update={async (updates) => {
               const updateResult = await update(`/players/${player.ffeId}/update`, updates);
-              if (updateResult?.acknowledged === true)
-                clearCache();
+              if (updateResult?.acknowledged === true) clearCache();
               return updateResult?.acknowledged === true;
             }}
           />

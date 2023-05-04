@@ -1,4 +1,10 @@
-const FormSelect = ({ nameAndId, labelText, required, values, updateValue }: {
+const FormSelect = ({
+  nameAndId,
+  labelText,
+  required,
+  values,
+  updateValue,
+}: {
   nameAndId: string;
   labelText: string;
   required?: boolean;
@@ -11,19 +17,22 @@ const FormSelect = ({ nameAndId, labelText, required, values, updateValue }: {
 }) => {
   return (
     <div>
-      <label htmlFor={nameAndId} className="form-label d-block">{labelText}</label>
+      <label htmlFor={nameAndId} className="form-label d-block">
+        {labelText}
+      </label>
       <select
         name={nameAndId}
         className="form-control"
         id={nameAndId}
         required={required}
         $init={(element) => {
-          if (updateValue)
-            element.addEventListener("change", () => updateValue(element.value));
+          if (updateValue) element.addEventListener("change", () => updateValue(element.value));
         }}
       >
         {values.map(({ value, text, selected }) => (
-          <option value={value} selected={selected}>{text}</option>
+          <option value={value} selected={selected}>
+            {text}
+          </option>
         ))}
       </select>
     </div>

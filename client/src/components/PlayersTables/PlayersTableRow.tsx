@@ -4,20 +4,16 @@ import cssClasses from "./PlayersTable.module.scss";
 
 const resetEvent = new CustomEvent("row_reset");
 
-export default function PlayersTableRow({ player, update }: {
-  player: Player;
-  update: (player: Partial<Player>) => Promise<boolean>;
-}) {
+export default function PlayersTableRow({ player, update }: { player: Player; update: (player: Partial<Player>) => Promise<boolean> }) {
   const editMode = new Observable<FreeJSX.FreeJsxHTMLElement["contentEditable"]>("false");
   const updates: Partial<Player> = {};
   let row: HTMLTableRowElement;
 
   const toggleButton = ToggleButton(() => {
-    editMode.value = (editMode.value === "false") ? "true" : "false";
+    editMode.value = editMode.value === "false" ? "true" : "false";
   });
   const validateButton = ValidateButton(async () => {
-    if (!(await update(updates)))
-      return alert("Le joueur n'a pu être modifié.");
+    if (!(await update(updates))) return alert("Le joueur n'a pu être modifié.");
 
     editMode.value = "false";
   });
@@ -26,15 +22,14 @@ export default function PlayersTableRow({ player, update }: {
     row.dispatchEvent(resetEvent);
   });
 
-  return row = (
+  return (row = (
     <tr
       className={cssClasses.playersTableRow}
       data-edit-mode={editMode}
       $init={(element) => {
         element.addEventListener(resetEvent.type, () => {
           for (const cell of element.cells)
-            if (cell.dataset.key)
-              cell.innerText = (player[cell.dataset.key as keyof Player] as Extract<Player, string>) ?? "";
+            if (cell.dataset.key) cell.innerText = (player[cell.dataset.key as keyof Player] as Extract<Player, string>) ?? "";
         });
       }}
     >
@@ -43,60 +38,72 @@ export default function PlayersTableRow({ player, update }: {
         contentEditable={editMode}
         oninput={({ target }) => {
           const fideId = +(target as HTMLElement).innerText;
-          updates.fideId = isNaN(fideId) ? null : fideId;
+          updates.fideId = fideId;
         }}
         data-key="fideId"
-      >{player.fideId}</td>
+      >
+        {player.fideId}
+      </td>
       <td
         contentEditable={editMode}
         oninput={({ target }) => {
           updates.lastName = (target as HTMLElement).innerText.trim().toUpperCase();
         }}
         data-key="lastName"
-      >{player.lastName}</td>
+      >
+        {player.lastName}
+      </td>
       <td
         contentEditable={editMode}
         oninput={({ target }) => {
           updates.firstName = (target as HTMLElement).innerText.trim();
         }}
         data-key="firstName"
-      >{player.firstName}</td>
+      >
+        {player.firstName}
+      </td>
       <td
         contentEditable={editMode}
         oninput={({ target }) => {
           updates.email = (target as HTMLElement).innerText.trim();
         }}
         data-key="email"
-      >{player.email}</td>
+      >
+        {player.email}
+      </td>
       <td
         contentEditable={editMode}
         oninput={({ target }) => {
           updates.phone = (target as HTMLElement).innerText.trim();
         }}
         data-key="phone"
-      >{player.phone}</td>
+      >
+        {player.phone}
+      </td>
       <td
         contentEditable={editMode}
         data-key="rating"
         oninput={({ target }) => {
-          const rating = +((target as HTMLElement).innerText.trim());
+          const rating = +(target as HTMLElement).innerText.trim();
           updates.rating = rating || 0;
         }}
-      >{player.rating}</td>
+      >
+        {player.rating}
+      </td>
       <td className={cssClasses.actionsCell}>
         <div
           $init={(element) => {
             editMode.subscribe((mode) => {
-              if (mode === "true")
-                element.replaceChildren(validateButton, cancelButton);
-              else
-                element.replaceChildren(toggleButton);
+              if (mode === "true") element.replaceChildren(validateButton, cancelButton);
+              else element.replaceChildren(toggleButton);
             });
           }}
-        >{toggleButton}</div>
+        >
+          {toggleButton}
+        </div>
       </td>
     </tr>
-  );
+  ));
 }
 
 function ToggleButton(onclick: VoidFunction) {

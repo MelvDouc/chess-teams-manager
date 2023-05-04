@@ -5,11 +5,7 @@ import createAccessors from "@src/utils/create-accessors.js";
 import { matchesByTeamNameCache } from "@src/utils/local-storage.js";
 import { Match, Player } from "@src/types.js";
 
-export default function MatchForm({ match, players, handleSubmit }: {
-  match: Match | null;
-  players: Player[];
-  handleSubmit: (match: Match) => any;
-}) {
+export default function MatchForm({ match, players, handleSubmit }: { match: Match | null; players: Player[]; handleSubmit: (match: Match) => any }) {
   const season = match?.season ?? 2023;
   const m: Match = match ?? {
     _id: "",
@@ -36,22 +32,24 @@ export default function MatchForm({ match, players, handleSubmit }: {
   };
   const whiteOnOddsObs = new Observable(m.whiteOnOdds);
 
-  whiteOnOddsObs.subscribe((value) => m.whiteOnOdds = value);
+  whiteOnOddsObs.subscribe((value) => (m.whiteOnOdds = value));
 
   return (
     <>
-      <Form handleSubmit={(e) => {
-        e.preventDefault();
-        matchesByTeamNameCache.clear();
-        handleSubmit(m);
-      }}>
+      <Form
+        handleSubmit={(e) => {
+          e.preventDefault();
+          matchesByTeamNameCache.clear();
+          handleSubmit(m);
+        }}
+      >
         <Form.Row>
           <Form.Group
             type="number"
             labelText="Saison"
             nameAndId="season"
             value={m.season}
-            updateValue={(season) => m.season = Number(season)}
+            updateValue={(season) => (m.season = Number(season))}
             required
           />
           <Form.Group
@@ -60,7 +58,7 @@ export default function MatchForm({ match, players, handleSubmit }: {
             nameAndId="round"
             min={1}
             value={m.round}
-            updateValue={(round) => m.round = Number(round)}
+            updateValue={(round) => (m.round = Number(round))}
             required
           />
         </Form.Row>
@@ -70,7 +68,7 @@ export default function MatchForm({ match, players, handleSubmit }: {
             nameAndId="opponent"
             labelText="Adversaire"
             value={m.opponent}
-            updateValue={(opponent) => m.opponent = opponent}
+            updateValue={(opponent) => (m.opponent = opponent)}
             required
           />
           <Form.Group
@@ -79,8 +77,7 @@ export default function MatchForm({ match, players, handleSubmit }: {
             nameAndId="date"
             value={new Date(m.date).toISOString().slice(0, 10)}
             updateValue={(date: Date | null) => {
-              if (date)
-                m.date = date.toISOString();
+              if (date) m.date = date.toISOString();
             }}
             required
           />
@@ -92,42 +89,39 @@ export default function MatchForm({ match, players, handleSubmit }: {
             labelText="Équipe"
             placeholder="Thionville I"
             value={m.teamName}
-            updateValue={(teamName) => m.teamName = teamName.trim()}
+            updateValue={(teamName) => (m.teamName = teamName.trim())}
             required
           />
           <Form.Checkbox
             nameAndId="whiteOnOdds"
             labelText="Blancs aux échiquiers impairs"
             checked={m.whiteOnOdds}
-            updateValue={(whiteOnOdds) => whiteOnOddsObs.value = whiteOnOdds}
+            updateValue={(whiteOnOdds) => (whiteOnOddsObs.value = whiteOnOdds)}
           />
         </Form.Row>
         <Form.Row>
           <div className="h-100 d-flex flex-column">
-            <label htmlFor="address" className="form-label">Adresse</label>
+            <label htmlFor="address" className="form-label">
+              Adresse
+            </label>
             <textarea
               name="address"
               id="address"
               className="form-control h-100"
               required
-              oninput={({ target }) => m.address = (target as HTMLTextAreaElement).value}
-            >{m.address}</textarea>
+              oninput={({ target }) => (m.address = (target as HTMLTextAreaElement).value)}
+            >
+              {m.address}
+            </textarea>
           </div>
           <div className="h-100 d-flex flex-column gap-2">
-            <Form.Group
-              type="text"
-              nameAndId="city"
-              labelText="Ville"
-              value={m.city}
-              updateValue={(city) => m.city = city.trim()}
-              required
-            />
+            <Form.Group type="text" nameAndId="city" labelText="Ville" value={m.city} updateValue={(city) => (m.city = city.trim())} required />
             <Form.Group
               type="text"
               nameAndId="zipCode"
               labelText="Code postal"
               value={m.zipCode}
-              updateValue={(zipCode) => m.zipCode = zipCode.trim()}
+              updateValue={(zipCode) => (m.zipCode = zipCode.trim())}
               required
             />
           </div>
@@ -152,4 +146,3 @@ export default function MatchForm({ match, players, handleSubmit }: {
     </>
   );
 }
-

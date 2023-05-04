@@ -1,4 +1,7 @@
-export default function LineUpTablePlayerNameCell({ playerFullName, setPlayerFullName }: {
+export default function LineUpTablePlayerNameCell({
+  playerFullName,
+  setPlayerFullName,
+}: {
   playerFullName: string;
   setPlayerFullName: (name: string) => void;
 }) {

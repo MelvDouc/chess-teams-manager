@@ -2,7 +2,10 @@ import Form from "@src/components/Form/Form.jsx";
 import { playersCache } from "@src/utils/local-storage.js";
 import { Player } from "@src/types.js";
 
-export default function PlayerForm({ player, handleSubmit }: {
+export default function PlayerForm({
+  player,
+  handleSubmit,
+}: {
   player: Player | null;
   handleSubmit: (player: Player) => void | Promise<void>;
 }): HTMLFormElement {
@@ -12,22 +15,24 @@ export default function PlayerForm({ player, handleSubmit }: {
     lastName: "",
     email: "",
     teams: [],
-    rating: 1199
+    rating: 1199,
   };
 
   return (
-    <Form handleSubmit={(e) => {
-      e.preventDefault();
-      playersCache.clear();
-      handleSubmit(p);
-    }}>
+    <Form
+      handleSubmit={(e) => {
+        e.preventDefault();
+        playersCache.clear();
+        handleSubmit(p);
+      }}
+    >
       <Form.Row>
         <Form.Group
           type="text"
           labelText="N° FFE"
           nameAndId="ffeId"
           value={p.ffeId}
-          updateValue={(ffeId) => p.ffeId = ffeId}
+          updateValue={(ffeId) => (p.ffeId = ffeId)}
           disabled={player !== null}
           required={player === null}
         />
@@ -36,7 +41,7 @@ export default function PlayerForm({ player, handleSubmit }: {
           labelText="N° FIDE"
           nameAndId="fideId"
           value={p.fideId}
-          updateValue={(fideId: number) => isNaN(fideId) ? (delete p.fideId) : (p.fideId = fideId)}
+          updateValue={(fideId: number) => (isNaN(fideId) ? delete p.fideId : (p.fideId = fideId))}
         />
       </Form.Row>
       <Form.Row>
@@ -45,7 +50,7 @@ export default function PlayerForm({ player, handleSubmit }: {
           labelText="Prénom"
           nameAndId="first_name"
           value={p.firstName}
-          updateValue={(firstName) => p.firstName = firstName}
+          updateValue={(firstName) => (p.firstName = firstName)}
           required={true}
         />
         <Form.Group
@@ -53,60 +58,39 @@ export default function PlayerForm({ player, handleSubmit }: {
           labelText="NOM"
           nameAndId="last_name"
           value={p.lastName}
-          updateValue={(lastName) => p.lastName = lastName.toUpperCase()}
+          updateValue={(lastName) => (p.lastName = lastName.toUpperCase())}
           required={true}
         />
       </Form.Row>
       <Form.Row>
-        <Form.Group
-          type="email"
-          labelText="Email"
-          nameAndId="email"
-          value={p.email}
-          updateValue={(email) => p.email = email}
-          required={true}
-        />
+        <Form.Group type="email" labelText="Email" nameAndId="email" value={p.email} updateValue={(email) => (p.email = email)} required />
         <Form.Group
           type="date"
           nameAndId="birthDate"
           labelText="Date de naissance"
-          value={(p.birthDate) ? new Date(p.birthDate).toISOString() : new Date().toISOString()}
+          value={p.birthDate ? new Date(p.birthDate).toISOString() : new Date().toISOString()}
           updateValue={(birthDate: Date | null) => {
-            if (birthDate)
-              p.birthDate = birthDate.toISOString();
-            else
-              delete p.birthDate;
+            if (birthDate) p.birthDate = birthDate.toISOString();
+            else delete p.birthDate;
           }}
         />
       </Form.Row>
       <Form.Row>
-        <Form.Checkbox
-          nameAndId="is-admin"
-          labelText="Admin"
-          checked={p.isAdmin}
-          updateValue={(checked) => p.isAdmin = checked}
-          required
-        />
+        <Form.Checkbox nameAndId="is-admin" labelText="Admin" checked={p.isAdmin} updateValue={(checked) => (p.isAdmin = checked)} required />
         <Form.Checkbox
           nameAndId="is-captain"
           labelText="Capitaine"
           checked={p.isCaptain}
-          updateValue={(checked) => p.isCaptain = checked}
+          updateValue={(checked) => (p.isCaptain = checked)}
           required
         />
-        <Form.Group
-          type="text"
-          labelText="Tél."
-          nameAndId="phone"
-          value={p.phone}
-          updateValue={(phone) => p.phone = phone}
-        />
+        <Form.Group type="text" labelText="Tél." nameAndId="phone" value={p.phone} updateValue={(phone) => (p.phone = phone)} />
         <Form.Group
           type="number"
           labelText="Elo"
           nameAndId="rating"
           value={p.rating}
-          updateValue={(rating) => (!isNaN(+rating)) && (p.rating = +rating)}
+          updateValue={(rating) => !isNaN(+rating) && (p.rating = +rating)}
         />
       </Form.Row>
       <Form.Row>

@@ -4,22 +4,16 @@ import cssClasses from "./Modal.module.scss";
 const Modal = (() => {
   const state = new Observable<ModalState>({
     type: "success",
-    message: ""
+    message: "",
   });
 
   const modal: HTMLDialogElement = (
     <dialog
       className={cssClasses.modal}
-      $init={(element) => element.returnValue = "cancel"}
+      $init={(element) => (element.returnValue = "cancel")}
       onclick={({ clientX, clientY }) => {
         const { x, y } = modal.getBoundingClientRect();
-        if (
-          x < clientX
-          || x > clientX
-          || y < clientY
-          || y > clientY
-        )
-          modal.close();
+        if (x < clientX || x > clientX || y < clientY || y > clientY) modal.close();
       }}
       onclose={() => {
         state.value.onClose && state.value.onClose(modal.returnValue);
@@ -39,15 +33,19 @@ const Modal = (() => {
               modal.returnValue = "OK";
               modal.close();
             }}
-          >{state.map(({ buttonText }) => buttonText ?? "OK")}</button>
+          >
+            {state.map(({ buttonText }) => buttonText ?? "OK")}
+          </button>
           <button
             classes={{
               btn: true,
               "btn-danger": true,
-              "d-none": state.map(({ cancellable }) => cancellable === true)
+              "d-none": state.map(({ cancellable }) => cancellable === true),
             }}
             onclick={() => modal.close()}
-          >Annuler</button>
+          >
+            Annuler
+          </button>
         </div>
       </article>
     </dialog>
@@ -57,7 +55,7 @@ const Modal = (() => {
 
   return {
     getModal: () => modal,
-    setState: (value: ModalState) => state.value = value
+    setState: (value: ModalState) => (state.value = value),
   };
 })();
 
