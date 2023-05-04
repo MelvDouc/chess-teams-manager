@@ -5,8 +5,9 @@ import createAccessors from "@src/utils/create-accessors.js";
 import { getDatePortion } from "@src/utils/date-formatter.js";
 import { matchesByTeamNameCache } from "@src/utils/local-storage.js";
 import { Match, Player } from "@src/types.js";
+import MatchFormAddress from "./MatchFormAddress.jsx";
 
-export default function MatchForm({ match, players, handleSubmit }: { match: Match | null; players: Player[]; handleSubmit: (match: Match) => any }) {
+export default function MatchForm({ match, players, handleSubmit }: { match: Match | null; players: Player[]; handleSubmit: (match: Match) => any; }) {
   const season = match?.season ?? 2023;
   const m: Match = match ?? {
     _id: "",
@@ -31,6 +32,11 @@ export default function MatchForm({ match, players, handleSubmit }: { match: Mat
     whiteOnOdds: true,
     captainFfeId: "",
   };
+  const fullAddress = {
+    address: m.address,
+    city: m.city,
+    zipCode: m.zipCode,
+  };
   const whiteOnOddsObs = new Observable(m.whiteOnOdds);
 
   whiteOnOddsObs.subscribe((value) => (m.whiteOnOdds = value));
@@ -41,7 +47,7 @@ export default function MatchForm({ match, players, handleSubmit }: { match: Mat
         handleSubmit={(e) => {
           e.preventDefault();
           matchesByTeamNameCache.clear();
-          handleSubmit(m);
+          handleSubmit(Object.assign(m, fullAddress));
         }}
       >
         <Form.Row>
@@ -101,31 +107,7 @@ export default function MatchForm({ match, players, handleSubmit }: { match: Mat
           />
         </Form.Row>
         <Form.Row>
-          <div className="h-100 d-flex flex-column">
-            <label htmlFor="address" className="form-label">
-              Adresse
-            </label>
-            <textarea
-              name="address"
-              id="address"
-              className="form-control h-100"
-              required
-              oninput={({ target }) => (m.address = (target as HTMLTextAreaElement).value)}
-            >
-              {m.address}
-            </textarea>
-          </div>
-          <div className="h-100 d-flex flex-column gap-2">
-            <Form.Group type="text" nameAndId="city" labelText="Ville" value={m.city} updateValue={(city) => (m.city = city.trim())} required />
-            <Form.Group
-              type="text"
-              nameAndId="zipCode"
-              labelText="Code postal"
-              value={m.zipCode}
-              updateValue={(zipCode) => (m.zipCode = zipCode.trim())}
-              required
-            />
-          </div>
+          {...MatchFormAddress({ fullAddress })}
         </Form.Row>
         <Form.Row>
           <div>

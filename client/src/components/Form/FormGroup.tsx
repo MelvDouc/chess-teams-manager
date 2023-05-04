@@ -12,6 +12,7 @@ const FormGroup = <Type extends FreeJSX.Input["type"] | "textarea">({
   pattern,
   value,
   updateValue,
+  $init
 }: InputOrTextareaProps<Type>): Type extends "textarea" ? HTMLTextAreaElement : HTMLInputElement => {
   const control: HTMLInputElement | HTMLTextAreaElement =
     type === "textarea" ? <textarea>{value ?? ""}</textarea> : <input type={type} value={value ?? ""} />;
@@ -43,6 +44,8 @@ const FormGroup = <Type extends FreeJSX.Input["type"] | "textarea">({
     }
   }
 
+  if ($init) $init(control);
+
   return (
     <div>
       <label htmlFor={nameAndId} className="form-label">
@@ -67,4 +70,5 @@ type InputOrTextareaProps<Type extends FreeJSX.Input["type"] | "textarea"> = {
   min?: Type extends "textarea" ? never : number;
   max?: Type extends "textarea" ? never : number;
   pattern?: Type extends "textarea" ? never : string;
+  $init?: (element: HTMLInputElement | HTMLTextAreaElement) => void;
 };
