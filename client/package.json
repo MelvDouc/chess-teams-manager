@@ -10,9 +10,13 @@
   },
   "devDependencies": {
     "@types/node": "^18.15.11",
+    "bootstrap-icons": "^1.10.5",
     "reactfree-jsx": "^1.5.7",
     "sass": "^1.60.0",
     "typescript": "^4.9.3",
     "vite": "^3.2.5"
+  },
+  "dependencies": {
+    "bootstrap": "^5.2.3"
   }
 }
