@@ -15,10 +15,6 @@ export default function PlayerForm({
     firstName: "",
     lastName: "",
     email: "",
-    teams: [],
-    isAdmin: false,
-    isCaptain: false,
-    rating: 1199,
   };
 
   return (
@@ -35,7 +31,7 @@ export default function PlayerForm({
           labelText="N° FFE"
           nameAndId="ffeId"
           value={p.ffeId}
-          updateValue={(ffeId) => (p.ffeId = ffeId)}
+          updateValue={(ffeId) => p.ffeId = ffeId}
           disabled={player !== null}
           required={player === null}
         />
@@ -43,8 +39,13 @@ export default function PlayerForm({
           type="number"
           labelText="N° FIDE"
           nameAndId="fideId"
+          placeholder="Laisser 0 si non connu"
           value={p.fideId}
-          updateValue={(fideId: number) => isNaN(fideId) ? delete p.fideId : (p.fideId = fideId)}
+          updateValue={(fideId: number) => {
+            isNaN(fideId)
+              ? (delete p.fideId)
+              : p.fideId = fideId;
+          }}
         />
       </Form.Row>
       <Form.Row>
@@ -53,28 +54,36 @@ export default function PlayerForm({
           labelText="Prénom"
           nameAndId="first_name"
           value={p.firstName}
-          updateValue={(firstName) => (p.firstName = firstName)}
-          required={true}
+          updateValue={(firstName) => p.firstName = firstName}
+          required
         />
         <Form.Group
           type="text"
           labelText="NOM"
           nameAndId="last_name"
           value={p.lastName}
-          updateValue={(lastName) => (p.lastName = lastName.toUpperCase())}
-          required={true}
+          updateValue={(lastName) => p.lastName = lastName.toUpperCase()}
+          required
         />
       </Form.Row>
       <Form.Row>
-        <Form.Group type="email" labelText="Email" nameAndId="email" value={p.email} updateValue={(email) => (p.email = email)} required />
+        <Form.Group
+          type="email"
+          labelText="Email"
+          nameAndId="email"
+          value={p.email}
+          updateValue={(email) => p.email = email}
+          required
+        />
         <Form.Group
           type="date"
           nameAndId="birthDate"
           labelText="Date de naissance"
           value={p.birthDate ? getDatePortion(new Date(p.birthDate)) : ""}
           updateValue={(birthDate: Date | null) => {
-            if (birthDate) p.birthDate = birthDate.toISOString();
-            else delete p.birthDate;
+            (birthDate instanceof Date)
+              ? (p.birthDate = birthDate)
+              : (delete p.birthDate);
           }}
         />
       </Form.Row>
@@ -83,21 +92,35 @@ export default function PlayerForm({
           nameAndId="is-admin"
           labelText="Admin"
           checked={p.isAdmin}
-          updateValue={(checked) => (p.isAdmin = checked)}
+          updateValue={(checked) => p.isAdmin = checked}
         />
         <Form.Checkbox
           nameAndId="is-captain"
           labelText="Capitaine"
           checked={p.isCaptain}
-          updateValue={(checked) => (p.isCaptain = checked)}
+          updateValue={(checked) => p.isCaptain = checked}
         />
-        <Form.Group type="text" labelText="Tél." nameAndId="phone" value={p.phone} updateValue={(phone) => (p.phone = phone)} />
+        <Form.Group
+          type="text"
+          labelText="Tél."
+          nameAndId="phone1"
+          value={p.phone1}
+          updateValue={(phone) => {
+            phone
+              ? (p.phone1 = phone)
+              : (delete p.phone1);
+          }}
+        />
         <Form.Group
           type="number"
           labelText="Elo"
           nameAndId="rating"
           value={p.rating}
-          updateValue={(rating: number) => !isNaN(rating) && (p.rating = rating)}
+          updateValue={(rating: number) => {
+            isNaN(rating)
+              ? (delete p.rating)
+              : p.rating = rating;
+          }}
         />
       </Form.Row>
       <Form.Row>

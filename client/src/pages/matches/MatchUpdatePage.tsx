@@ -18,7 +18,7 @@ export default async function MatchCreatePage({ season, round, teamName }: Recor
         handleSubmit={async ({ _id, ...updates }) => {
           const updateResult = await update(`/matches/${_id}/update`, updates);
 
-          if (!updateResult?.acknowledged)
+          if (!updateResult?.success)
             return alert("Le match n'a pas pu être mis à jour.");
 
           Modal.setState({

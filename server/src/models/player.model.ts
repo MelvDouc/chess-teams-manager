@@ -1,4 +1,4 @@
-import { ZodError, z } from "zod";
+import { z } from "zod";
 import { collections } from "../database/db.js";
 import {
   DeleteResult,
@@ -11,17 +11,17 @@ import {
 
 const playerSchema = z.object({
   ffeId: z.string({ required_error: "N° FFE requis." }).regex(/^[A-Z]\d+/, "N° FFE invalide."),
-  email: z.string({ required_error: "Email requis." }).email("Email invalide."),
+  fideId: z.number({ invalid_type_error: "N° FIDE invalide." }).int().positive().optional(),
   firstName: z.string({ required_error: "Prénom requis." }).nonempty(),
   lastName: z.string({ required_error: "NOM de famille requis." }).nonempty(),
+  email: z.string({ required_error: "Email requis." }).email("Email invalide."),
+  phone1: z.string().optional(),
+  phone2: z.string().optional(),
+  birthDate: z.string({ invalid_type_error: "Date de naissance invalide." }).optional(),
+  rating: z.number().positive("Elo invalide.").optional(),
   teams: z.array(z.string()).optional(),
-  rating: z.number({ required_error: "Elo requis." }).positive(),
-  fideId: z.number({ invalid_type_error: "N° FIDE invalide." }).int().optional(),
   isAdmin: z.boolean().optional(),
   isCaptain: z.boolean().optional(),
-  phone: z.string().optional(),
-  phone2: z.string().optional(),
-  birthDate: z.string().optional(),
 });
 
 const updateSchema = z.optional(playerSchema);
@@ -60,6 +60,8 @@ export default {
   },
   getPlayerUpdateErrors: (player: Player): string[] | null => {
     const parsed = updateSchema.safeParse(player);
+    // @ts-ignore
+    console.log(parsed.error);
     return (parsed.success)
       ? null
       : parsed.error.errors.map((e) => e.message);

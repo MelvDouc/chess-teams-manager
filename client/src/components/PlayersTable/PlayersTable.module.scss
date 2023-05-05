@@ -4,6 +4,7 @@
   $border-clr: white;
   $border-bottom: $border-bottom-width solid $border-clr;
   position: relative;
+  cursor: pointer;
 
   &::before {
     content: "";

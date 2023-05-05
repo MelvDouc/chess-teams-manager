@@ -1,5 +1,22 @@
 import asyncWrapper from "../middleware/async-wrapper.js";
 import playerModel from "../models/player.model.js";
+import { Player, UpdateFilter } from "../types.js";
+
+const playerKeys: Readonly<(keyof Player)[]> = [
+  "fideId",
+  "firstName",
+  "lastName",
+  "email",
+  "phone1",
+  "phone2",
+  "birthDate",
+  "rating",
+  "teams",
+  "pwd",
+  "pwdResetId",
+  "isAdmin",
+  "isCaptain",
+];
 
 const getPlayer = asyncWrapper(async (req, res) => {
   res.json(await playerModel.getPlayer({ ffeId: req.params.ffeId }));
@@ -28,11 +45,13 @@ const updatePlayer = asyncWrapper(async (req, res) => {
   if (errors)
     return res.json({ success: false, errors });
 
-  delete req.body._id;
-  delete req.body.ffeId;
-  await playerModel.updatePlayer({ ffeId: req.params.ffeId }, {
-    $set: req.body
-  });
+  const updateFilter = playerKeys.reduce((acc, key) => {
+    (key in req.body)
+      ? acc["$set"]![key] = req.body[key]
+      : acc["$unset"]![key] = "";
+    return acc;
+  }, { $set: {}, $unset: {} } as UpdateFilter<Player>);
+  await playerModel.updatePlayer({ ffeId: req.params.ffeId }, updateFilter);
   res.json({ success: true });
 });
 

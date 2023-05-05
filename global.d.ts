@@ -9,19 +9,19 @@ declare namespace ChessTeamsManager {
 
   interface Player {
     ffeId: string;
-    fideId: number;
+    fideId?: number;
     firstName: string;
     lastName: string;
     email: string;
-    phone: string;
-    phone2: string;
-    rating: number;
-    teams: string[];
+    phone1?: string;
+    phone2?: string;
+    birthDate?: Date;
+    rating?: number;
+    teams?: string[];
     pwd: string;
     pwdResetId?: string;
-    isAdmin: boolean;
-    isCaptain: boolean;
-    birthDate: Date;
+    isAdmin?: boolean;
+    isCaptain?: boolean;
   }
 
   interface Match {
@@ -35,6 +35,6 @@ declare namespace ChessTeamsManager {
     zipCode: string;
     date: Date;
     lineUp: Record<number, LineUpItem | null>;
-    captainFfeId: Player["ffeId"];
+    captainFfeId: Player["ffeId"] | null;
   }
 }

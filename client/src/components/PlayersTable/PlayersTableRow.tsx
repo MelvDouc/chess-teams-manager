@@ -16,7 +16,7 @@ export default class PlayersTableRow extends HTMLTableRowElement {
 
     this.append(<>
       <td>{player.ffeId}</td>
-      <td>{player.fideId}</td>
+      <td>{player.fideId || ""}</td>
       <td>{player.lastName}</td>
       <td>{player.firstName}</td>
       <td>{player.email}</td>

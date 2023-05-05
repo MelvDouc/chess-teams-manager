@@ -32,8 +32,8 @@ export default function PlayersTable({ players, clearCache }: {
           <Th text="NOM" sortFn={(a, b) => a.lastName.localeCompare(b.lastName)} />
           <Th text="Prénom" sortFn={(a, b) => a.firstName.localeCompare(b.firstName)} />
           <Th text="Email" sortFn={(a, b) => a.email.localeCompare(b.email)} />
-          <Th text="Tél." sortFn={(a, b) => (a.phone ?? "").localeCompare(b.phone ?? "")} />
-          <Th text="Elo" sortFn={(a, b) => a.rating - b.rating} />
+          <Th text="Tél." sortFn={(a, b) => (a.phone1 ?? "").localeCompare(b.phone1 ?? "")} />
+          <Th text="Elo" sortFn={(a, b) => (a.rating ?? 0) - (b.rating ?? 0)} />
           <th>Actions</th>
         </tr>
       </thead>
