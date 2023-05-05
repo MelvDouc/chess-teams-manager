@@ -1,0 +1,37 @@
+.playersTableSortHeader {
+  $border-inline-width: 5px;
+  $border-bottom-width: $border-inline-width * 2;
+  $border-clr: white;
+  $border-bottom: $border-bottom-width solid $border-clr;
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    top: 50%;
+    right: 0.5em;
+    transform: translateY(-50%);
+    transition: 120ms;
+  }
+
+  &[data-sort-order="NONE"]::before {
+    height: 2px;
+    width: $border-bottom-width;
+    background-color: $border-clr;
+  }
+
+  &[data-sort-order="ASC"]::before,
+  &[data-sort-order="DESC"]::before {
+    border-inline: $border-inline-width solid transparent;
+  }
+
+  &[data-sort-order="ASC"]::before {
+    border-bottom: $border-bottom;
+  }
+
+  &[data-sort-order="DESC"]::before {
+    border-top: $border-bottom;
+  }
+}
