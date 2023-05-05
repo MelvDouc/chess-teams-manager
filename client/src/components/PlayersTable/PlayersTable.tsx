@@ -9,14 +9,9 @@ export default function PlayersTable({ players, clearCache }: {
 }): HTMLTableElement {
   const sortFnObs = new Observable<((a: PlayersTableRow["player"], b: PlayersTableRow["player"]) => number) | null>();
   const Th = PlayersTableTHeader({ sortFnObs });
-  const rowsObs = new Observable(players.map((player, index) => {
-    return new PlayersTableRow({
-      player: {
-        ...player,
-        index
-      }
-    });
-  }));
+  const rowsObs = new Observable(players.map((player, index) => (
+    new PlayersTableRow({ player: { ...player, index } })
+  )));
 
   PlayersTableRow.clearCache = clearCache;
   sortFnObs.subscribe((sortFn) => {
@@ -34,7 +29,7 @@ export default function PlayersTable({ players, clearCache }: {
         <tr className="bg-primary text-light">
           <Th text="N° FFE" sortFn={(a, b) => a.ffeId.localeCompare(b.ffeId)} />
           <Th text="N° FIDE" sortFn={(a, b) => (a.fideId ?? Infinity) - (b.fideId ?? Infinity)} />
-          <Th text="NOM" initialOrder={1} sortFn={(a, b) => a.lastName.localeCompare(b.lastName)} />
+          <Th text="NOM" sortFn={(a, b) => a.lastName.localeCompare(b.lastName)} />
           <Th text="Prénom" sortFn={(a, b) => a.firstName.localeCompare(b.firstName)} />
           <Th text="Email" sortFn={(a, b) => a.email.localeCompare(b.email)} />
           <Th text="Tél." sortFn={(a, b) => (a.phone ?? "").localeCompare(b.phone ?? "")} />

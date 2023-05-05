@@ -97,7 +97,7 @@ export default function PlayerForm({
           labelText="Elo"
           nameAndId="rating"
           value={p.rating}
-          updateValue={(rating) => !isNaN(+rating) && (p.rating = +rating)}
+          updateValue={(rating: number) => !isNaN(rating) && (p.rating = rating)}
         />
       </Form.Row>
       <Form.Row>

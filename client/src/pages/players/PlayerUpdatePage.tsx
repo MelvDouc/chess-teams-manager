@@ -18,8 +18,8 @@ export default async function PlayerUpdatePage({ ffeId }: { ffeId: string; }) {
         handleSubmit={async (updates) => {
           const updateResult = await update(`/players/${player.ffeId}/update`, updates);
 
-          if (!updateResult?.acknowledged)
-            return alert("Le joueur n'a pas pu être modifié.");
+          if (!updateResult?.success)
+            return alert(updateResult?.errors ? updateResult.errors.join("\n") : "Le joueur n'a pas pu être modifié.");
 
           Modal.setState({
             type: "success",
