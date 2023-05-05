@@ -27,9 +27,8 @@ export default class PlayersTableRow extends HTMLTableRowElement {
           <router.link to={`/joueurs/${player.ffeId}/modifier`} className="btn btn-primary" title="Modifier">
             <i className="bi bi-pen-fill"></i>
           </router.link>
-          {auth.getUser()?.isAdmin && !player.isAdmin
-            ? (<DeletePlayerButton ffeId={player.ffeId} clearCache={PlayersTableRow.clearCache} />)
-            : null}
+          {(auth.getUser()?.isAdmin && !player.isAdmin)
+            && (<DeletePlayerButton ffeId={player.ffeId} clearCache={PlayersTableRow.clearCache} />)}
         </div>
       </td>
     </>);
