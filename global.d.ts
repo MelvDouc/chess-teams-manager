@@ -9,19 +9,19 @@ declare namespace ChessTeamsManager {
 
   interface Player {
     ffeId: string;
-    email: string;
+    fideId: number;
     firstName: string;
     lastName: string;
-    teams: string[];
+    email: string;
+    phone: string;
+    phone2: string;
     rating: number;
+    teams: string[];
     pwd: string;
-    fideId?: number;
-    isAdmin?: boolean;
-    isCaptain?: boolean;
-    phone?: string;
-    phone2?: string;
-    birthDate?: Date;
     pwdResetId?: string;
+    isAdmin: boolean;
+    isCaptain: boolean;
+    birthDate: Date;
   }
 
   interface Match {

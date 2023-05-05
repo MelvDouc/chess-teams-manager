@@ -16,7 +16,7 @@ const createPlayer = asyncWrapper(async (req, res) => {
   const errors = playerModel.getNewPlayerErrors(req.body);
 
   if (errors)
-    return res.json({ errors });
+    return res.json({ success: false, errors });
 
   await playerModel.createPlayer(req.body);
   res.json({ success: true });
@@ -25,12 +25,11 @@ const createPlayer = asyncWrapper(async (req, res) => {
 const updatePlayer = asyncWrapper(async (req, res) => {
   const errors = playerModel.getPlayerUpdateErrors(req.body);
 
-  if (!errors)
-    return res.json({ acknowledged: false });
+  if (errors)
+    return res.json({ success: false, errors });
 
   delete req.body._id;
   delete req.body.ffeId;
-
   await playerModel.updatePlayer({ ffeId: req.params.ffeId }, {
     $set: req.body
   });

@@ -1,6 +1,6 @@
+import { z } from "zod";
 import { collections } from "../database/db.js";
 import { DeleteResult, InsertOneResult, Match, UpdateFilter, UpdateResult, WithId } from "../types.js";
-import { isNonEmptyString, isObject, isValidFfeId, isValidISODateString, isValidNumber } from "./validators.js";
 
 const matchesPipeline = [
   {
@@ -29,6 +29,21 @@ const matchesPipeline = [
     },
   },
 ];
+
+const newMatchSchema = z.object({
+  season: z.number({ invalid_type_error: "Saison invalide.", required_error: "Saison requise." }).int(),
+  round: z.number({ invalid_type_error: "Ronde invalide.", required_error: "Saison requise." }).int(),
+  teamName: z.string({ required_error: "Nom de l'équipe requis." }),
+  whiteOnOdds: z.boolean(),
+  opponent: z.string({ required_error: "Nom de l'adversaire requis." }),
+  address: z.string({ required_error: "Adresse requise." }),
+  city: z.string({ required_error: "Ville requise." }),
+  zipCode: z.string({ required_error: "Code postal requis." }),
+  date: z.string().datetime("Date invalide."),
+  captainFfeId: z.string().regex(/[A-Z]\d+/, "N° FFE du capitaine invalide.").nullable()
+});
+
+const updateMatchSchema = newMatchSchema.optional();
 
 function getMatch(filter: MatchFilter): Promise<WithId<Match> | null> {
   return collections.matches.findOne(filter);
@@ -61,52 +76,6 @@ function deleteMatch(filter: MatchFilter): Promise<DeleteResult> {
   return collections.matches.deleteOne(filter);
 }
 
-function isValidNewMatch(data: Match) {
-  return (
-    isObject(data) &&
-    isValidNumber(data.season) &&
-    isValidNumber(data.round) &&
-    isNonEmptyString(data.teamName) &&
-    typeof data.whiteOnOdds === "boolean" &&
-    isNonEmptyString(data.opponent) &&
-    isNonEmptyString(data.address) &&
-    isNonEmptyString(data.city) &&
-    isNonEmptyString(data.zipCode) &&
-    (data.captainFfeId === null || isValidFfeId(data.captainFfeId)) &&
-    isValidISODateString(data.date) &&
-    isValidLineUp(data.lineUp)
-  );
-}
-
-function isValidMatchUpdate(data: Partial<Match>) {
-  console.log(data);
-  return (
-    isObject(data) &&
-    (data.season == null || isValidNumber(data.season)) &&
-    (data.round == null || isValidNumber(data.round)) &&
-    (data.teamName == null || isNonEmptyString(data.teamName)) &&
-    (data.whiteOnOdds == null || typeof data.whiteOnOdds === "boolean") &&
-    (data.opponent == null || isNonEmptyString(data.opponent)) &&
-    (data.address == null || isNonEmptyString(data.address)) &&
-    (data.city == null || isNonEmptyString(data.city)) &&
-    (data.zipCode == null || isNonEmptyString(data.zipCode)) &&
-    (data.captainFfeId == null || isValidFfeId(data.captainFfeId)) &&
-    (data.date == null || isValidISODateString(data.date)) &&
-    (data.lineUp == null || isValidLineUp(data.lineUp))
-  );
-}
-
-function isValidLineUp(lineUp: Match["lineUp"]) {
-  return (
-    isObject(lineUp) &&
-    Object.entries(lineUp).every(([board, item]) => {
-      return (
-        +board > 0 && +board <= 8 && (item === null || (isValidFfeId(item.ffeId) && typeof item.name === "string" && isValidNumber(item.rating)))
-      );
-    })
-  );
-}
-
 export default {
   getMatch,
   getMatches,
@@ -114,8 +83,18 @@ export default {
   createMatch,
   updateMatch,
   deleteMatch,
-  isValidNewMatch,
-  isValidMatchUpdate,
+  getCreateErrors: (data: Match) => {
+    const parsed = newMatchSchema.safeParse(data);
+    return (parsed.success)
+      ? null
+      : parsed.error.errors.map((e) => e.message);
+  },
+  getUpdateErrors: (data: Match) => {
+    const parsed = updateMatchSchema.safeParse(data);
+    return (parsed.success)
+      ? null
+      : parsed.error.errors.map((e) => e.message);
+  },
 };
 
 type MatchFilter = Partial<WithId<Match>>;

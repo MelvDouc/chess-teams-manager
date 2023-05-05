@@ -62,28 +62,32 @@ const getSeasons = asyncWrapper(async (req, res) => {
 });
 
 const createMatch = asyncWrapper(async (req, res) => {
-  if (!matchModel.isValidNewMatch(req.body))
-    return res.json({ acknowledged: false });
+  const errors = matchModel.getCreateErrors(req.body);
 
-  const { acknowledged, insertedId } = await matchModel.createMatch(req.body);
-  res.json({ acknowledged, insertedId });
+  if (errors)
+    return res.json({ success: false, errors });
+
+  await matchModel.createMatch(req.body);
+  res.json({ success: true });
 });
 
 const updateMatch = asyncWrapper(async (req, res) => {
-  if (!matchModel.isValidMatchUpdate(req.body))
-    return res.json({ acknowledged: false });
+  const errors = matchModel.getUpdateErrors(req.body);
 
-  const _id = new ObjectId(req.params._id);
-  const { acknowledged, modifiedCount } = await matchModel.updateMatch({ _id }, {
+  if (errors)
+    return res.json({ success: false, errors });
+
+  delete req.body._id;
+  await matchModel.updateMatch({ _id: new ObjectId(req.params._id) }, {
     $set: req.body
   });
-  res.json({ acknowledged, modifiedCount });
+  res.json({ success: true });
 });
 
 const deleteMatch = asyncWrapper(async (req, res) => {
   const _id = new ObjectId(req.params._id);
   const { acknowledged, deletedCount } = await matchModel.deleteMatch({ _id });
-  res.json({ acknowledged, deletedCount });
+  res.json({ success: acknowledged && deletedCount > 0 });
 });
 
 export default {
