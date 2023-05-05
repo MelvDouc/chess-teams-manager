@@ -13,29 +13,33 @@ const getPlayers = asyncWrapper(async (req, res) => {
 });
 
 const createPlayer = asyncWrapper(async (req, res) => {
-  if (!playerModel.isValidNewPlayer(req.body))
-    return res.json({ acknowledged: false });
+  const errors = playerModel.getNewPlayerErrors(req.body);
 
-  const { acknowledged, insertedId } = await playerModel.createPlayer(req.body);
-  res.json({ acknowledged, insertedId });
+  if (errors)
+    return res.json({ errors });
+
+  await playerModel.createPlayer(req.body);
+  res.json({ success: true });
 });
 
 const updatePlayer = asyncWrapper(async (req, res) => {
-  if (!playerModel.isValidPlayerUpdate(req.body))
+  const errors = playerModel.getPlayerUpdateErrors(req.body);
+
+  if (!errors)
     return res.json({ acknowledged: false });
 
   delete req.body._id;
   delete req.body.ffeId;
 
-  const { acknowledged, modifiedCount } = await playerModel.updatePlayer({ ffeId: req.params.ffeId }, {
+  await playerModel.updatePlayer({ ffeId: req.params.ffeId }, {
     $set: req.body
   });
-  res.json({ acknowledged, modifiedCount });
+  res.json({ success: true });
 });
 
 const deletePlayer = asyncWrapper(async (req, res) => {
   const { acknowledged, deletedCount } = await playerModel.deletePlayer({ ffeId: req.params.ffeId });
-  res.json({ acknowledged, deletedCount });
+  res.json({ success: acknowledged && deletedCount > 1 });
 });
 
 

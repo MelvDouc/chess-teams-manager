@@ -1,12 +1,5 @@
+import { ZodError, z } from "zod";
 import { collections } from "../database/db.js";
-import {
-  isNonEmptyString,
-  isObject,
-  isStringOrNull,
-  isValidFfeId,
-  isValidNumber,
-  isValidNumberOrNull
-} from "./validators.js";
 import {
   DeleteResult,
   InsertOneResult,
@@ -16,7 +9,22 @@ import {
   WithId
 } from "../types.js";
 
-type PlayerFilter = Partial<Player>;
+const playerSchema = z.object({
+  ffeId: z.string({ required_error: "N° FFE requis." }).regex(/^[A-Z]\d+/, "N° FFE invalide."),
+  email: z.string({ required_error: "Email requis." }).email("Email invalide."),
+  firstName: z.string({ required_error: "Prénom requis." }).nonempty(),
+  lastName: z.string({ required_error: "NOM de famille requis." }).nonempty(),
+  teams: z.array(z.string()).optional(),
+  rating: z.number({ required_error: "Elo requis." }).positive(),
+  fideId: z.number({ invalid_type_error: "N° FIDE invalide." }).int().optional(),
+  isAdmin: z.boolean().optional(),
+  isCaptain: z.boolean().optional(),
+  phone: z.string().optional(),
+  phone2: z.string().optional(),
+  birthDate: z.string().optional(),
+});
+
+const updateSchema = z.optional(playerSchema);
 
 function getPlayer(filter: PlayerFilter): Promise<WithId<Player> | null> {
   return collections.players.findOne(filter);
@@ -38,31 +46,24 @@ function deletePlayer(filter: PlayerFilter): Promise<DeleteResult> {
   return collections.players.deleteOne(filter);
 }
 
-function isValidNewPlayer(data: Player) {
-  return isObject(data)
-    && isValidFfeId(data.ffeId)
-    && isValidNumberOrNull(data.fideId)
-    && isNonEmptyString(data.firstName)
-    && isNonEmptyString(data.lastName)
-    && isNonEmptyString(data.email)
-    && isStringOrNull(data.phone);
-}
-
-function isValidPlayerUpdate(data: Partial<Player>) {
-  return isObject(data)
-    && (data.fideId == null || isValidNumber(data.fideId))
-    && (data.firstName == null || isNonEmptyString(data.firstName))
-    && (data.lastName == null || isNonEmptyString(data.lastName))
-    && (data.email == null || isNonEmptyString(data.email))
-    && (data.phone == null || isStringOrNull(data.phone));
-}
-
 export default {
   getPlayer,
   getPlayers,
   createPlayer,
   updatePlayer,
   deletePlayer,
-  isValidNewPlayer,
-  isValidPlayerUpdate
+  getNewPlayerErrors: (player: Player): string[] | null => {
+    const parsed = playerSchema.safeParse(player);
+    return (parsed.success)
+      ? null
+      : parsed.error.errors.map((e) => e.message);
+  },
+  getPlayerUpdateErrors: (player: Player): string[] | null => {
+    const parsed = updateSchema.safeParse(player);
+    return (parsed.success)
+      ? null
+      : parsed.error.errors.map((e) => e.message);
+  },
 };
+
+type PlayerFilter = Partial<Player>;
