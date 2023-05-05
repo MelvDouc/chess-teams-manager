@@ -1,4 +1,4 @@
-import { FreeJSX } from "reactfree-jsx";
+import { ComponentChildren } from "reactfree-jsx";
 import FormCheckbox from "./FormCheckbox.jsx";
 import FormGroup from "./FormGroup.jsx";
 import FormSelect from "./FormSelect.jsx";
@@ -12,7 +12,7 @@ export default function Form({
 }: {
   handleSubmit: (e: SubmitEvent) => any;
   className?: string;
-  children?: FreeJSX.ComponentChildren;
+  children?: ComponentChildren;
 }) {
   return (
     <form className={`d-flex flex-column text-light p-3 gap-3 rounded ${cssClasses.form} ${className}`} onsubmit={handleSubmit}>
@@ -21,7 +21,7 @@ export default function Form({
   );
 }
 
-Form.Row = ({ children }: { children?: FreeJSX.ComponentChildren }) => {
+Form.Row = ({ children }: { children?: ComponentChildren; }) => {
   const row = <section className="row"></section>;
 
   if (Array.isArray(children))

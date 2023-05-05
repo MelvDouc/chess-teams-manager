@@ -5,7 +5,7 @@ import router from "@src/router.jsx";
 import { get, update } from "@src/utils/api.js";
 import { Player } from "@src/types.js";
 
-export default async function PlayerUpdatePage({ ffeId }: { ffeId: string }) {
+export default async function PlayerUpdatePage({ ffeId }: { ffeId: string; }) {
   const player = await get<Player>(`/players/${ffeId}`);
 
   if (!player) return $404Page;
@@ -16,9 +16,10 @@ export default async function PlayerUpdatePage({ ffeId }: { ffeId: string }) {
       <PlayerForm
         player={player}
         handleSubmit={async (updates) => {
-          const updateResult = await update("/players/create", updates);
+          const updateResult = await update(`/players/${player.ffeId}/update`, updates);
 
-          if (!updateResult || !updateResult.modifiedCount) return alert("Le joueur n'a pas pu être modifié.");
+          if (!updateResult?.acknowledged)
+            return alert("Le joueur n'a pas pu être modifié.");
 
           Modal.setState({
             type: "success",

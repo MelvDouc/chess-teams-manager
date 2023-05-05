@@ -16,6 +16,8 @@ export default function PlayerForm({
     lastName: "",
     email: "",
     teams: [],
+    isAdmin: false,
+    isCaptain: false,
     rating: 1199,
   };
 
@@ -42,7 +44,7 @@ export default function PlayerForm({
           labelText="N° FIDE"
           nameAndId="fideId"
           value={p.fideId}
-          updateValue={(fideId: number) => (isNaN(fideId) ? delete p.fideId : (p.fideId = fideId))}
+          updateValue={(fideId: number) => isNaN(fideId) ? delete p.fideId : (p.fideId = fideId)}
         />
       </Form.Row>
       <Form.Row>
@@ -77,13 +79,17 @@ export default function PlayerForm({
         />
       </Form.Row>
       <Form.Row>
-        <Form.Checkbox nameAndId="is-admin" labelText="Admin" checked={p.isAdmin} updateValue={(checked) => (p.isAdmin = checked)} required />
+        <Form.Checkbox
+          nameAndId="is-admin"
+          labelText="Admin"
+          checked={p.isAdmin}
+          updateValue={(checked) => (p.isAdmin = checked)}
+        />
         <Form.Checkbox
           nameAndId="is-captain"
           labelText="Capitaine"
           checked={p.isCaptain}
           updateValue={(checked) => (p.isCaptain = checked)}
-          required
         />
         <Form.Group type="text" labelText="Tél." nameAndId="phone" value={p.phone} updateValue={(phone) => (p.phone = phone)} />
         <Form.Group

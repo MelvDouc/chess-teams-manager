@@ -1,6 +1,6 @@
 import { FreeJSX } from "reactfree-jsx";
 
-const FormGroup = <Type extends FreeJSX.Input["type"] | "textarea">({
+const FormGroup = <Type extends FreeJSX.InputProps["type"] | "textarea">({
   type,
   nameAndId,
   labelText,
@@ -14,8 +14,9 @@ const FormGroup = <Type extends FreeJSX.Input["type"] | "textarea">({
   updateValue,
   $init
 }: InputOrTextareaProps<Type>): Type extends "textarea" ? HTMLTextAreaElement : HTMLInputElement => {
-  const control: HTMLInputElement | HTMLTextAreaElement =
-    type === "textarea" ? <textarea>{value ?? ""}</textarea> : <input type={type} value={value ?? ""} />;
+  const control: HTMLInputElement | HTMLTextAreaElement = (type === "textarea")
+    ? <textarea>{value ?? ""}</textarea>
+    : <input type={type} value={value ?? ""} />;
 
   control.id = nameAndId;
   control.classList.add("form-control");
@@ -58,7 +59,7 @@ const FormGroup = <Type extends FreeJSX.Input["type"] | "textarea">({
 
 export default FormGroup;
 
-type InputOrTextareaProps<Type extends FreeJSX.Input["type"] | "textarea"> = {
+type InputOrTextareaProps<Type extends FreeJSX.InputProps["type"] | "textarea"> = {
   type: Type;
   nameAndId: string;
   labelText: string;

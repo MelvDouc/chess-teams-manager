@@ -1,4 +1,4 @@
-import { FreeJSX, Observable } from "reactfree-jsx";
+import { Observable } from "reactfree-jsx";
 import LineUpTablePlayerNameCell from "./LineUpTablePlayerNameCell.jsx";
 import LineUpTableRatingCell from "./LineUpTableRatingCell.jsx";
 import LineUpTableCaptainFfeIdInput from "./LineUpTableCaptainFfeIdInput.jsx";
@@ -12,7 +12,7 @@ export default function LineUpTable({
   captainFfeIdAccessors,
   players,
 }: {
-  whiteOnOddsObs: FreeJSX.Obs<Match["whiteOnOdds"]>;
+  whiteOnOddsObs: Observable<Match["whiteOnOdds"]>;
   lineUpAccessors: PropertyAccessors<Match, "lineUp">;
   captainFfeIdAccessors: PropertyAccessors<Match, "captainFfeId">;
   players: Player[];

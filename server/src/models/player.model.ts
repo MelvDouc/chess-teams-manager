@@ -1,5 +1,12 @@
 import { collections } from "../database/db.js";
-import { isNonEmptyString, isObject, isStringOrNull, isValidFfeId, isValidNumberOrNull } from "./validators.js";
+import {
+  isNonEmptyString,
+  isObject,
+  isStringOrNull,
+  isValidFfeId,
+  isValidNumber,
+  isValidNumberOrNull
+} from "./validators.js";
 import {
   DeleteResult,
   InsertOneResult,
@@ -43,11 +50,11 @@ function isValidNewPlayer(data: Player) {
 
 function isValidPlayerUpdate(data: Partial<Player>) {
   return isObject(data)
-    && (!("fideId" in data) || isValidNumberOrNull(data.fideId))
-    && (!("firstName" in data) || isNonEmptyString(data.firstName))
-    && (!("lastName" in data) || isNonEmptyString(data.lastName))
-    && (!("email" in data) || isNonEmptyString(data.email))
-    && (!("phone" in data) || isStringOrNull(data.phone));
+    && (data.fideId == null || isValidNumber(data.fideId))
+    && (data.firstName == null || isNonEmptyString(data.firstName))
+    && (data.lastName == null || isNonEmptyString(data.lastName))
+    && (data.email == null || isNonEmptyString(data.email))
+    && (data.phone == null || isStringOrNull(data.phone));
 }
 
 export default {
