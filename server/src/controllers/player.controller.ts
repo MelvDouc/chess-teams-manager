@@ -12,8 +12,6 @@ const playerKeys: Readonly<(keyof Player)[]> = [
   "birthDate",
   "rating",
   "teams",
-  "pwd",
-  "pwdResetId",
   "isAdmin",
   "isCaptain",
 ];
@@ -35,7 +33,10 @@ const createPlayer = asyncWrapper(async (req, res) => {
   if (errors)
     return res.json({ success: false, errors });
 
-  await playerModel.createPlayer(req.body);
+  await playerModel.createPlayer(playerKeys.reduce((acc, key) => {
+    acc[key] = req.body[key] as never;
+    return acc;
+  }, {} as Player));
   res.json({ success: true });
 });
 
