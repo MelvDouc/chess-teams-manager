@@ -93,9 +93,9 @@ export default function PlayerForm({
             labelText="Tél. 1"
             nameAndId="phone1"
             value={p.phone1}
-            updateValue={(phone) => {
-              phone
-                ? (p.phone1 = phone)
+            updateValue={(phone1) => {
+              phone1
+                ? (p.phone1 = phone1)
                 : (delete p.phone1);
             }}
           />
@@ -104,9 +104,9 @@ export default function PlayerForm({
             labelText="Tél. 2"
             nameAndId="phone2"
             value={p.phone2}
-            updateValue={(phone) => {
-              phone
-                ? (p.phone2 = phone)
+            updateValue={(phone2) => {
+              phone2
+                ? (p.phone2 = phone2)
                 : (delete p.phone2);
             }}
           />
@@ -122,7 +122,7 @@ export default function PlayerForm({
               : p.rating = rating;
           }}
         />
-        <div className="d-flex flex-column gap-2 pt-2">
+        <div className="d-flex flex-wrap gap-2 pt-2">
           <Form.Checkbox
             nameAndId="is-admin"
             labelText="Admin"

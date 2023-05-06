@@ -62,24 +62,23 @@ const getSeasons = asyncWrapper(async (req, res) => {
 });
 
 const createMatch = asyncWrapper(async (req, res) => {
-  const errors = matchModel.getCreateErrors(req.body);
+  const [match, errors] = matchModel.parseNewMatch(req.body);
 
   if (errors)
     return res.json({ success: false, errors });
 
-  await matchModel.createMatch(req.body);
+  await matchModel.createMatch(match);
   res.json({ success: true });
 });
 
 const updateMatch = asyncWrapper(async (req, res) => {
-  const errors = matchModel.getUpdateErrors(req.body);
+  const [updates, errors] = matchModel.parseMatchUpdates(req.body);
 
   if (errors)
     return res.json({ success: false, errors });
 
-  delete req.body._id;
   await matchModel.updateMatch({ _id: new ObjectId(req.params._id) }, {
-    $set: req.body
+    $set: updates
   });
   res.json({ success: true });
 });

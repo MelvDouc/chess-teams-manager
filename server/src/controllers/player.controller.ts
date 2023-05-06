@@ -34,28 +34,25 @@ const getPlayers = asyncWrapper(async (req, res) => {
 });
 
 const createPlayer = asyncWrapper(async (req, res) => {
-  const errors = playerModel.getNewPlayerErrors(req.body);
+  const [player, errors] = playerModel.parseNewPlayer(req.body);
 
   if (errors)
     return res.json({ success: false, errors });
 
-  Object.keys(req.body).forEach((key) => {
-    if (!playerKeys.includes(key as keyof Player))
-      delete req.body[key];
-  });
-  await playerModel.createPlayer(req.body);
+  await playerModel.createPlayer(player);
   res.json({ success: true });
 });
 
 const updatePlayer = asyncWrapper(async (req, res) => {
-  const errors = playerModel.getPlayerUpdateErrors(req.body);
+  const [updates, errors] = playerModel.parsePlayerUpdates(req.body);
 
   if (errors)
     return res.json({ success: false, errors });
 
   const updateFilter = playerKeys.reduce((acc, key) => {
-    (key in req.body)
-      ? acc["$set"]![key] = req.body[key]
+    (key in updates)
+      // @ts-expect-error
+      ? acc["$set"]![key] = updates[key]
       : acc["$unset"]![key] = "";
     return acc;
   }, { $set: {}, $unset: {} } as UpdateFilter<Player>);

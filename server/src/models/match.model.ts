@@ -30,6 +30,19 @@ const matchesPipeline = [
   },
 ];
 
+const lineUpSchema = z.object(
+  [...Array(8).keys()].reduce((acc, key) => {
+    acc[+key] = z
+      .object({
+        ffeId: z.string({ required_error: "N° FFE requis." }),
+        rating: z.number().positive(),
+        name: z.string()
+      })
+      .nullable();
+    return acc;
+  }, {} as Record<number, z.ZodNullable<LineUpSchema>>)
+);
+
 const newMatchSchema = z.object({
   season: z
     .number({
@@ -73,7 +86,13 @@ const newMatchSchema = z.object({
       invalid_type_error: "Code posta invalide."
     })
     .nonempty("Code postal requis."),
-  date: z.string().datetime("Date invalide."),
+  date: z
+    .date({
+      invalid_type_error: "Date invalide.",
+      required_error: "Date requise."
+    })
+    .transform((dateStr) => new Date(dateStr)),
+  lineUp: lineUpSchema,
   captainFfeId: z
     .string({
       invalid_type_error: "N° FFE du capitaine invalide.",
@@ -83,7 +102,7 @@ const newMatchSchema = z.object({
     .nullable()
 });
 
-const updateMatchSchema = newMatchSchema.optional();
+const updateMatchSchema = newMatchSchema.partial();
 
 function getMatch(filter: MatchFilter): Promise<WithId<Match> | null> {
   return collections.matches.findOne(filter);
@@ -123,17 +142,17 @@ export default {
   createMatch,
   updateMatch,
   deleteMatch,
-  getCreateErrors: (data: Match) => {
+  parseNewMatch: (data: Match): [Match, null] | [null, string[]] => {
     const parsed = newMatchSchema.safeParse(data);
     return (parsed.success)
-      ? null
-      : parsed.error.errors.map((e) => e.message);
+      ? [parsed.data, null]
+      : [null, parsed.error.errors.map((e) => e.message)];
   },
-  getUpdateErrors: (data: Match) => {
+  parseMatchUpdates: (data: Match): [Partial<Match>, null] | [null, string[]] => {
     const parsed = updateMatchSchema.safeParse(data);
     return (parsed.success)
-      ? null
-      : parsed.error.errors.map((e) => e.message);
+      ? [parsed.data, null]
+      : [null, parsed.error.errors.map((e) => e.message)];
   },
 };
 
@@ -141,3 +160,8 @@ type MatchFilter = Partial<WithId<Match>>;
 type MatchesByTeamName = Pick<Match, "teamName"> & {
   matches: WithId<Match>[];
 };
+type LineUpSchema = z.ZodObject<{
+  ffeId: z.ZodString;
+  rating: z.ZodNumber;
+  name: z.ZodString;
+}>;

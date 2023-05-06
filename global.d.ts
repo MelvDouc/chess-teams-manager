@@ -18,7 +18,7 @@ declare namespace ChessTeamsManager {
     birthDate?: Date;
     rating?: number;
     teams?: string[];
-    pwd: string;
+    pwd?: string;
     pwdResetId?: string;
     isAdmin?: boolean;
     isCaptain?: boolean;

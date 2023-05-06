@@ -10,7 +10,12 @@ import {
 } from "../types.js";
 
 const playerSchema = z.object({
-  ffeId: z.string({ required_error: "N° FFE requis." }).regex(/^[A-Z]\d+/, "N° FFE invalide."),
+  ffeId: z
+    .string({
+      required_error: "N° FFE requis.",
+      invalid_type_error: "N° FFE invalide.",
+    })
+    .regex(/^[A-Z]\d+/, "Le n° FFE doit être composé d'une lettre majuscule suivie d'un nombre."),
   fideId: z
     .number({ invalid_type_error: "N° FIDE invalide." })
     .int("Le n° FIDE ne peut être un nombre décimal.")
@@ -36,7 +41,10 @@ const playerSchema = z.object({
     .email("Email invalide."),
   phone1: z.string({ invalid_type_error: "N° de téléphone invalide." }).optional(),
   phone2: z.string({ invalid_type_error: "N° de téléphone invalide." }).optional(),
-  birthDate: z.string({ invalid_type_error: "Date de naissance invalide." }).optional(),
+  birthDate: z
+    .date({ invalid_type_error: "Date de naissance invalide." })
+    .transform((dateStr) => new Date(dateStr))
+    .optional(),
   rating: z
     .number({ invalid_type_error: "Classement Elo invalide." })
     .nonnegative("Le classement Elo doit être un nombre positif.")
@@ -46,7 +54,20 @@ const playerSchema = z.object({
   isCaptain: z.boolean({ invalid_type_error: "Rôle invalide." }).optional(),
 });
 
-const updateSchema = z.optional(playerSchema);
+const updateSchema = playerSchema
+  .pick({
+    fideId: true,
+    firstName: true,
+    lastName: true,
+    email: true,
+    phone1: true,
+    phone2: true,
+    birthDate: true,
+    rating: true,
+    isAdmin: true,
+    isCaptain: true
+  })
+  .partial();
 
 function getPlayer(filter: PlayerFilter): Promise<WithId<Player> | null> {
   return collections.players.findOne(filter);
@@ -74,17 +95,17 @@ export default {
   createPlayer,
   updatePlayer,
   deletePlayer,
-  getNewPlayerErrors: (player: Player): string[] | null => {
+  parseNewPlayer: (player: Player): [Omit<Player, "pwd">, null] | [null, string[]] => {
     const parsed = playerSchema.safeParse(player);
     return (parsed.success)
-      ? null
-      : parsed.error.errors.map((e) => e.message);
+      ? [parsed.data, null]
+      : [null, parsed.error.errors.map((e) => e.message)];
   },
-  getPlayerUpdateErrors: (player: Player): string[] | null => {
+  parsePlayerUpdates: (player: Player): [Partial<Omit<Player, "ffeId">>, null] | [null, string[]] => {
     const parsed = updateSchema.safeParse(player);
     return (parsed.success)
-      ? null
-      : parsed.error.errors.map((e) => e.message);
+      ? [parsed.data, null]
+      : [null, parsed.error.errors.map((e) => e.message)];
   },
 };
 
