@@ -30,8 +30,8 @@ export function get<TData>(path: Path) {
   });
 }
 
-export function post<TData, TReturnValue = Acknowledgeable & { insertId: string; }>(path: Path, data: TData) {
-  return fetchFromApi<TReturnValue>(path, {
+export function post<TData>(path: Path, data: TData) {
+  return fetchFromApi<SuccessResponse<boolean>>(path, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

@@ -10,10 +10,14 @@ export default function PlayerCreatePage() {
       <PlayerForm
         player={null}
         handleSubmit={async (player) => {
-          const insertedId = await post("/players/create", player);
+          const insertResult = await post("/players/create", player);
 
-          if (!insertedId)
-            return alert("Le joueur n'a pas pu être créé.");
+          if (!insertResult?.success)
+            return alert(
+              (insertResult?.errors)
+                ? insertResult.errors.join("\n")
+                : "Le joueur n'a pas pu être créé."
+            );
 
           Modal.setState({
             type: "success",
