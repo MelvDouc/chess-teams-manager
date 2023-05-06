@@ -91,7 +91,8 @@ export default function LineUpTable({
               <LineUpTableRatingCell
                 rating={player?.rating || 0}
                 setRating={(rating) => {
-                  if (lineUpObs.value[+board]) lineUpObs.value[+board]!.rating = rating;
+                  if (lineUpObs.value[+board])
+                    lineUpObs.value[+board]!.rating = rating;
                   lineUpObs.notify();
                 }}
                 onRatingChange={(subscription) => {
@@ -102,7 +103,10 @@ export default function LineUpTable({
               />
             </td>
             <td>
-              <LineUpTableCaptainFfeIdInput getFfeId={() => lineUpObs.value[+board]?.ffeId ?? null} captainFfeIdAccessors={captainFfeIdAccessors} />
+              <LineUpTableCaptainFfeIdInput
+                getFfeId={() => lineUpObs.value[+board]?.ffeId ?? null}
+                captainFfeIdAccessors={captainFfeIdAccessors}
+              />
             </td>
           </tr>
         ))}

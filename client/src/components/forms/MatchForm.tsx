@@ -7,14 +7,18 @@ import { matchesByTeamNameCache } from "@src/utils/local-storage.js";
 import { Match, Player } from "@src/types.js";
 import MatchFormAddress from "./MatchFormAddress.jsx";
 
-export default function MatchForm({ match, players, handleSubmit }: { match: Match | null; players: Player[]; handleSubmit: (match: Match) => any; }) {
+export default function MatchForm({ match, players, handleSubmit }: {
+  match: Match | null;
+  players: Player[];
+  handleSubmit: (match: Match) => any;
+}) {
   const season = match?.season ?? 2023;
   const m: Match = match ?? {
     _id: "",
     address: "",
     city: "",
     zipCode: "",
-    date: new Date().toISOString(),
+    date: new Date(),
     lineUp: {
       1: null,
       2: null,
@@ -30,7 +34,7 @@ export default function MatchForm({ match, players, handleSubmit }: { match: Mat
     round: 1,
     season,
     whiteOnOdds: true,
-    captainFfeId: "",
+    captainFfeId: null,
   };
   const fullAddress = {
     address: m.address,
@@ -56,7 +60,7 @@ export default function MatchForm({ match, players, handleSubmit }: { match: Mat
             labelText="Saison"
             nameAndId="season"
             value={m.season}
-            updateValue={(season) => (m.season = Number(season))}
+            updateValue={(season) => m.season = Number(season)}
             required
           />
           <Form.Group
@@ -65,7 +69,7 @@ export default function MatchForm({ match, players, handleSubmit }: { match: Mat
             nameAndId="round"
             min={1}
             value={m.round}
-            updateValue={(round) => (m.round = Number(round))}
+            updateValue={(round) => m.round = Number(round)}
             required
           />
         </Form.Row>
@@ -75,7 +79,7 @@ export default function MatchForm({ match, players, handleSubmit }: { match: Mat
             nameAndId="opponent"
             labelText="Adversaire"
             value={m.opponent}
-            updateValue={(opponent) => (m.opponent = opponent)}
+            updateValue={(opponent) => m.opponent = opponent}
             required
           />
           <Form.Group
@@ -83,9 +87,7 @@ export default function MatchForm({ match, players, handleSubmit }: { match: Mat
             labelText="Date"
             nameAndId="date"
             value={getDatePortion(new Date(m.date))}
-            updateValue={(date: Date | null) => {
-              if (date) m.date = date.toISOString();
-            }}
+            updateValue={(date: Date | null) => date && (m.date = date)}
             required
           />
         </Form.Row>
@@ -96,14 +98,14 @@ export default function MatchForm({ match, players, handleSubmit }: { match: Mat
             labelText="Équipe"
             placeholder="Thionville I"
             value={m.teamName}
-            updateValue={(teamName) => (m.teamName = teamName.trim())}
+            updateValue={(teamName) => m.teamName = teamName.trim()}
             required
           />
           <Form.Checkbox
             nameAndId="whiteOnOdds"
             labelText="Blancs aux échiquiers impairs"
             checked={m.whiteOnOdds}
-            updateValue={(whiteOnOdds) => (whiteOnOddsObs.value = whiteOnOdds)}
+            updateValue={(whiteOnOdds) => whiteOnOddsObs.value = whiteOnOdds}
           />
         </Form.Row>
         <Form.Row>

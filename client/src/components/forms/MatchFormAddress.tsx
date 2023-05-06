@@ -4,7 +4,9 @@ import { Match } from "@src/types.js";
 export default function MatchFormAddress({ fullAddress }: { fullAddress: FullAddress; }) {
   const eventBus = new EventTarget();
   const reset = (checked: boolean) => {
-    eventBus.dispatchEvent(new CustomEvent("row_reset", { detail: { checked } }));
+    eventBus.dispatchEvent(
+      new CustomEvent("row_reset", { detail: { checked } })
+    );
   };
   const $init = (key: keyof FullAddress) => {
     return (element: HTMLInputElement | HTMLTextAreaElement) => {
@@ -12,9 +14,13 @@ export default function MatchFormAddress({ fullAddress }: { fullAddress: FullAdd
         fullAddress[key] = element.value;
       });
       eventBus.addEventListener("row_reset", (e) => {
-        element.value = ((e as CustomEvent<{ checked: boolean; }>).detail.checked)
-          ? homeAddress[key]
-          : fullAddress[key];
+        const checked = (e as CustomEvent<{ checked: boolean; }>).detail.checked;
+        if (checked) {
+          element.value = homeAddress[key];
+          fullAddress[key] = homeAddress[key];
+          return;
+        }
+        element.value = fullAddress[key];
       });
     };
   };

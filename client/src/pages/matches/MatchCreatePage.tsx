@@ -14,10 +14,14 @@ export default async function MatchCreatePage() {
         match={null}
         players={players ?? []}
         handleSubmit={async ({ _id, ...match }) => {
-          const postResult = await post("/matches/create", match);
+          const insertResult = await post("/matches/create", match);
 
-          if (!postResult?.acknowledged)
-            return alert("Le match n'a pu être créé.");
+          if (!insertResult?.success)
+            return alert(
+              (insertResult?.errors)
+                ? insertResult.errors.join("\n")
+                : "Le match n'a pu être créé."
+            );
 
           Modal.setState({
             type: "success",

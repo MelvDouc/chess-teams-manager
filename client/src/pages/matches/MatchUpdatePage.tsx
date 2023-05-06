@@ -19,7 +19,11 @@ export default async function MatchCreatePage({ season, round, teamName }: Recor
           const updateResult = await update(`/matches/${_id}/update`, updates);
 
           if (!updateResult?.success)
-            return alert("Le match n'a pas pu être mis à jour.");
+            return alert(
+              (updateResult?.errors)
+                ? updateResult.errors.join("\n")
+                : "Le match n'a pas pu être mis à jour."
+            );
 
           Modal.setState({
             type: "success",

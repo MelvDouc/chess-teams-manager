@@ -8,19 +8,23 @@ export default function LineUpTableCaptainFfeIdInput({
   getFfeId: () => string | null;
   captainFfeIdAccessors: PropertyAccessors<Match, "captainFfeId">;
 }) {
+  const initialFfeId = captainFfeIdAccessors.get();
+
   return (
     <input
       type="radio"
       name="captain"
-      checked={captainFfeIdAccessors.get() === getFfeId()}
+      checked={initialFfeId !== null && initialFfeId === getFfeId()}
       $init={(element) => {
         element.addEventListener("change", () => {
           if (!element.checked) return;
 
           const ffeId = getFfeId();
 
-          if (ffeId) captainFfeIdAccessors.set(ffeId);
-          else element.checked = false;
+          if (ffeId)
+            captainFfeIdAccessors.set(ffeId);
+          else
+            element.checked = false;
         });
       }}
     />
