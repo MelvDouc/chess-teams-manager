@@ -27,7 +27,7 @@ const FormCheckbox = ({
             if (updateValue) element.addEventListener("change", () => updateValue(element.checked));
           }}
         />
-        <label className="form-check-label" htmlFor={nameAndId}>
+        <label classes={{ "form-check-label": true, [cssClasses.required]: required === true }} htmlFor={nameAndId}>
           {labelText}
         </label>
       </div>

@@ -1,4 +1,5 @@
 import { FreeJSX } from "reactfree-jsx";
+import cssClasses from "./Form.module.scss";
 
 const FormGroup = <Type extends FreeJSX.InputProps["type"] | "textarea">({
   type,
@@ -49,7 +50,10 @@ const FormGroup = <Type extends FreeJSX.InputProps["type"] | "textarea">({
 
   return (
     <div>
-      <label htmlFor={nameAndId} className="form-label">
+      <label htmlFor={nameAndId} classes={{
+        "form-label": true,
+        [cssClasses.required]: required === true
+      }}>
         {labelText}
       </label>
       {control}

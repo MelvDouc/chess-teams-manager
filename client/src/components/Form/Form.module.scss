@@ -5,6 +5,16 @@
   display: flex;
   background: $bg-clr1;
   background: linear-gradient(to top, $bg-clr3, $bg-clr2, $bg-clr1);
+
+  .required {
+    &::after {
+      content: "*";
+      display: inline-block;
+      margin-inline-start: 0.33em;
+      transform: scale(1.2, 1.5);
+      color: red;
+    }
+  }
 }
 
 .formSwitchInput {
