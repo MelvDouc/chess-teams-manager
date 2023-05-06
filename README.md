@@ -2,13 +2,14 @@
 
 ## To-Do's
 
-- [x] add players birth date
-- [x] add players phone 2
-- [x] add players team(s)
+- [X] add players birth date
+- [X] add players phone 2
+- [X] add players team(s)
+- [ ] add asterisk to required form labels
 - [ ] add new player data to form
 - [ ] make players table searchable
-- [x] make players table sortable
+- [X] make players table sortable
 - [ ] check auth token on CRUD operation
-- [x] use enum for player roles
-- [x] validate form data (backend)
-  - [x] send errors
+- [X] use enum for player roles
+- [X] validate form data (backend)
+  - [X] send errors
