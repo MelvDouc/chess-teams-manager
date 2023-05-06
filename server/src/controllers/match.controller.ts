@@ -2,10 +2,27 @@ import { ObjectId } from "../database/db.js";
 import matchModel from "../models/match.model.js";
 import asyncWrapper from "../middleware/async-wrapper.js";
 import { compileTemplate } from "../services/templates.service.js";
+import { Match } from "../types.js";
 
 const parityMap = new Map<boolean, string>()
   .set(true, "odd")
   .set(false, "even");
+
+function getLineUpContext(match: Match, parity: string) {
+  const lineUp = Object.entries(match.lineUp).reduce((acc, [board, player]) => {
+    acc[`${parity}.p${board}.name`] = player?.name ?? "";
+    acc[`${parity}.p${board}.ffeId`] = player?.ffeId ?? "";
+    acc[`${parity}.p${board}.rating`] = player?.rating ?? "";
+
+    if (match.captainFfeId && match.captainFfeId === player?.ffeId)
+      acc[`${parity}.cap`] = player.name;
+
+    return acc;
+  }, {} as Record<string, string | number>);
+  lineUp["referee"] = ".".repeat(20);
+
+  return lineUp;
+}
 
 const getMatch = asyncWrapper(async (req, res) => {
   res.json(await matchModel.getMatch({
@@ -25,20 +42,9 @@ const downloadScoreSheet = asyncWrapper(async (req, res) => {
   if (!match)
     return res.contentType("html").send("<h1>Feuille de match indisponible.</h1>");
 
-  const parity = parityMap.get(match.whiteOnOdds),
+  const parity = parityMap.get(match.whiteOnOdds)!,
     inverseParity = parityMap.get(!match.whiteOnOdds);
-  const lineUp = Object.entries(match.lineUp).reduce((acc, [board, player]) => {
-    acc[`${parity}.p${board}.name`] = player?.name ?? "";
-    acc[`${parity}.p${board}.ffeId`] = player?.ffeId ?? "";
-    acc[`${parity}.p${board}.rating`] = player?.rating ?? "";
-
-    if (match.captainFfeId && match.captainFfeId === player?.ffeId)
-      acc[`${parity}.cap`] = player.name;
-
-    return acc;
-  }, {} as Record<string, string | number>);
-  lineUp[`${inverseParity}.cap`] = ".".repeat(20);
-  lineUp["referee"] = ".".repeat(20);
+  const lineUp = getLineUpContext(match, parity);
 
   const { html } = await compileTemplate("score-sheet", {
     season: `${match.season - 1}-${match.season}`,
@@ -48,17 +54,10 @@ const downloadScoreSheet = asyncWrapper(async (req, res) => {
     city: match.city.toUpperCase(),
     [`${parity}.club`]: "Thionville",
     [`${inverseParity}.club`]: match.opponent,
+    [`${inverseParity}.cap`]: ".".repeat(20),
     ...lineUp
   });
   res.contentType("html").send(html);
-});
-
-const getMatches = asyncWrapper(async (req, res) => {
-  res.json(await matchModel.getMatches(+req.params.season));
-});
-
-const getSeasons = asyncWrapper(async (req, res) => {
-  res.json(await matchModel.getSeasons());
 });
 
 const createMatch = asyncWrapper(async (req, res) => {
@@ -91,9 +90,13 @@ const deleteMatch = asyncWrapper(async (req, res) => {
 
 export default {
   getMatch,
-  getMatches,
+  getMatches: asyncWrapper(async (req, res) => {
+    res.json(await matchModel.getMatches(+req.params.season));
+  }),
   downloadScoreSheet,
-  getSeasons,
+  getSeasons: asyncWrapper(async (req, res) => {
+    res.json(await matchModel.getSeasons());
+  }),
   createMatch,
   updateMatch,
   deleteMatch
