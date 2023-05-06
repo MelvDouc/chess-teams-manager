@@ -14,8 +14,7 @@ export default function MatchFormAddress({ fullAddress }: { fullAddress: FullAdd
         fullAddress[key] = element.value;
       });
       eventBus.addEventListener("row_reset", (e) => {
-        const checked = (e as CustomEvent<{ checked: boolean; }>).detail.checked;
-        if (checked) {
+        if ((e as CustomEvent<{ checked: boolean; }>).detail.checked) {
           element.value = homeAddress[key];
           fullAddress[key] = homeAddress[key];
           return;
