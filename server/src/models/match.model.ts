@@ -31,16 +31,56 @@ const matchesPipeline = [
 ];
 
 const newMatchSchema = z.object({
-  season: z.number({ invalid_type_error: "Saison invalide.", required_error: "Saison requise." }).int(),
-  round: z.number({ invalid_type_error: "Ronde invalide.", required_error: "Saison requise." }).int(),
-  teamName: z.string({ required_error: "Nom de l'équipe requis." }),
-  whiteOnOdds: z.boolean(),
-  opponent: z.string({ required_error: "Nom de l'adversaire requis." }),
-  address: z.string({ required_error: "Adresse requise." }),
-  city: z.string({ required_error: "Ville requise." }),
-  zipCode: z.string({ required_error: "Code postal requis." }),
+  season: z
+    .number({
+      invalid_type_error: "Saison invalide.",
+      required_error: "Saison requise."
+    })
+    .int("Saison invalide."),
+  round: z
+    .number({
+      invalid_type_error: "Ronde invalide.",
+      required_error: "Ronde requise."
+    })
+    .int("Ronde invalide."),
+  teamName: z.string({
+    required_error: "Nom d'équipe requis.",
+    invalid_type_error: "Nom d'équipe invalide."
+  }),
+  whiteOnOdds: z.boolean({
+    invalid_type_error: "Veuillez renseigner qui a les blancs sur les échiquiers impairs.",
+    required_error: "Veuillez renseigner qui a les blancs sur les échiquiers impairs."
+  }),
+  opponent: z.string({
+    required_error: "Nom de l'adversaire requis.",
+    invalid_type_error: "Nom de l'adversaire invalide."
+  }),
+  address: z
+    .string({
+      required_error: "Adresse requise.",
+      invalid_type_error: "Adresse invalide"
+    })
+    .nonempty("Adresse requise."),
+  city: z
+    .string({
+      required_error: "Ville requise.",
+      invalid_type_error: "Ville invalide."
+    })
+    .nonempty("Ville requise."),
+  zipCode: z
+    .string({
+      required_error: "Code postal requis.",
+      invalid_type_error: "Code posta invalide."
+    })
+    .nonempty("Code postal requis."),
   date: z.string().datetime("Date invalide."),
-  captainFfeId: z.string().regex(/[A-Z]\d+/, "N° FFE du capitaine invalide.").nullable()
+  captainFfeId: z
+    .string({
+      invalid_type_error: "N° FFE du capitaine invalide.",
+      required_error: "N° FFE du capitaine requis."
+    })
+    .regex(/[A-Z]\d+/, "N° FFE du capitaine invalide.")
+    .nullable()
 });
 
 const updateMatchSchema = newMatchSchema.optional();

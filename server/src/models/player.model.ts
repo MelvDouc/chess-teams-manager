@@ -11,17 +11,39 @@ import {
 
 const playerSchema = z.object({
   ffeId: z.string({ required_error: "N° FFE requis." }).regex(/^[A-Z]\d+/, "N° FFE invalide."),
-  fideId: z.number({ invalid_type_error: "N° FIDE invalide." }).int().positive().optional(),
-  firstName: z.string({ required_error: "Prénom requis." }).nonempty(),
-  lastName: z.string({ required_error: "NOM de famille requis." }).nonempty(),
-  email: z.string({ required_error: "Email requis." }).email("Email invalide."),
-  phone1: z.string().optional(),
-  phone2: z.string().optional(),
+  fideId: z
+    .number({ invalid_type_error: "N° FIDE invalide." })
+    .int("Le n° FIDE ne peut être un nombre décimal.")
+    .nonnegative("Le n° FIDE ne peut pas être un nombre négatif.")
+    .optional(),
+  firstName: z
+    .string({
+      required_error: "Prénom requis.",
+      invalid_type_error: "Prénom invalide."
+    })
+    .nonempty("Prénom requis."),
+  lastName: z
+    .string({
+      required_error: "Nom de famille requis.",
+      invalid_type_error: "Nom de famille invalide."
+    })
+    .nonempty("Nom de famille requis."),
+  email: z
+    .string({
+      required_error: "Email requis.",
+      invalid_type_error: "Email invalide."
+    })
+    .email("Email invalide."),
+  phone1: z.string({ invalid_type_error: "N° de téléphone invalide." }).optional(),
+  phone2: z.string({ invalid_type_error: "N° de téléphone invalide." }).optional(),
   birthDate: z.string({ invalid_type_error: "Date de naissance invalide." }).optional(),
-  rating: z.number().positive("Elo invalide.").optional(),
-  teams: z.array(z.string()).optional(),
-  isAdmin: z.boolean().optional(),
-  isCaptain: z.boolean().optional(),
+  rating: z
+    .number({ invalid_type_error: "Classement Elo invalide." })
+    .nonnegative("Le classement Elo doit être un nombre positif.")
+    .optional(),
+  teams: z.array(z.string(), { invalid_type_error: "Liste d'équipes invalide." }).optional(),
+  isAdmin: z.boolean({ invalid_type_error: "Rôle invalide." }).optional(),
+  isCaptain: z.boolean({ invalid_type_error: "Rôle invalide." }).optional(),
 });
 
 const updateSchema = z.optional(playerSchema);
@@ -60,8 +82,6 @@ export default {
   },
   getPlayerUpdateErrors: (player: Player): string[] | null => {
     const parsed = updateSchema.safeParse(player);
-    // @ts-ignore
-    console.log(parsed.error);
     return (parsed.success)
       ? null
       : parsed.error.errors.map((e) => e.message);
