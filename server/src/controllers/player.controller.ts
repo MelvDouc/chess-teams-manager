@@ -17,7 +17,13 @@ const playerKeys: Readonly<(keyof Player)[]> = [
 ];
 
 const getPlayer = asyncWrapper(async (req, res) => {
-  res.json(await playerModel.getPlayer({ ffeId: req.params.ffeId }));
+  const player = await playerModel.getPlayer({ ffeId: req.params.ffeId });
+
+  if (!player)
+    return res.json(null);
+
+  const { pwd, pwdResetId, ...others } = player;
+  res.json({ ...others });
 });
 
 const getPlayers = asyncWrapper(async (req, res) => {
@@ -33,10 +39,11 @@ const createPlayer = asyncWrapper(async (req, res) => {
   if (errors)
     return res.json({ success: false, errors });
 
-  await playerModel.createPlayer(playerKeys.reduce((acc, key) => {
-    acc[key] = req.body[key] as never;
-    return acc;
-  }, {} as Player));
+  Object.keys(req.body).forEach((key) => {
+    if (!playerKeys.includes(key as keyof Player))
+      delete req.body[key];
+  });
+  await playerModel.createPlayer(req.body);
   res.json({ success: true });
 });
 

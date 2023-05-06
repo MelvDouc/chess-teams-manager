@@ -17,7 +17,6 @@ export default async function PlayerUpdatePage({ ffeId }: { ffeId: string; }) {
         player={player}
         handleSubmit={async (updates) => {
           const updateResult = await update(`/players/${player.ffeId}/update`, updates);
-          console.log(updateResult);
 
           if (!updateResult?.success)
             return alert(

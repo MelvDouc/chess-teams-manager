@@ -29,7 +29,7 @@ export default function PlayerForm({
         <Form.Group
           type="text"
           labelText="N° FFE"
-          nameAndId="ffeId"
+          nameAndId="ffe-id"
           value={p.ffeId}
           updateValue={(ffeId) => p.ffeId = ffeId}
           disabled={player !== null}
@@ -38,9 +38,8 @@ export default function PlayerForm({
         <Form.Group
           type="number"
           labelText="N° FIDE"
-          nameAndId="fideId"
-          placeholder="Laisser 0 si non connu"
-          value={p.fideId}
+          nameAndId="fide-id"
+          value={p.fideId ?? ""}
           updateValue={(fideId: number) => {
             isNaN(fideId)
               ? (delete p.fideId)
@@ -52,7 +51,7 @@ export default function PlayerForm({
         <Form.Group
           type="text"
           labelText="Prénom"
-          nameAndId="first_name"
+          nameAndId="first-name"
           value={p.firstName}
           updateValue={(firstName) => p.firstName = firstName}
           required
@@ -60,7 +59,7 @@ export default function PlayerForm({
         <Form.Group
           type="text"
           labelText="NOM"
-          nameAndId="last_name"
+          nameAndId="last-name"
           value={p.lastName}
           updateValue={(lastName) => p.lastName = lastName.toUpperCase()}
           required
@@ -77,7 +76,7 @@ export default function PlayerForm({
         />
         <Form.Group
           type="date"
-          nameAndId="birthDate"
+          nameAndId="birth-date"
           labelText="Date de naissance"
           value={p.birthDate ? getDatePortion(new Date(p.birthDate)) : ""}
           updateValue={(birthDate: Date | null) => {
