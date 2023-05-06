@@ -13,6 +13,7 @@ export default class PlayersTableRow extends HTMLTableRowElement {
   }) {
     super();
     this.player = player;
+    this.id = `ffe-${player.ffeId}`;
 
     this.append(<>
       <td>{player.ffeId}</td>

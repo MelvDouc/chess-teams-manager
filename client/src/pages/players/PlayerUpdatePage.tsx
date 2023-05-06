@@ -28,7 +28,7 @@ export default async function PlayerUpdatePage({ ffeId }: { ffeId: string; }) {
           Modal.setState({
             type: "success",
             message: "Le joueur a bien été modifié.",
-            onClose: () => router.navigate("/joueurs"),
+            onClose: () => router.navigate(`/joueurs#ffe-${player.ffeId}`),
           });
         }}
       />
