@@ -16,11 +16,11 @@ export default class PlayersTableRow extends HTMLTableRowElement {
 
     this.append(<>
       <td>{player.ffeId}</td>
-      <td>{player.fideId || ""}</td>
+      <td>{player.fideId}</td>
       <td>{player.lastName}</td>
       <td>{player.firstName}</td>
       <td>{player.email}</td>
-      <td>{player.phone}</td>
+      <td>{player.phone1}</td>
       <td>{player.rating}</td>
       <td>
         <div className="d-flex justify-content-center align-items-center gap-2">

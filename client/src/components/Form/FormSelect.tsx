@@ -1,3 +1,5 @@
+import cssClasses from "./Form.module.scss";
+
 const FormSelect = ({
   nameAndId,
   labelText,
@@ -17,7 +19,11 @@ const FormSelect = ({
 }) => {
   return (
     <div>
-      <label htmlFor={nameAndId} className="form-label d-block">
+      <label htmlFor={nameAndId} classes={{
+        "form-label": true,
+        "d-block": true,
+        [cssClasses.required]: required === true
+      }}>
         {labelText}
       </label>
       <select

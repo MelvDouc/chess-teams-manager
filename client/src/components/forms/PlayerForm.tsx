@@ -87,29 +87,30 @@ export default function PlayerForm({
         />
       </Form.Row>
       <Form.Row>
-        <Form.Checkbox
-          nameAndId="is-admin"
-          labelText="Admin"
-          checked={p.isAdmin}
-          updateValue={(checked) => p.isAdmin = checked}
-        />
-        <Form.Checkbox
-          nameAndId="is-captain"
-          labelText="Capitaine"
-          checked={p.isCaptain}
-          updateValue={(checked) => p.isCaptain = checked}
-        />
-        <Form.Group
-          type="text"
-          labelText="Tél."
-          nameAndId="phone1"
-          value={p.phone1}
-          updateValue={(phone) => {
-            phone
-              ? (p.phone1 = phone)
-              : (delete p.phone1);
-          }}
-        />
+        <div className="d-flex flex-column gap-2">
+          <Form.Group
+            type="text"
+            labelText="Tél. 1"
+            nameAndId="phone1"
+            value={p.phone1}
+            updateValue={(phone) => {
+              phone
+                ? (p.phone1 = phone)
+                : (delete p.phone1);
+            }}
+          />
+          <Form.Group
+            type="text"
+            labelText="Tél. 2"
+            nameAndId="phone2"
+            value={p.phone2}
+            updateValue={(phone) => {
+              phone
+                ? (p.phone2 = phone)
+                : (delete p.phone2);
+            }}
+          />
+        </div>
         <Form.Group
           type="number"
           labelText="Elo"
@@ -121,6 +122,20 @@ export default function PlayerForm({
               : p.rating = rating;
           }}
         />
+        <div className="d-flex flex-column gap-2 pt-2">
+          <Form.Checkbox
+            nameAndId="is-admin"
+            labelText="Admin"
+            checked={p.isAdmin}
+            updateValue={(checked) => p.isAdmin = checked}
+          />
+          <Form.Checkbox
+            nameAndId="is-captain"
+            labelText="Capitaine"
+            checked={p.isCaptain}
+            updateValue={(checked) => p.isCaptain = checked}
+          />
+        </div>
       </Form.Row>
       <Form.Row>
         <Form.Submit text="Valider" backLink="/joueurs" />
