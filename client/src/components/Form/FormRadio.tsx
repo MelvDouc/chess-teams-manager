@@ -1,11 +1,14 @@
 import { CheckedInputProps } from "./form.types.js";
 
-export default function FormCheckbox({ id, labelText, checked, handleInput }: CheckedInputProps) {
+export default function FormRadio({ id, name, labelText, checked, handleInput }: CheckedInputProps & {
+  name: string;
+}) {
   return (
     <div className="form-check">
       <input
-        type="checkbox"
+        type="radio"
         id={id}
+        name={name}
         className="form-check-input"
         checked={checked === true}
         oninput={({ target }) => handleInput((target as HTMLInputElement).checked)}

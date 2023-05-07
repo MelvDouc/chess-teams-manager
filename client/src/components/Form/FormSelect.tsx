@@ -1,24 +1,15 @@
+import { NameAndId, ValuedInputProps } from "./form.types.js";
 import cssClasses from "./Form.module.scss";
 
-const FormSelect = ({
-  nameAndId,
-  labelText,
-  required,
-  values,
-  updateValue,
-}: {
-  nameAndId: string;
-  labelText: string;
-  required?: boolean;
+function FormSelect({ nameAndId, labelText, required, values, handleInput }: ValuedInputProps & NameAndId & {
   values: {
-    value: string | number;
+    value: string;
     text: string;
     selected?: boolean;
   }[];
-  updateValue?: (value: any) => void;
-}) => {
+}) {
   return (
-    <div>
+    <>
       <label htmlFor={nameAndId} classes={{
         "form-label": true,
         "d-block": true,
@@ -27,12 +18,13 @@ const FormSelect = ({
         {labelText}
       </label>
       <select
-        name={nameAndId}
         className="form-control"
         id={nameAndId}
+        name={nameAndId}
         required={required}
         $init={(element) => {
-          if (updateValue) element.addEventListener("change", () => updateValue(element.value));
+          if (handleInput)
+            element.addEventListener("change", () => handleInput(element.value));
         }}
       >
         {values.map(({ value, text, selected }) => (
@@ -41,8 +33,8 @@ const FormSelect = ({
           </option>
         ))}
       </select>
-    </div>
+    </>
   );
-};
+}
 
 export default FormSelect;

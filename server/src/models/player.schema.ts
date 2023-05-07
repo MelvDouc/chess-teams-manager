@@ -44,7 +44,10 @@ export const playerSchema = z.object({
     .number({ invalid_type_error: "Classement Elo invalide." })
     .nonnegative("Le classement Elo doit être un nombre positif.")
     .optional(),
-  teams: z.array(z.string(), { invalid_type_error: "Liste d'équipes invalide." }).optional(),
+  team1: z.string({ invalid_type_error: "Nom d'équipe invalide" }).optional(),
+  team2: z.string({ invalid_type_error: "Nom d'équipe invalide" }).optional(),
+  membership: z.string({ invalid_type_error: "Type d'adhérent invalide" }).optional(),
+  isMale: z.boolean().optional(),
   isAdmin: z.boolean({ invalid_type_error: "Rôle invalide." }).optional(),
   isCaptain: z.boolean({ invalid_type_error: "Rôle invalide." }).optional(),
 });
@@ -59,6 +62,7 @@ export const updateSchema = playerSchema
     phone2: true,
     birthDate: true,
     rating: true,
+    isMale: true,
     isAdmin: true,
     isCaptain: true
   })

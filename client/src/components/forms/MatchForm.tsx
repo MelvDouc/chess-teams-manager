@@ -46,73 +46,85 @@ export default function MatchForm({ match, players, handleSubmit }: {
   whiteOnOddsObs.subscribe((value) => (m.whiteOnOdds = value));
 
   return (
-    <>
-      <Form
-        handleSubmit={(e) => {
-          e.preventDefault();
-          matchesByTeamNameCache.clear();
-          handleSubmit(Object.assign(m, fullAddress));
-        }}
-      >
-        <Form.Row>
-          <Form.Group
-            type="number"
-            labelText="Saison"
-            nameAndId="season"
-            value={m.season}
-            updateValue={(season) => m.season = Number(season)}
-            required
-          />
-          <Form.Group
-            type="number"
-            labelText="Ronde"
-            nameAndId="round"
-            min={1}
-            value={m.round}
-            updateValue={(round) => m.round = Number(round)}
-            required
-          />
-        </Form.Row>
-        <Form.Row>
-          <Form.Group
-            type="text"
-            nameAndId="opponent"
-            labelText="Adversaire"
-            value={m.opponent}
-            updateValue={(opponent) => m.opponent = opponent}
-            required
-          />
-          <Form.Group
-            type="date"
-            labelText="Date"
-            nameAndId="date"
-            value={getDatePortion(new Date(m.date))}
-            updateValue={(date: Date | null) => date && (m.date = date)}
-            required
-          />
-        </Form.Row>
-        <Form.Row>
-          <Form.Group
-            type="text"
-            nameAndId="teamName"
-            labelText="Équipe"
-            placeholder="Thionville I"
-            value={m.teamName}
-            updateValue={(teamName) => m.teamName = teamName.trim()}
-            required
-          />
-          <Form.Checkbox
-            nameAndId="whiteOnOdds"
-            labelText="Blancs aux échiquiers impairs"
-            checked={m.whiteOnOdds}
-            updateValue={(whiteOnOdds) => whiteOnOddsObs.value = whiteOnOdds}
-          />
-        </Form.Row>
-        <Form.Row>
-          {...MatchFormAddress({ fullAddress })}
-        </Form.Row>
-        <Form.Row>
-          <div>
+    <Form
+      onsubmit={(e) => {
+        e.preventDefault();
+        matchesByTeamNameCache.clear();
+        handleSubmit(Object.assign(m, fullAddress));
+      }}
+    >
+      <div className="container d-flex flex-column gap-3 p-3">
+        <section className="row">
+          <article className="col-12 col-sm-6">
+            <Form.Group
+              type="number"
+              labelText="Saison"
+              nameAndId="season"
+              value={m.season}
+              handleInput={(season) => m.season = Number(season)}
+              required
+            />
+          </article>
+          <article className="col-12 col-sm-6">
+            <Form.Group
+              type="number"
+              labelText="Ronde"
+              nameAndId="round"
+              min={1}
+              value={m.round}
+              handleInput={(round) => m.round = Number(round)}
+              required
+            />
+          </article>
+        </section>
+        <section className="row">
+          <article className="col-12 col-sm-6">
+            <Form.Group
+              type="text"
+              nameAndId="opponent"
+              labelText="Adversaire"
+              value={m.opponent}
+              handleInput={(opponent) => m.opponent = opponent}
+              required
+            />
+          </article>
+          <article className="col-12 col-sm-6">
+            <Form.Group
+              type="date"
+              labelText="Date"
+              nameAndId="date"
+              value={getDatePortion(new Date(m.date))}
+              handleInput={(date: Date | null) => date && (m.date = date)}
+              required
+            />
+          </article>
+        </section>
+        <section className="row">
+          <article className="col-12 col-sm-8">
+            <Form.Group
+              type="text"
+              nameAndId="team-name"
+              labelText="Équipe"
+              placeholder="Thionville I"
+              value={m.teamName}
+              handleInput={(teamName) => m.teamName = teamName.trim()}
+              required
+            />
+          </article>
+          <article className="col-12 col-sm-4">
+            <Form.Checkbox
+              id="white-on-odds"
+              labelText="Blancs aux échiquiers impairs"
+              checked={m.whiteOnOdds}
+              handleInput={(whiteOnOdds) => whiteOnOddsObs.value = whiteOnOdds}
+            />
+          </article>
+        </section>
+        <section className="row">
+          <MatchFormAddress fullAddress={fullAddress} />
+        </section>
+        <section className="row">
+          <article className="col">
             <label className="form-label">Composition</label>
             <div className="overflow-x-auto">
               <LineUpTable
@@ -122,12 +134,10 @@ export default function MatchForm({ match, players, handleSubmit }: {
                 players={players}
               />
             </div>
-          </div>
-        </Form.Row>
-        <Form.Row>
-          <Form.Submit backLink={`/matchs/${season}`} text="Valider" />
-        </Form.Row>
-      </Form>
-    </>
+          </article>
+        </section>
+        <Form.Submit backLink={`/matchs/${season}`} text="Valider" />
+      </div>
+    </Form>
   );
 }

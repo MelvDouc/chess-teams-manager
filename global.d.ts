@@ -17,7 +17,10 @@ declare namespace ChessTeamsManager {
     phone2?: string;
     birthDate?: Date;
     rating?: number;
-    teams?: string[];
+    team1?: string;
+    team2?: string;
+    membership?: string;
+    isMale?: boolean;
     pwd?: string;
     pwdResetId?: string;
     isAdmin?: boolean;

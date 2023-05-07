@@ -1,38 +1,23 @@
-import { ComponentChildren } from "reactfree-jsx";
-import FormCheckbox from "./FormCheckbox.jsx";
-import FormGroup from "./FormGroup.jsx";
-import FormSelect from "./FormSelect.jsx";
-import FormSubmit from "./FormSubmit.jsx";
+import FormCheckbox from "@src/components/Form/FormCheckbox.jsx";
+import FormGroup from "@src/components/Form/FormGroup.jsx";
+import FormRadio from "@src/components/Form/FormRadio.jsx";
+import FormSelect from "@src/components/Form/FormSelect.jsx";
+import FormSubmit from "@src/components/Form/FormSubmit.jsx";
 import cssClasses from "./Form.module.scss";
 
-export default function Form({
-  className,
-  handleSubmit,
-  children,
-}: {
-  handleSubmit: (e: SubmitEvent) => any;
-  className?: string;
-  children?: ComponentChildren;
-}) {
+const Form = ({ children, className, ...otherProps }: JSX.IntrinsicElements["form"] & { children?: any; }): HTMLFormElement => {
   return (
-    <form className={`d-flex flex-column text-light p-3 gap-3 rounded ${cssClasses.form} ${className}`} onsubmit={handleSubmit}>
-      {children}
-    </form>
+    <form
+      className={cssClasses.form}
+      {...otherProps}
+    >{children}</form>
   );
-}
-
-Form.Row = ({ children }: { children?: ComponentChildren; }) => {
-  const row = <section className="row"></section>;
-
-  if (Array.isArray(children))
-    children.forEach((child) => {
-      row.append(<div className={`col-sm-${12 / children.length}`}>{child}</div>);
-    });
-
-  return row;
 };
 
-Form.Group = FormGroup;
 Form.Checkbox = FormCheckbox;
+Form.Group = FormGroup;
+Form.Radio = FormRadio;
 Form.Select = FormSelect;
 Form.Submit = FormSubmit;
+
+export default Form;

@@ -11,7 +11,10 @@ const playerKeys: Readonly<(keyof Player)[]> = [
   "phone2",
   "birthDate",
   "rating",
-  "teams",
+  "team1",
+  "team2",
+  "membership",
+  "isMale",
   "isAdmin",
   "isCaptain",
 ];

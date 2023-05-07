@@ -1,10 +1,11 @@
 .form {
-  $bg-clr1: rgb(0, 0, 255);
-  $bg-clr2: lighten($bg-clr1, 5%);
-  $bg-clr3: lighten($bg-clr2, 2.5%);
-  display: flex;
+  $bg-clr1: hsl(181, 41%, 25%);
+  $bg-clr2: hsl(181, 72%, 13%);
+  margin: 0 auto;
+  border-radius: 10px;
+  color: white;
   background: $bg-clr1;
-  background: linear-gradient(to top, $bg-clr3, $bg-clr2, $bg-clr1);
+  background: linear-gradient(to right, $bg-clr2, $bg-clr1);
 
   .required {
     &::after {
@@ -13,6 +14,12 @@
       margin-inline-start: 0.33em;
       transform: scale(1.2, 1.5);
       color: red;
+    }
+  }
+
+  @media only screen and (max-width: 576px) {
+    [class^="col"] {
+      margin-bottom: 0.5em;
     }
   }
 }

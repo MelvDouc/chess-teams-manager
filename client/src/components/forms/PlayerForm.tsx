@@ -1,12 +1,10 @@
 import Form from "@src/components/Form/Form.jsx";
+import auth from "@src/utils/auth.js";
 import { getDatePortion } from "@src/utils/date-formatter.js";
 import { playersCache } from "@src/utils/local-storage.js";
 import { Player } from "@src/types.js";
 
-export default function PlayerForm({
-  player,
-  handleSubmit,
-}: {
+export default function PlayerForm({ player, handleSubmit }: {
   player: Player | null;
   handleSubmit: (player: Player) => void | Promise<void>;
 }): HTMLFormElement {
@@ -19,127 +17,199 @@ export default function PlayerForm({
 
   return (
     <Form
-      handleSubmit={(e) => {
+      onsubmit={(e) => {
         e.preventDefault();
         playersCache.clear();
         handleSubmit(p);
       }}
     >
-      <Form.Row>
-        <Form.Group
-          type="text"
-          labelText="N° FFE"
-          nameAndId="ffe-id"
-          value={p.ffeId}
-          updateValue={(ffeId) => p.ffeId = ffeId}
-          disabled={player !== null}
-          required={player === null}
-        />
-        <Form.Group
-          type="number"
-          labelText="N° FIDE"
-          nameAndId="fide-id"
-          value={p.fideId ?? ""}
-          updateValue={(fideId: number) => {
-            isNaN(fideId)
-              ? (delete p.fideId)
-              : p.fideId = fideId;
-          }}
-        />
-      </Form.Row>
-      <Form.Row>
-        <Form.Group
-          type="text"
-          labelText="Prénom"
-          nameAndId="first-name"
-          value={p.firstName}
-          updateValue={(firstName) => p.firstName = firstName}
-          required
-        />
-        <Form.Group
-          type="text"
-          labelText="NOM"
-          nameAndId="last-name"
-          value={p.lastName}
-          updateValue={(lastName) => p.lastName = lastName.toUpperCase()}
-          required
-        />
-      </Form.Row>
-      <Form.Row>
-        <Form.Group
-          type="email"
-          labelText="Email"
-          nameAndId="email"
-          value={p.email}
-          updateValue={(email) => p.email = email}
-          required
-        />
-        <Form.Group
-          type="date"
-          nameAndId="birth-date"
-          labelText="Date de naissance"
-          value={p.birthDate ? getDatePortion(new Date(p.birthDate)) : ""}
-          updateValue={(birthDate: Date | null) => {
-            (birthDate instanceof Date)
-              ? (p.birthDate = birthDate)
-              : (delete p.birthDate);
-          }}
-        />
-      </Form.Row>
-      <Form.Row>
-        <div className="d-flex flex-column gap-2">
-          <Form.Group
-            type="text"
-            labelText="Tél. 1"
-            nameAndId="phone1"
-            value={p.phone1}
-            updateValue={(phone1) => {
-              phone1
-                ? (p.phone1 = phone1)
-                : (delete p.phone1);
-            }}
-          />
-          <Form.Group
-            type="text"
-            labelText="Tél. 2"
-            nameAndId="phone2"
-            value={p.phone2}
-            updateValue={(phone2) => {
-              phone2
-                ? (p.phone2 = phone2)
-                : (delete p.phone2);
-            }}
-          />
-        </div>
-        <Form.Group
-          type="number"
-          labelText="Elo"
-          nameAndId="rating"
-          value={p.rating}
-          updateValue={(rating: number) => {
-            isNaN(rating)
-              ? (delete p.rating)
-              : p.rating = rating;
-          }}
-        />
-        <div className="d-flex flex-wrap gap-2 pt-2">
-          <Form.Checkbox
-            nameAndId="is-admin"
-            labelText="Admin"
-            checked={p.isAdmin}
-            updateValue={(checked) => p.isAdmin = checked}
-          />
-          <Form.Checkbox
-            nameAndId="is-captain"
-            labelText="Capitaine"
-            checked={p.isCaptain}
-            updateValue={(checked) => p.isCaptain = checked}
-          />
-        </div>
-      </Form.Row>
-      <Form.Row>
+      <div className="container d-flex flex-column gap-3 p-3">
+        <section className="row">
+          <article className="col-12 col-sm-3">
+            <Form.Group
+              type="text"
+              nameAndId="ffe-id"
+              labelText="N° FFE"
+              pattern="[A-Z]\d+"
+              value={p.ffeId}
+              handleInput={(ffeId: string) => p.ffeId = ffeId.trim()}
+              disabled={player !== null}
+              required={player === null}
+            />
+          </article>
+          <article className="col-12 col-sm-5">
+            <Form.Group
+              type="number"
+              nameAndId="fide-id"
+              labelText="N° FFE"
+              value={p.fideId}
+              handleInput={(fideId: number) => isNaN(fideId) ? (delete p.fideId) : (p.fideId = fideId)}
+            />
+          </article>
+          <article className="col-12 col-sm-4">
+            <Form.Group
+              type="text"
+              nameAndId="membership"
+              labelText="Type d'adhérent"
+              value={p.membership ?? ""}
+              handleInput={(membership: string) => p.membership = membership.trim()}
+            />
+          </article>
+        </section>
+        <section className="row">
+          <article className="col-12 col-sm-4">
+            <Form.Group
+              type="text"
+              nameAndId="first-name"
+              labelText="Prénom"
+              value={p.firstName}
+              handleInput={(firstName: string) => p.firstName = firstName.trim()}
+              required
+            />
+          </article>
+          <article className="col-12 col-sm-4">
+            <Form.Group
+              type="text"
+              nameAndId="last-name"
+              labelText="NOM"
+              value={p.lastName}
+              handleInput={(lastName: string) => p.lastName = lastName.trim().toUpperCase()}
+              required
+            />
+          </article>
+          <article className="col-12 col-sm-4">
+            <Form.Group
+              type="date"
+              nameAndId="birth-date"
+              labelText="Date de naissance"
+              value={p.birthDate ? getDatePortion(new Date(p.birthDate)) : ""}
+              handleInput={(birthDate) => {
+                (birthDate)
+                  ? (p.birthDate = birthDate)
+                  : (delete p.birthDate);
+              }}
+            />
+          </article>
+        </section>
+        <section className="row">
+          <article className="col-12 col-sm-9">
+            <Form.Group
+              type="email"
+              nameAndId="email"
+              labelText="Adresse email"
+              value={p.email}
+              handleInput={(email) => p.email = email.trim()}
+              required
+            />
+          </article>
+          <article className="col-12 col-sm-3">
+            <Form.Group
+              type="number"
+              nameAndId="rating"
+              labelText="Elo"
+              value={p.rating}
+              handleInput={(rating) => {
+                (rating != null)
+                  ? (p.rating = rating)
+                  : (delete p.rating);
+              }}
+            />
+          </article>
+        </section>
+        <section className="row">
+          <article className="col-12 col-sm-6">
+            <Form.Group
+              type="text"
+              nameAndId="phone1"
+              labelText="Tél. 1"
+              value={p.phone1 ?? ""}
+              handleInput={(phoneNumber: string) => {
+                (phoneNumber)
+                  ? (p.phone1 = phoneNumber.trim())
+                  : (delete p.phone1);
+              }}
+            />
+          </article>
+          <article className="col-12 col-sm-6">
+            <Form.Group
+              type="text"
+              nameAndId="phone1"
+              labelText="Tél. 2"
+              value={p.phone1 ?? ""}
+              handleInput={(phoneNumber: string) => {
+                (phoneNumber)
+                  ? (p.phone1 = phoneNumber.trim())
+                  : (delete p.phone1);
+              }}
+            />
+          </article>
+        </section>
+        <section className="row">
+          <article className="col-12 col-sm-6">
+            <Form.Group
+              type="text"
+              nameAndId="team1"
+              labelText="Équipe 1"
+              value={p.team1 ?? ""}
+              handleInput={(teamName: string) => {
+                (teamName)
+                  ? (p.team1 = teamName)
+                  : (delete p.team1);
+              }}
+            />
+          </article>
+          <article className="col-12 col-sm-6">
+            <Form.Group
+              type="text"
+              nameAndId="team2"
+              labelText="Équipe 2"
+              value={p.team2 ?? ""}
+              handleInput={(teamName: string) => {
+                (teamName)
+                  ? (p.team2 = teamName)
+                  : (delete p.team2);
+              }}
+            />
+          </article>
+        </section>
+        <section className="row">
+          <article className="col">
+            <Form.Radio
+              id="gender-male"
+              name="gender"
+              labelText="Homme"
+              checked={p.isMale}
+              handleInput={(checked) => p.isMale = checked}
+            />
+            <Form.Radio
+              id="gender-female"
+              name="gender"
+              labelText="Femme"
+              checked={p.isMale === false}
+              handleInput={(checked) => p.isMale = !checked}
+            />
+          </article>
+          <article className="col">
+            {auth.getUser()?.isAdmin && (
+              <Form.Checkbox
+                id="is-admin"
+                labelText="Admin"
+                checked={p.isAdmin}
+                handleInput={(checked) => p.isAdmin = checked}
+              />
+            )}
+            {(auth?.getUser()?.isAdmin || auth.getUser()?.isCaptain) && (
+              <Form.Checkbox
+                id="is-captain"
+                labelText="Capitaine"
+                checked={p.isCaptain}
+                handleInput={(checked) => p.isCaptain = checked}
+              />
+            )}
+          </article>
+        </section>
         <Form.Submit text="Valider" backLink="/joueurs" />
-      </Form.Row>
+      </div>
     </Form>
   );
 }

@@ -1,18 +1,15 @@
 import router from "@src/router.jsx";
 
-const FormSubmit = ({ text, backLink }: { text: string; backLink?: string; }) => {
+export default function FormSubmit({ text, backLink }: {
+  text: string;
+  backLink?: string;
+}) {
   return (
-    <div className="d-flex flex-wrap justify-content-center align-items-center gap-3 mt-4">
-      <button classNames={["btn", "btn-success"]} type="submit">
-        {text}
-      </button>
-      {backLink && (
-        <router.link to={backLink} className="link-danger">
-          Annuler
-        </router.link>
+    <section className="d-flex flex-wrap justify-content-center gap-2 pt-4">
+      <button type="submit" className="btn btn-primary">{text}</button>
+      {backLink !== undefined && (
+        <router.link to={backLink} className="btn btn-danger">Annuler</router.link>
       )}
-    </div>
+    </section>
   );
-};
-
-export default FormSubmit;
+}
