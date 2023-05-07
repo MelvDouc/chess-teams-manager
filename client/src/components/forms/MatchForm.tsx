@@ -114,7 +114,7 @@ export default function MatchForm({ match, players, handleSubmit }: {
           <MatchFormAddress fullAddress={fullAddress} />
         </section>
         <section className="row">
-          <article className="col-12 col-sm-4">
+          <article className="col-12">
             <Form.Checkbox
               id="white-on-odds"
               labelText="Blancs aux échiquiers impairs"
@@ -124,7 +124,7 @@ export default function MatchForm({ match, players, handleSubmit }: {
           </article>
         </section>
         <section className="row">
-          <article className="col">
+          <article className="col-12">
             <label className="form-label">Composition</label>
             <div className="overflow-x-auto">
               <LineUpTable

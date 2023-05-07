@@ -14,13 +14,13 @@ export default function Header() {
         <div className="container-fluid">
           <router.link to="/" className="navbar-brand d-flex align-items-center gap-2">
             <img
-              src="http://thionville-echecs.fr/wp-content/uploads/2022/05/cropped-logo-blanc2x-192x192.png"
+              src={import.meta.env.VITE_LOGO_URL}
               alt="Logo"
               width="30"
               height="24"
               className="d-inline-block align-text-top"
             />
-            <h1 className="m-0 white-space-pre-wrap fs-5">Thionville Échecs —&nbsp;Équipes</h1>
+            <h1 className="m-0 white-space-pre-wrap fs-5">{import.meta.env.VITE_SITE_TITLE}</h1>
           </router.link>
           <button
             className="navbar-toggler"

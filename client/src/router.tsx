@@ -16,7 +16,7 @@ const router = new Router({
     title: "Page non trouvée",
     component: $404Page,
   },
-  pageTitleFormatter: (title) => `${title} | Thionville Échecs — Équipes`,
+  pageTitleFormatter: (title) => `${title} | ${import.meta.env.VITE_SITE_TITLE}`,
 });
 
 router

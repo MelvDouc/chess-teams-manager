@@ -1,4 +1,5 @@
 import Header from "@src/components/Header/Header.jsx";
+import Footer from "@src/components/Footer/Footer.jsx";
 import Modal from "@src/components/Modal/Modal.jsx";
 import router from "@src/router.jsx";
 import auth from "@src/utils/auth.js";
@@ -12,17 +13,18 @@ export default function App() {
       parent.appendChild(
         <>
           <Header />
-          <main className="p-4 overflow-y-auto">
+          <main className="overflow-y-auto">
             <div
-              className="container-sm h-100"
+              className="container-sm min-vh-100 p-4"
               $init={(element) => {
                 router.onUrlChange(async ({ component }) => {
                   element.replaceChildren(await component());
                 });
               }}
             ></div>
-            {Modal.getModal()}
+            <Footer />
           </main>
+          {Modal.getModal()}
         </>
       );
       auth.logBack().then((connected) => {
