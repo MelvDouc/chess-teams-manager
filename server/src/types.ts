@@ -15,6 +15,7 @@ export type Match = ChessTeamsManager.Match;
 export type Player = ChessTeamsManager.Player;
 export type PlayerCredentials = ChessTeamsManager.PlayerCredentials;
 export type PlayerData = ChessTeamsManager.PlayerData;
+export type PlayerRole = ChessTeamsManager.PlayerRole;
 
 export type UpdateFilter<T> = {
   $set?: Partial<T>;

@@ -2,11 +2,7 @@ import { default as jwt } from "jsonwebtoken";
 import config from "../config/config.js";
 import { PlayerData } from "../types.js";
 
-function createToken({ ffeId, isAdmin, isCaptain }: PlayerData): string {
-  const payload = { ffeId } as PlayerData;
-  if (isAdmin) payload.isAdmin = true;
-  if (isCaptain) payload.isCaptain = true;
-
+function createToken(payload: PlayerData): string {
   return jwt.sign(payload, config.JWT_SECRET, {
     expiresIn: "1y"
   });
@@ -22,6 +18,7 @@ function decodeToken(token: string): Promise<PlayerData | null> {
         typeof decoded !== "object"
         || decoded === null
         || typeof decoded["ffeId"] !== "string"
+        || typeof decoded["role"] !== "string"
       )
         return resolve(null);
 

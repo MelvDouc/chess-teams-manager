@@ -12,7 +12,7 @@ export default async function LoginPage() {
     <div className="h-100 d-flex flex-column justify-content-center align-items-center">
       <Form
         className="w--500"
-        handleSubmit={async (e) => {
+        onsubmit={async (e) => {
           e.preventDefault();
           const isValidCredentials = await auth.checkCredentials(credentials);
 
@@ -21,35 +21,33 @@ export default async function LoginPage() {
           router.navigate("/");
         }}
       >
-        <Form.Row>
+        <section className="row">
           <h2 className="text-center">Connexion</h2>
-        </Form.Row>
-        <Form.Row>
+        </section>
+        <section className="row">
           <Form.Group
             type="text"
             nameAndId="ffeId"
             labelText="N° FFE"
-            updateValue={(ffeId) => credentials.ffeId = ffeId}
+            handleInput={(ffeId) => credentials.ffeId = ffeId}
             required
           />
-        </Form.Row>
-        <Form.Row>
+        </section>
+        <section className="row">
           <Form.Group
             type="password"
             nameAndId="pwd"
             labelText="Mot de passe"
-            updateValue={(password) => credentials.pwd = password}
+            handleInput={(password) => credentials.pwd = password}
             required
           />
-        </Form.Row>
-        <Form.Row>
-          <Form.Submit text="Se connecter" />
-        </Form.Row>
-        <Form.Row>
+        </section>
+        <Form.Submit text="Se connecter" />
+        <section className="row">
           <p className="mt-2 mb-0">
             <router.link to="/oubli-mot-de-passe" className="link-no-hover">Mot de passe oublié ?</router.link>
           </p>
-        </Form.Row>
+        </section>
       </Form>
     </div>
   );

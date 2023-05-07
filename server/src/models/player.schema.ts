@@ -30,6 +30,15 @@ export const playerSchema = z.object({
       invalid_type_error: "Email invalide."
     })
     .email("Email invalide."),
+  role: z.union([
+    z.literal("WEBMASTER"),
+    z.literal("ADMIN"),
+    z.literal("CAPTAIN"),
+    z.literal("USER")
+  ], {
+    invalid_type_error: "Rôle invalide.",
+    required_error: "Rôle requis."
+  }),
   phone1: z
     .string({ invalid_type_error: "N° de téléphone invalide." })
     .optional(),
@@ -47,9 +56,7 @@ export const playerSchema = z.object({
   team1: z.string({ invalid_type_error: "Nom d'équipe invalide" }).optional(),
   team2: z.string({ invalid_type_error: "Nom d'équipe invalide" }).optional(),
   membership: z.string({ invalid_type_error: "Type d'adhérent invalide" }).optional(),
-  isMale: z.boolean().optional(),
-  isAdmin: z.boolean({ invalid_type_error: "Rôle invalide." }).optional(),
-  isCaptain: z.boolean({ invalid_type_error: "Rôle invalide." }).optional(),
+  isMale: z.boolean().optional()
 });
 
 export const updateSchema = playerSchema
@@ -58,6 +65,7 @@ export const updateSchema = playerSchema
     firstName: true,
     lastName: true,
     email: true,
+    role: true,
     phone1: true,
     phone2: true,
     birthDate: true,

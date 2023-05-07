@@ -7,6 +7,7 @@ const playerKeys: Readonly<(keyof Player)[]> = [
   "firstName",
   "lastName",
   "email",
+  "role",
   "phone1",
   "phone2",
   "birthDate",
@@ -14,9 +15,7 @@ const playerKeys: Readonly<(keyof Player)[]> = [
   "team1",
   "team2",
   "membership",
-  "isMale",
-  "isAdmin",
-  "isCaptain",
+  "isMale"
 ];
 
 const getPlayer = asyncWrapper(async (req, res) => {

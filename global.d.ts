@@ -1,7 +1,8 @@
 declare namespace ChessTeamsManager {
   type BoardColor = "B" | "N";
   type PlayerCredentials = Pick<Player, "ffeId" | "pwd">;
-  type PlayerData = Pick<Player, "ffeId" | "isAdmin" | "isCaptain">;
+  type PlayerData = Pick<Player, "ffeId" | "role">;
+  type PlayerRole = "WEBMASTER" | "ADMIN" | "CAPTAIN" | "USER";
 
   type LineUpItem = Pick<Player, "ffeId" | "rating"> & {
     name: string;
@@ -13,6 +14,7 @@ declare namespace ChessTeamsManager {
     firstName: string;
     lastName: string;
     email: string;
+    role: PlayerRole;
     phone1?: string;
     phone2?: string;
     birthDate?: Date;
@@ -23,8 +25,6 @@ declare namespace ChessTeamsManager {
     isMale?: boolean;
     pwd?: string;
     pwdResetId?: string;
-    isAdmin?: boolean;
-    isCaptain?: boolean;
   }
 
   interface Match {

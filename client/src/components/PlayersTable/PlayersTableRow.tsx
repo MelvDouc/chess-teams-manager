@@ -13,6 +13,7 @@ export default class PlayersTableRow extends HTMLTableRowElement {
   }) {
     super();
     this.player = player;
+    const user = auth.getUser();
 
     this.append(<>
       <td>{player.ffeId}</td>
@@ -27,7 +28,11 @@ export default class PlayersTableRow extends HTMLTableRowElement {
           <router.link to={`/joueurs/${player.ffeId}/modifier`} className="btn btn-primary" title="Modifier">
             <i className="bi bi-pen-fill"></i>
           </router.link>
-          {(auth.getUser()?.isAdmin && !player.isAdmin)
+          {(
+            user?.role === "WEBMASTER"
+            || user?.role === "ADMIN" && (player.role === "CAPTAIN" || player.role === "USER")
+          )
+            && user.ffeId !== player.ffeId
             && (<DeletePlayerButton ffeId={player.ffeId} clearCache={PlayersTableRow.clearCache} />)}
         </div>
       </td>

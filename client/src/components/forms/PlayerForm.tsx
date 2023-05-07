@@ -2,7 +2,7 @@ import Form from "@src/components/Form/Form.jsx";
 import auth from "@src/utils/auth.js";
 import { getDatePortion } from "@src/utils/date-formatter.js";
 import { playersCache } from "@src/utils/local-storage.js";
-import { Player } from "@src/types.js";
+import { Player, PlayerRole } from "@src/types.js";
 
 export default function PlayerForm({ player, handleSubmit }: {
   player: Player | null;
@@ -13,7 +13,9 @@ export default function PlayerForm({ player, handleSubmit }: {
     firstName: "",
     lastName: "",
     email: "",
+    role: "USER"
   };
+  const role = auth.getUser()?.role;
 
   return (
     <Form
@@ -190,22 +192,18 @@ export default function PlayerForm({ player, handleSubmit }: {
             />
           </article>
           <article className="col">
-            {auth.getUser()?.isAdmin && (
-              <Form.Checkbox
-                id="is-admin"
-                labelText="Admin"
-                checked={p.isAdmin}
-                handleInput={(checked) => p.isAdmin = checked}
-              />
-            )}
-            {(auth?.getUser()?.isAdmin || auth.getUser()?.isCaptain) && (
-              <Form.Checkbox
-                id="is-captain"
-                labelText="Capitaine"
-                checked={p.isCaptain}
-                handleInput={(checked) => p.isCaptain = checked}
-              />
-            )}
+            <label htmlFor="role" className="form-label">Rôle</label>
+            <select
+              id="role"
+              className="form-control"
+              onchange={({ target }) => p.role = (target as HTMLSelectElement).value as PlayerRole}
+            >
+              <option value="USER" selected={p.role === "USER"}>Utilisateur</option>
+              <option value="CAPTAIN" selected={p.role === "CAPTAIN"}>Capitaine</option>
+              {(role === "WEBMASTER" || role === "ADMIN") && (
+                <option value="ADMIN" selected={p.role === "ADMIN"}>Admin</option>
+              )}
+            </select>
           </article>
         </section>
         <Form.Submit text="Valider" backLink="/joueurs" />
