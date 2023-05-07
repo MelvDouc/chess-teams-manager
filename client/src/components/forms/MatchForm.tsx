@@ -12,13 +12,14 @@ export default function MatchForm({ match, players, handleSubmit }: {
   players: Player[];
   handleSubmit: (match: Match) => any;
 }) {
-  const season = match?.season ?? 2023;
+  const currentDate = new Date();
+  const season = currentDate.getFullYear();
   const m: Match = match ?? {
     _id: "",
     address: "",
     city: "",
     zipCode: "",
-    date: new Date(),
+    date: currentDate,
     lineUp: {
       1: null,
       2: null,
@@ -37,9 +38,9 @@ export default function MatchForm({ match, players, handleSubmit }: {
     captainFfeId: null,
   };
   const fullAddress = {
-    address: m.address,
-    city: m.city,
-    zipCode: m.zipCode,
+    address: m.address || "3 rue du cygne",
+    city: m.city || "Thionville",
+    zipCode: m.zipCode || "57100",
   };
   const whiteOnOddsObs = new Observable(m.whiteOnOdds);
 
@@ -61,7 +62,7 @@ export default function MatchForm({ match, players, handleSubmit }: {
               labelText="Saison"
               nameAndId="season"
               value={m.season}
-              handleInput={(season) => m.season = Number(season)}
+              handleInput={(season) => m.season = season}
               required
             />
           </article>
@@ -72,7 +73,7 @@ export default function MatchForm({ match, players, handleSubmit }: {
               nameAndId="round"
               min={1}
               value={m.round}
-              handleInput={(round) => m.round = Number(round)}
+              handleInput={(round) => m.round = round}
               required
             />
           </article>
@@ -136,7 +137,7 @@ export default function MatchForm({ match, players, handleSubmit }: {
             </div>
           </article>
         </section>
-        <Form.Submit backLink={`/matchs/${season}`} text="Valider" />
+        <Form.Submit backLink={`/matchs/${m.season}`} text="Valider" />
       </div>
     </Form>
   );
