@@ -127,7 +127,7 @@ export default function MatchForm({ match, players, handleSubmit }: {
         <section className="row">
           <article className="col-12">
             <label className="form-label">Composition</label>
-            <div className="overflow-x-auto">
+            <div className="table-responsive-lg">
               <LineUpTable
                 lineUpAccessors={createAccessors(m, "lineUp")}
                 captainFfeIdAccessors={createAccessors(m, "captainFfeId")}

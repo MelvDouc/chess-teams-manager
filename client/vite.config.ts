@@ -9,7 +9,9 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      "@src": resolve(".", "src")
+      "@src": resolve(".", "src"),
+      "~bootstrap": resolve(".", "node_modules", "bootstrap"),
+      "~bootstrap-icons": resolve(".", "node_modules", "bootstrap-icons"),
     }
   }
 });
