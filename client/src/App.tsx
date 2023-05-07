@@ -1,5 +1,5 @@
 import Header from "@src/components/Header/Header.jsx";
-import Footer from "@src/components/Footer/Footer.jsx";
+import Main from "@src/components/Main/Main.jsx";
 import Modal from "@src/components/Modal/Modal.jsx";
 import router from "@src/router.jsx";
 import auth from "@src/utils/auth.js";
@@ -13,17 +13,7 @@ export default function App() {
       parent.appendChild(
         <>
           <Header />
-          <main className="overflow-y-auto">
-            <div
-              className="container-sm min-vh-100 p-4"
-              $init={(element) => {
-                router.onUrlChange(async ({ component }) => {
-                  element.replaceChildren(await component());
-                });
-              }}
-            ></div>
-            <Footer />
-          </main>
+          <Main onUrlChange={router.onUrlChange.bind(router)} />
           {Modal.getModal()}
         </>
       );
