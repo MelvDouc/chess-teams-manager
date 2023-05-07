@@ -55,7 +55,7 @@ export default function MatchForm({ match, players, handleSubmit }: {
     >
       <div className="container d-flex flex-column gap-3 p-3">
         <section className="row">
-          <article className="col-12 col-sm-6">
+          <article className="col-12 col-sm-4">
             <Form.Group
               type="number"
               labelText="Saison"
@@ -65,7 +65,7 @@ export default function MatchForm({ match, players, handleSubmit }: {
               required
             />
           </article>
-          <article className="col-12 col-sm-6">
+          <article className="col-12 col-sm-3">
             <Form.Group
               type="number"
               labelText="Ronde"
@@ -73,6 +73,16 @@ export default function MatchForm({ match, players, handleSubmit }: {
               min={1}
               value={m.round}
               handleInput={(round) => m.round = Number(round)}
+              required
+            />
+          </article>
+          <article className="col-12 col-sm-5">
+            <Form.Group
+              type="date"
+              labelText="Date"
+              nameAndId="date"
+              value={getDatePortion(new Date(m.date))}
+              handleInput={(date: Date | null) => date && (m.date = date)}
               required
             />
           </article>
@@ -90,18 +100,6 @@ export default function MatchForm({ match, players, handleSubmit }: {
           </article>
           <article className="col-12 col-sm-6">
             <Form.Group
-              type="date"
-              labelText="Date"
-              nameAndId="date"
-              value={getDatePortion(new Date(m.date))}
-              handleInput={(date: Date | null) => date && (m.date = date)}
-              required
-            />
-          </article>
-        </section>
-        <section className="row">
-          <article className="col-12 col-sm-8">
-            <Form.Group
               type="text"
               nameAndId="team-name"
               labelText="Équipe"
@@ -111,6 +109,11 @@ export default function MatchForm({ match, players, handleSubmit }: {
               required
             />
           </article>
+        </section>
+        <section className="row">
+          <MatchFormAddress fullAddress={fullAddress} />
+        </section>
+        <section className="row">
           <article className="col-12 col-sm-4">
             <Form.Checkbox
               id="white-on-odds"
@@ -119,9 +122,6 @@ export default function MatchForm({ match, players, handleSubmit }: {
               handleInput={(whiteOnOdds) => whiteOnOddsObs.value = whiteOnOdds}
             />
           </article>
-        </section>
-        <section className="row">
-          <MatchFormAddress fullAddress={fullAddress} />
         </section>
         <section className="row">
           <article className="col">
