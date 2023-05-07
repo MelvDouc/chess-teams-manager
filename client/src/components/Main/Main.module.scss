@@ -1,0 +1,9 @@
+.main {
+  $clr1: rgb(255, 255, 255, .85);
+  $clr2: rgb(255, 255, 255, .9);
+  overflow-y: auto;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  background-image: linear-gradient(to bottom, $clr1, $clr2), url("/img/chess-bg.jpg");
+}
