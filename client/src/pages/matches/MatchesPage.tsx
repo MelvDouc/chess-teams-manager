@@ -1,5 +1,6 @@
 import router from "@src/router.jsx";
 import { SERVER_URL } from "@src/utils/api.js";
+import auth from "@src/utils/auth.js";
 import { formatDate } from "@src/utils/date-formatter.js";
 import { matchesByTeamNameCache } from "@src/utils/local-storage.js";
 
@@ -7,6 +8,7 @@ export default async function MatchesPage({ season }: {
   season: string;
 }) {
   const matchesByTeamName = await matchesByTeamNameCache.get(+season);
+  const role = auth.getUser()?.role;
 
   return (
     <>
@@ -42,13 +44,15 @@ export default async function MatchesPage({ season }: {
                   <td>{formatDate(new Date(date))}</td>
                   <td>
                     <div className="d-flex justify-content-center align-items-center gap-2">
-                      <router.link
-                        to={`/matchs/${season}/${round}/${teamName}/modifier`}
-                        className="btn btn-primary"
-                        title="Modifier"
-                      >
-                        <i className={"bi bi-pen-fill"}></i>
-                      </router.link>
+                      {role !== undefined && role !== "USER" && (
+                        <router.link
+                          to={`/matchs/${season}/${round}/${teamName}/modifier`}
+                          className="btn btn-primary"
+                          title="Modifier"
+                        >
+                          <i className={"bi bi-pen-fill"}></i>
+                        </router.link>
+                      )}
                       <a
                         href={`${SERVER_URL}/matchs/${season}/${round}/${teamName}/feuille-de-match`}
                         target="_blank"
