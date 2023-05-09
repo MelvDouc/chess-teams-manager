@@ -1,7 +1,7 @@
 .main {
   $clr1: rgb(255, 255, 255, .85);
   $clr2: rgb(255, 255, 255, .9);
-  overflow-y: auto;
+  height: calc(100vh - 2em);
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;

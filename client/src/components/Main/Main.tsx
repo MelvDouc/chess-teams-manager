@@ -1,4 +1,3 @@
-import Footer from "@src/components/Footer/Footer.jsx";
 import cssClasses from "./Main.module.scss";
 
 export default function Main({ onUrlChange }: {
@@ -7,14 +6,13 @@ export default function Main({ onUrlChange }: {
   return (
     <main className={cssClasses.main}>
       <div
-        className="container-sm min-vh-100 p-4"
+        className="container-sm h-100 p-4"
         $init={(element) => {
           onUrlChange(async ({ component }) => {
             element.replaceChildren(await component());
           });
         }}
       ></div>
-      <Footer />
     </main>
   );
 }

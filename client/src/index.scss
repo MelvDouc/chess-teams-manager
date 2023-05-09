@@ -6,14 +6,10 @@
   --page-width: 900px;
 }
 
-html,
 body {
   height: 100vh;
-}
-
-body {
   display: grid;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: auto 1fr auto;
   font-family: Montserrat, "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif !important;
 }
 

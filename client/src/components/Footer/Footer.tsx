@@ -1,6 +1,6 @@
 export default function Footer(): HTMLElement {
   return (
-    <footer className="bg-dark text-light text-center p-3 mt-4 max-w-100">
+    <footer className="bg-dark text-light text-center p-3 max-w-100">
       <div className="container-fluid">
         <section className="row">
           <article className="col-sm-3 d-flex justify-content-center align-items-center mb-2">
