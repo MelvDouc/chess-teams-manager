@@ -1,17 +1,33 @@
 import { Observable } from "reactfree-jsx";
-import { Player } from "@src/types.js";
 import PlayersTableRow from "./PlayersTableRow.jsx";
 import PlayersTableTHeader from "./PlayersTableTHeader.jsx";
+import CreateTextFilter from "./CreateTextFilter.jsx";
+import { Player } from "@src/types.js";
+import cssClasses from "./PlayersTable.module.scss";
 
 export default function PlayersTable({ players, clearCache }: {
   players: Player[];
   clearCache: VoidFunction;
 }): HTMLTableElement {
-  const sortFnObs = new Observable<((a: PlayersTableRow["player"], b: PlayersTableRow["player"]) => number) | null>();
-  const Th = PlayersTableTHeader({ sortFnObs });
   const rowsObs = new Observable(players.map((player, index) => (
     new PlayersTableRow({ player: { ...player, index } })
   )));
+
+  const filtersObs = new Observable<Map<symbol, ((player: Player) => boolean)>>(new Map());
+  filtersObs.subscribe((filterMap) => {
+    rowsObs.value.forEach((row) => {
+      for (const filter of filterMap.values()) {
+        if (!filter(row.player))
+          return row.classList.add("d-none");
+      }
+
+      row.classList.remove("d-none");
+    });
+  });
+  const TextFilter = CreateTextFilter(filtersObs);
+
+  const sortFnObs = new Observable<((a: PlayersTableRow["player"], b: PlayersTableRow["player"]) => number) | null>();
+  const Th = PlayersTableTHeader({ sortFnObs });
 
   PlayersTableRow.clearCache = clearCache;
   sortFnObs.subscribe((sortFn) => {
@@ -37,6 +53,41 @@ export default function PlayersTable({ players, clearCache }: {
           <th>Actions</th>
         </tr>
       </thead>
+      <tbody className={cssClasses.playersTableFilters}>
+        <tr>
+          <td>
+            <TextFilter filter={({ ffeId }, value) => ffeId.toLowerCase().includes(value)} />
+          </td>
+          <td>
+            <TextFilter filter={({ fideId }, value) => fideId !== undefined && String(fideId).includes(value)} />
+          </td>
+          <td>
+            <TextFilter filter={({ lastName }, value) => lastName.toLowerCase().includes(value)} />
+          </td>
+          <td>
+            <TextFilter filter={({ firstName }, value) => firstName.toLowerCase().includes(value)} />
+          </td>
+          <td>
+            <TextFilter filter={({ email }, value) => email.toLowerCase().includes(value)} />
+          </td>
+          <td>
+            <TextFilter filter={({ phone1 }, value) => phone1 !== undefined && phone1.toLowerCase().includes(value)} />
+          </td>
+          <td>
+            <TextFilter filter={({ rating }, value) => rating !== undefined && String(rating).includes(value)} />
+          </td>
+          <td>
+            <div className="d-flex justify-content-center align-items-center">
+              <button className="btn btn-warning" onclick={() => {
+                filtersObs.value.clear();
+                filtersObs.notify();
+              }}>
+                <i className="bi bi-x-lg"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
       <tbody $init={(element) => {
         rowsObs.subscribe((rows) => {
           rows.forEach((row) => element.appendChild(row));
