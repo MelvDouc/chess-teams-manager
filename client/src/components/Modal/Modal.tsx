@@ -40,9 +40,12 @@ const Modal = (() => {
             classes={{
               btn: true,
               "btn-danger": true,
-              "d-none": state.map(({ cancellable }) => cancellable === true),
+              "d-none": state.map(({ cancellable }) => cancellable !== true),
             }}
-            onclick={() => modal.close()}
+            onclick={() => {
+              modal.returnValue = "cancel";
+              modal.close();
+            }}
           >
             Annuler
           </button>

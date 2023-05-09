@@ -13,6 +13,7 @@ export default function LogOutButton({ logOut }: {
       onclick={() => Modal.setState({
         type: "success",
         message: "Êtes-vous sûr(e) de vouloir vous déconnecter ?",
+        cancellable: true,
         onClose: (returnValue) => {
           if (returnValue === "OK")
             logOut();
