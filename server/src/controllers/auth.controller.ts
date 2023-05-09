@@ -47,20 +47,20 @@ const passwordReset = asyncWrapper(async (req, res) => {
 
   if (!player)
     return res.json({
-      errors: ["Id de réinitialisation invalide."]
+      errors: ["ID de réinitialisation invalide."]
     });
 
-  const { password1, password2 } = req.body;
+  const { pwd1, pwd2 } = req.body;
 
-  if (!password2)
+  if (!pwd2)
     return res.json({ errors: ["Veuillez confirmer le mot de passe."] });
-  if (password1 !== password2)
+  if (pwd1 !== pwd2)
     return res.json({ errors: ["Les mots de passe ne se correspondent pas."] });
 
   const salt = await bcryptjs.genSalt(10);
   await playerModel.updatePlayer({ ffeId: player.ffeId }, {
     $set: {
-      pwd: await bcryptjs.hash(password2, salt)
+      pwd: await bcryptjs.hash(pwd2, salt)
     },
     $unset: {
       pwdResetId: ""
@@ -71,7 +71,7 @@ const passwordReset = asyncWrapper(async (req, res) => {
 
 
 export default {
-  login: logIn,
+  logIn,
   decodeToken,
   passwordForgotten,
   passwordReset

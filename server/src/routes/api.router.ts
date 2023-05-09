@@ -21,7 +21,7 @@ apiRouter
   .delete("/matches/:_id/delete", matchController.deleteMatch);
 
 apiRouter
-  .post("/auth/login", authController.login)
+  .post("/auth/login", authController.logIn)
   .post("/auth/decode-token", authController.decodeToken)
   .post("/auth/password-forgotten", authController.passwordForgotten)
   .post("/auth/password-reset/:pwdResetId", authController.passwordReset);

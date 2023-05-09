@@ -7,11 +7,11 @@
 - [X] add players team(s)
 - [X] add asterisk to required form labels
 - [X] add new player data to form
-- [ ] make players table searchable
+- [X] make players table searchable
 - [X] make players table sortable
 - [ ] check auth token on CRUD operation
 - [X] use enum for player roles
 - [X] validate form data (backend)
   - [X] send errors
 - [ ] scrape for ratings
-- [ ] footer
+- [X] footer

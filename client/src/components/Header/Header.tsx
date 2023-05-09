@@ -1,12 +1,17 @@
-import { Observable } from "reactfree-jsx";
 import Dropdown from "./Dropdown.jsx";
 import NavBarText from "./NavBarText.jsx";
 import router from "@src/router.jsx";
 import auth from "@src/utils/auth.js";
 
 export default function Header() {
-  const hideLinksObs = new Observable(true);
-  auth.onUserChange((user) => (hideLinksObs.value = !user));
+  const showIfUserAllowed = (element: HTMLElement) => {
+    element.classList.add("d-none");
+    auth.onUserChange((user) => {
+      (user && user.role !== "USER")
+        ? element.classList.remove("d-none")
+        : element.classList.add("d-none");
+    });
+  };
 
   return (
     <header>
@@ -35,20 +40,22 @@ export default function Header() {
           </button>
           <div className="collapse navbar-collapse" id="navbarText">
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-              <Dropdown
-                mainText="Matchs"
-                links={[
-                  { to: "/matchs", text: "Saisons" },
-                  { to: "/matchs/nouveau", text: "Ajouter un match" },
-                ]}
-              />
-              <Dropdown
-                mainText="Joueurs"
-                links={[
-                  { to: "/joueurs", text: "Liste" },
-                  { to: "/joueurs/nouveau", text: "Ajouter un joueur" },
-                ]}
-              />
+              <Dropdown mainText="Matchs">
+                <li>
+                  <router.link to={"/matchs"} className="dropdown-item">Matchs</router.link>
+                </li>
+                <li $init={showIfUserAllowed}>
+                  <router.link to={"/matchs/nouveau"} className="dropdown-item">Ajouter un match</router.link>
+                </li>
+              </Dropdown>
+              <Dropdown mainText="Joueurs" $init={showIfUserAllowed}>
+                <li>
+                  <router.link to={"/joueurs"} className="dropdown-item">Liste</router.link>
+                </li>
+                <li>
+                  <router.link to={"/joueurs/nouveau"} className="dropdown-item">Ajouter un joueur</router.link>
+                </li>
+              </Dropdown>
             </ul>
             <span className="navbar-text">
               <NavBarText

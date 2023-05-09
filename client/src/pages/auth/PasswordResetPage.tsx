@@ -1,4 +1,5 @@
 import Form from "@src/components/Form/Form.jsx";
+import FormOnlyPage from "@src/components/FormOnlyPage/FormOnlyPage.jsx";
 import Modal from "@src/components/Modal/Modal.jsx";
 import router from "@src/router.jsx";
 import { post } from "@src/utils/api.js";
@@ -7,19 +8,19 @@ export default function PasswordResetPage({ pwdResetId }: {
   pwdResetId: string;
 }) {
   const passwords = {
-    password1: "",
-    password2: ""
+    pwd1: "",
+    pwd2: ""
   };
 
   return (
-    <div className="h-100 d-flex flex-column justify-content-center align-items-center">
+    <FormOnlyPage>
       <Form
-        handleSubmit={async (e) => {
+        onsubmit={async (e) => {
           e.preventDefault();
-          const postResult = await post<typeof passwords, { success?: boolean; errors?: string[]; }>(`/auth/password-reset/${pwdResetId}`, passwords);
+          const response = await post(`/auth/password-reset/${pwdResetId}`, passwords);
 
-          if (postResult?.errors)
-            return alert(postResult.errors.join("\n"));
+          if (!response?.success)
+            return alert((response?.errors) ? response.errors.join("\n") : "Une erreur s'est produite.");
 
           Modal.setState({
             type: "success",
@@ -28,29 +29,35 @@ export default function PasswordResetPage({ pwdResetId }: {
           });
         }}
       >
-        <Form.Row>
-          <h2 className="text-center">Réinitialisation de de mot de passe</h2>
-        </Form.Row>
-        <Form.Row>
-          <Form.Group
-            type="password"
-            nameAndId="password1"
-            updateValue={(p) => passwords.password1 = p}
-            labelText="Nouveau mot de passe"
-            required
-          />
-          <Form.Group
-            type="password"
-            nameAndId="password2"
-            updateValue={(p) => passwords.password2 = p}
-            labelText="Confirmer"
-            required
-          />
-        </Form.Row>
-        <Form.Row>
-          <Form.Submit text="Valider" />
-        </Form.Row>
+        <section className="row">
+          <article className="col-12">
+            <h2>Nouveau mot de passe</h2>
+          </article>
+        </section>
+        <section className="row">
+          <article className="col-12">
+            <Form.Group
+              type="password"
+              nameAndId="pwd-1"
+              labelText="Nouveau mot de passe"
+              handleInput={(pwd) => passwords.pwd1 = pwd}
+              required
+            />
+          </article>
+        </section>
+        <section className="row">
+          <article className="col-12">
+            <Form.Group
+              type="password"
+              nameAndId="pwd-2"
+              labelText="Confirmer"
+              handleInput={(pwd) => passwords.pwd2 = pwd}
+              required
+            />
+          </article>
+        </section>
+        <Form.Submit text="Valider" />
       </Form>
-    </div>
+    </FormOnlyPage>
   );
 }

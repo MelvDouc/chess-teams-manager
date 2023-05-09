@@ -1,28 +1,17 @@
-import router from "@src/router.jsx";
+import { ComponentChildren } from "reactfree-jsx";
 
-export default function Dropdown({
-  mainText,
-  links,
-}: {
+export default function Dropdown({ mainText, children, $init }: {
   mainText: string;
-  links: {
-    to: string;
-    text: string;
-  }[];
+  $init?: (element: HTMLElement) => void;
+  children?: ComponentChildren;
 }) {
   return (
-    <li className="nav-item dropdown">
+    <li className="nav-item dropdown" $init={$init}>
       <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
         {mainText}
       </a>
       <ul className="dropdown-menu">
-        {links.map(({ to, text }) => (
-          <li>
-            <router.link to={to} className="dropdown-item">
-              {text}
-            </router.link>
-          </li>
-        ))}
+        {children}
       </ul>
     </li>
   );

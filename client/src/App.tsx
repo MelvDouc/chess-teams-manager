@@ -16,8 +16,8 @@ export default function App() {
           {Modal.getModal()}
         </>
       );
-      auth.logBack().then((connected) => {
-        router.updateUrl(connected ? location.pathname : "/connexion");
+      auth.logBack().then(() => {
+        router.updateUrl(location.pathname);
       });
     },
   };

@@ -13,7 +13,7 @@ export default function PasswordForgottenPage() {
           e.preventDefault();
           const response = await post("/auth/password-forgotten", {
             ffeId,
-            baseUrl: `${location.origin}/nouveau-mot-de-passe`
+            baseUrl: `${location.origin}/nouveau-mot-de-passe/`
           });
 
           if (!response)
@@ -37,6 +37,7 @@ export default function PasswordForgottenPage() {
               nameAndId="ffe-id"
               labelText="N° FFE"
               pattern="[A-Z]\d+"
+              placeholder="Majuscule suivie de plusieurs chiffres"
               handleInput={(inputValue: string) => ffeId = inputValue}
               required
             />
@@ -47,8 +48,3 @@ export default function PasswordForgottenPage() {
     </FormOnlyPage>
   );
 }
-
-type PasswordResetData = {
-  ffeId: string;
-  baseUrl: string;
-};
