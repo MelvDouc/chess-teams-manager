@@ -75,7 +75,6 @@ export default {
       : [null, parsed.error.errors.map((e) => e.message)];
   },
   parseMatchUpdates: (data: Match): [Partial<Match>, null] | [null, string[]] => {
-    console.log(data);
     const parsed = updateMatchSchema.safeParse(data);
     return (parsed.success)
       ? [parsed.data, null]
