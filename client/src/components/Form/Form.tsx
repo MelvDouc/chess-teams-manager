@@ -10,7 +10,11 @@ const Form = ({ children, className, ...otherProps }: JSX.IntrinsicElements["for
     <form
       className={cssClasses.form}
       {...otherProps}
-    >{children}</form>
+    >
+      <div className="container d-flex flex-column gap-3 p-3">
+        {children}
+      </div>
+    </form>
   );
 };
 

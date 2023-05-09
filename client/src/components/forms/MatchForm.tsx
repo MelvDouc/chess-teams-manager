@@ -54,91 +54,89 @@ export default function MatchForm({ match, players, handleSubmit }: {
         handleSubmit(Object.assign(m, fullAddress));
       }}
     >
-      <div className="container d-flex flex-column gap-3 p-3">
-        <section className="row">
-          <article className="col-12 col-sm-4">
-            <Form.Group
-              type="number"
-              labelText="Saison"
-              nameAndId="season"
-              value={m.season}
-              handleInput={(season) => m.season = season}
-              required
+      <section className="row">
+        <article className="col-12 col-sm-4">
+          <Form.Group
+            type="number"
+            labelText="Saison"
+            nameAndId="season"
+            value={m.season}
+            handleInput={(season) => m.season = season}
+            required
+          />
+        </article>
+        <article className="col-12 col-sm-3">
+          <Form.Group
+            type="number"
+            labelText="Ronde"
+            nameAndId="round"
+            min={1}
+            value={m.round}
+            handleInput={(round) => m.round = round}
+            required
+          />
+        </article>
+        <article className="col-12 col-sm-5">
+          <Form.Group
+            type="date"
+            labelText="Date"
+            nameAndId="date"
+            value={getDatePortion(new Date(m.date))}
+            handleInput={(date: Date | null) => date && (m.date = date)}
+            required
+          />
+        </article>
+      </section>
+      <section className="row">
+        <article className="col-12 col-sm-6">
+          <Form.Group
+            type="text"
+            nameAndId="opponent"
+            labelText="Adversaire"
+            value={m.opponent}
+            handleInput={(opponent) => m.opponent = opponent}
+            required
+          />
+        </article>
+        <article className="col-12 col-sm-6">
+          <Form.Group
+            type="text"
+            nameAndId="team-name"
+            labelText="Équipe"
+            placeholder="Thionville I"
+            value={m.teamName}
+            handleInput={(teamName) => m.teamName = teamName.trim()}
+            required
+          />
+        </article>
+      </section>
+      <section className="row">
+        <MatchFormAddress fullAddress={fullAddress} />
+      </section>
+      <section className="row">
+        <article className="col-12">
+          <Form.Checkbox
+            id="white-on-odds"
+            labelText="Blancs aux échiquiers impairs"
+            checked={m.whiteOnOdds}
+            handleInput={(whiteOnOdds) => whiteOnOddsObs.value = whiteOnOdds}
+          />
+        </article>
+      </section>
+      <section className="row">
+        <article className="col-12">
+          <label className="form-label">Composition</label>
+          <div className="table-responsive-lg">
+            <LineUpTable
+              lineUpAccessors={createAccessors(m, "lineUp")}
+              captainFfeIdAccessors={createAccessors(m, "captainFfeId")}
+              whiteOnOddsObs={whiteOnOddsObs}
+              players={players}
             />
-          </article>
-          <article className="col-12 col-sm-3">
-            <Form.Group
-              type="number"
-              labelText="Ronde"
-              nameAndId="round"
-              min={1}
-              value={m.round}
-              handleInput={(round) => m.round = round}
-              required
-            />
-          </article>
-          <article className="col-12 col-sm-5">
-            <Form.Group
-              type="date"
-              labelText="Date"
-              nameAndId="date"
-              value={getDatePortion(new Date(m.date))}
-              handleInput={(date: Date | null) => date && (m.date = date)}
-              required
-            />
-          </article>
-        </section>
-        <section className="row">
-          <article className="col-12 col-sm-6">
-            <Form.Group
-              type="text"
-              nameAndId="opponent"
-              labelText="Adversaire"
-              value={m.opponent}
-              handleInput={(opponent) => m.opponent = opponent}
-              required
-            />
-          </article>
-          <article className="col-12 col-sm-6">
-            <Form.Group
-              type="text"
-              nameAndId="team-name"
-              labelText="Équipe"
-              placeholder="Thionville I"
-              value={m.teamName}
-              handleInput={(teamName) => m.teamName = teamName.trim()}
-              required
-            />
-          </article>
-        </section>
-        <section className="row">
-          <MatchFormAddress fullAddress={fullAddress} />
-        </section>
-        <section className="row">
-          <article className="col-12">
-            <Form.Checkbox
-              id="white-on-odds"
-              labelText="Blancs aux échiquiers impairs"
-              checked={m.whiteOnOdds}
-              handleInput={(whiteOnOdds) => whiteOnOddsObs.value = whiteOnOdds}
-            />
-          </article>
-        </section>
-        <section className="row">
-          <article className="col-12">
-            <label className="form-label">Composition</label>
-            <div className="table-responsive-lg">
-              <LineUpTable
-                lineUpAccessors={createAccessors(m, "lineUp")}
-                captainFfeIdAccessors={createAccessors(m, "captainFfeId")}
-                whiteOnOddsObs={whiteOnOddsObs}
-                players={players}
-              />
-            </div>
-          </article>
-        </section>
-        <Form.Submit backLink={`/matchs/${m.season}`} text="Valider" />
-      </div>
+          </div>
+        </article>
+      </section>
+      <Form.Submit backLink={`/matchs/${m.season}`} text="Valider" />
     </Form>
   );
 }
