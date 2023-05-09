@@ -4,12 +4,13 @@
 
 :root {
   --page-width: 900px;
+  --header-height: 60px;
 }
 
 body {
-  height: 100vh;
+  min-height: 100vh;
   display: grid;
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: 1fr minmax(calc(100vh - var(--header-height)), auto) auto;
   font-family: Montserrat, "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif !important;
   -ms-overflow-style: none;
   scrollbar-width: none;
