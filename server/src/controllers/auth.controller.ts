@@ -25,9 +25,7 @@ const passwordForgotten = asyncWrapper(async (req, res) => {
   const player = await playerModel.getPlayer({ ffeId });
 
   if (!player)
-    return res.json({
-      errors: ["Adresse email invalide."]
-    });
+    return res.json({ success: false, errors: [] });
 
   const pwdResetId = randomBytes(32).toString("hex");
   await playerModel.updatePlayer({ ffeId }, {
