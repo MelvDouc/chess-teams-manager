@@ -1,6 +1,5 @@
 import DeletePlayerButton from "./DeletePlayerButton.jsx";
 import router from "@src/router.jsx";
-import auth from "@src/utils/auth.js";
 import { Player } from "@src/types.js";
 
 export default class PlayersTableRow extends HTMLTableRowElement {
@@ -8,12 +7,13 @@ export default class PlayersTableRow extends HTMLTableRowElement {
 
   public readonly player: Player & { index: number; };
 
-  constructor({ player }: {
+  constructor({ player, canEdit, canDelete }: {
     player: Player & { index: number; };
+    canEdit: boolean;
+    canDelete: boolean;
   }) {
     super();
     this.player = player;
-    const user = auth.getUser();
 
     this.append(<>
       <td>{player.ffeId}</td>
@@ -25,15 +25,14 @@ export default class PlayersTableRow extends HTMLTableRowElement {
       <td>{player.rating}</td>
       <td>
         <div className="d-flex justify-content-center align-items-center gap-2">
-          <router.link to={`/joueurs/${player.ffeId}/modifier`} className="btn btn-primary" title="Modifier">
-            <i className="bi bi-pen-fill"></i>
-          </router.link>
-          {(
-            user?.role === "WEBMASTER"
-            || user?.role === "ADMIN" && (player.role === "CAPTAIN" || player.role === "USER")
-          )
-            && user.ffeId !== player.ffeId
-            && (<DeletePlayerButton ffeId={player.ffeId} clearCache={PlayersTableRow.clearCache} />)}
+          {canEdit && (
+            <router.link to={`/joueurs/${player.ffeId}/modifier`} className="btn btn-primary" title="Modifier">
+              <i className="bi bi-pen-fill"></i>
+            </router.link>
+          )}
+          {canDelete && (
+            <DeletePlayerButton ffeId={player.ffeId} clearCache={PlayersTableRow.clearCache} />
+          )}
         </div>
       </td>
     </>);

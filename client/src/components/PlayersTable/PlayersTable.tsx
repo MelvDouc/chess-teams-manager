@@ -2,15 +2,22 @@ import { Observable } from "reactfree-jsx";
 import PlayersTableRow from "./PlayersTableRow.jsx";
 import PlayersTableTHeader from "./PlayersTableTHeader.jsx";
 import CreateTextFilter from "./CreateTextFilter.jsx";
-import { Player } from "@src/types.js";
+import { Player, PlayerData } from "@src/types.js";
+import RoleIndex from "@src/utils/RoleIndex.js";
 import cssClasses from "./PlayersTable.module.scss";
 
-export default function PlayersTable({ players, clearCache }: {
+export default function PlayersTable({ players, clearCache, userData }: {
   players: Player[];
   clearCache: VoidFunction;
+  userData: PlayerData;
 }): HTMLTableElement {
+  const isWebmaster = userData?.role === "WEBMASTER";
   const rowsObs = new Observable(players.map((player, index) => (
-    new PlayersTableRow({ player: { ...player, index } })
+    new PlayersTableRow({
+      player: { ...player, index },
+      canEdit: isWebmaster || RoleIndex[userData.role] > RoleIndex[player.role],
+      canDelete: isWebmaster
+    })
   )));
 
   const filtersObs = new Observable<Map<symbol, ((player: Player) => boolean)>>(new Map());
@@ -78,10 +85,14 @@ export default function PlayersTable({ players, clearCache }: {
           </td>
           <td>
             <div className="d-flex justify-content-center align-items-center">
-              <button className="btn btn-warning" onclick={() => {
-                filtersObs.value.clear();
-                filtersObs.notify();
-              }}>
+              <button
+                className="btn btn-warning"
+                title="Réinitialiser les filtres"
+                onclick={() => {
+                  filtersObs.value.clear();
+                  filtersObs.notify();
+                }}
+              >
                 <i className="bi bi-x-lg"></i>
               </button>
             </div>
